@@ -25,6 +25,9 @@
 % Input minimization evironments
 
 % Macros for objective definition, constraint definition and extra constraint definition
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % -------- DEFINITION COMMAND OBJECTIVE  -----------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\bodyobj}[4]
 {
 	\ifthenelse{\isempty{#4}}
@@ -37,6 +40,10 @@
 }
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  -------- DEFINITION DIFFERENT TYPE OF BODY CONSTRAINTS  --------%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \DeclareDocumentCommand{\bodyconst}{m G{}}
 {	\ifthenelse{\equal{#2}{}}{
 	\\ &\mathrm{subject~to} \quad &&#1 #2
@@ -45,27 +52,7 @@
 	}
 }
 
-\DeclareDocumentCommand{\bodyconstOneAlign}{m}
-{
-	\\ &\mathrm{subject~to} \quad &&#1 #2
-}
-
-\DeclareDocumentCommand{\bodyconstOneAlignBelow}{m}
-{
-		\\ &\mathrm{subject~to} \span\span \\
-		&\quad&&#1 #2		
-}
-
-\DeclareDocumentCommand{\bodyconstBelow}{m G{}}
-{	\ifthenelse{\equal{#2}{}}{
-		\\ &\mathrm{subject~to} \span\span \\
-		&\quad&&#1 #2		
-	}{
-	\\ &\mathrm{subject~to} \span\span \\
-	 &\quad&#1 & #2
-	}
-}
-
+% Standard version
 \DeclareDocumentCommand{\bodyconstRight}{m G{}}
 {	\ifthenelse{\equal{#2}{}}{
 		\\ &\mathrm{subject~to} \quad &&#1 #2
@@ -74,16 +61,52 @@
 }
 }
 
+% Single alignment point
+\DeclareDocumentCommand{\bodyconstOneAlign}{m G{}}
+{
+	\\ &\mathrm{subject~to} \quad &&#1 #2
+}
+
+% Contraints below subject to and with a single alignment point
+\DeclareDocumentCommand{\bodyconstOneAlignBelow}{m G{}}
+{
+		\\ &\mathrm{subject~to} \span\span \\
+		&&&#1 #2		
+}
+
+% Contraints below subject to
+\DeclareDocumentCommand{\bodyconstBelow}{m G{}}
+{	\ifthenelse{\equal{#2}{}}{
+		\\ &\mathrm{subject~to} \span\span\span\span \\
+		&&&#1 #2		
+	}{
+	\\ &\mathrm{subject~to} \span\span\span\span \\
+	 &&#1 & #2
+	}
+}
+
+% Contraints below subject to for the case of having multiple equations
 \DeclareDocumentCommand{\bodyconstBelowMult}{m G{}}
 {	\ifthenelse{\equal{#2}{}}{
 		\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
-		&\quad&&#1 #2		
+		&&&#1 #2		
 	}{
 	\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
-	&\quad&#1 & #2
+	&&#1 & #2
 }
 }
 
+% Contraints below subject to and with a single alignment point for the case of having several equations
+\DeclareDocumentCommand{\bodyconstOneAlignBelowMult}{m G{}}
+{
+	\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+	&&&#1 #2		
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  -------- DEFINITION DIFFERENT TYPE OF ADDING CONSTRAINTS  --- --%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \DeclareDocumentCommand{\addConstraint}{m G{} G{}}{
 	\ifthenelse{\equal{#2}{}}{
@@ -105,6 +128,83 @@
 	}
 }
 
+% Standard version of adding constraints
+\DeclareDocumentCommand{\standardAddConstraint}{m G{} G{}}{
+\iftoggle{bodyCon}{
+	\bodyconstRight{#1}{#2}
+	\togglefalse{bodyCon}
+}{
+	\ifthenelse{\equal{#2}{}}{
+		,\\&\quad &&#1 #2
+	}{
+		,\\&\quad &#1 & #2
+}
+\togglefalse{bodyCon}
+}
+}
+
+% Adding constraints below subject to
+\DeclareDocumentCommand{\BelowAddConstraint}{m G{} G{}}{
+	\iftoggle{bodyCon}{
+		\bodyconstBelow{#1}{#2}
+		\togglefalse{bodyCon}
+	}{
+	\ifthenelse{\equal{#2}{}}{
+		,\\&&&#1  #2
+	}{
+	,\\ &&#1  &#2}
+	\togglefalse{bodyCon}
+}
+}
+
+% Adding constraints for a single alignment point
+\DeclareDocumentCommand{\oneAlignAddConstraint}{m G{} G{}}{
+		\iftoggle{bodyCon}{
+			\bodyconstOneAlign{#1}{#2}
+			\togglefalse{bodyCon}
+		}{
+		,\\&\quad &&#1  #2
+		\togglefalse{bodyCon}
+		}
+}
+
+% Adding constraints for a single alignment point and with the constraints below
+\DeclareDocumentCommand{\oneAlignBelowAddConstraint}{m G{} G{}}{
+	\iftoggle{bodyCon}{
+		\bodyconstOneAlignBelow{#1}{#2}
+		\togglefalse{bodyCon}
+	}{
+	,\\& &&#1  #2
+	\togglefalse{bodyCon}
+}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  ------------- SELECTING TYPE OF FORMAT  -----------%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\selectConstraint}[1]{
+	\ifthenelse{\equal{#1}{1}}{
+		\let\addConstraint\BelowAddConstraint
+	}{
+	\ifthenelse{\equal{#1}{2}}{
+		\let\addConstraint\oneAlignAddConstraint
+	}{
+	\ifthenelse{\equal{#1}{3}}{
+		\let\addConstraint\oneAlignBelowAddConstraint
+	}{}
+}
+}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  ------------- SETTING DEFAULT FORMAT  -------------%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\setStandardMini}{
+	\toggletrue{bodyCon}
+	\let\addConstraint\standardAddConstraint	
+}
+
+
 \newcommand{\breakObjectiveOneConstraint}[1]{&&&#1\\}
 
 
@@ -112,17 +212,7 @@
 %MINIMIZATION ENVIRONMENTS
 
 \NewEnviron{mini}[5][]{%
-	\ifthenelse{\equal{#1}{1}}{
-			\let\bodyconst\bodyconstBelow
-	}{
-		\ifthenelse{\equal{#1}{2}}{
-			\let\bodyconst\bodyconstOneAlign
-		}{
-			\ifthenelse{\equal{#1}{2}}{
-			\let\bodyconst\bodyconstOneAlignBelow
-			}{}
-		}
-	}
+\selectConstraint{#1}
 	\begin{equation}
 	#4
 	\begin{alignedat}{4}
@@ -130,22 +220,11 @@
 	\BODY
 	\end{alignedat}
 	\end{equation}
-\toggletrue{bodyCon}
-\let\bodyconst\bodyconstRight
+\setStandardMini
 }
 
 \NewEnviron{argmini}[5][]{%
-	\ifthenelse{\equal{#1}{1}}{
-		\let\bodyconst\bodyconstBelow
-	}{
-	\ifthenelse{\equal{#1}{2}}{
-		\let\bodyconst\bodyconstOneAlign
-	}{
-	\ifthenelse{\equal{#1}{2}}{
-		\let\bodyconst\bodyconstOneAlignBelow
-	}{}
-}
-}
+\selectConstraint{#1}
 	\begin{equation}
 	#4
 	\begin{alignedat}{4}
@@ -153,12 +232,11 @@
 	\BODY
 	\end{alignedat}
 	\end{equation}
+\setStandardMini
 }
 
 \NewEnviron{mini*}[5][]{%
-	\ifthenelse{\equal{#1}{1}}{
-		\let\bodyconst\bodyconstBelow
-	}{}
+\selectConstraint{#1}
 	\begin{equation*}
 	#4
 	\begin{alignedat}{4}
@@ -166,14 +244,11 @@
 	\BODY
 	\end{alignedat}
 \end{equation*}
-\toggletrue{bodyCon}
-\let\bodyconst\bodyconstRight
+\setStandardMini
 }
 
 \NewEnviron{argmini*}[5][]{%
-	\ifthenelse{\equal{#1}{1}}{
-		\let\bodyconst\bodyconstBelow
-	}{}
+\selectConstraint{#1}
 	\begin{equation*}
 	#4
 	\begin{alignedat}{4}
@@ -181,6 +256,7 @@
 	\BODY
 	\end{alignedat}
 	\end{equation*}
+\setStandardMini	
 }
 
 
@@ -195,8 +271,7 @@
 		\BODY
 		\end{alignat}
 	\end{subequations}
-	\toggletrue{bodyCon}
-\let\bodyconst\bodyconstRight		
+\setStandardMini
 }
 
 \NewEnviron{argmini!}[5][]{%
@@ -209,15 +284,14 @@
 		\bodyobj{#2}{#3}{arg min}{#5}
 		\BODY
 		\end{alignat}
-	\end{subequations}			
+	\end{subequations}	
+\setStandardMini		
 }
 
 %MAXIMIZATION ENVIRONMENTS
 
 \NewEnviron{maxi}[5][]{%
-	\ifthenelse{\equal{#1}{1}}{
-		\let\bodyconst\bodyconstBelow
-	}{}
+\selectConstraint{#1}
 	\begin{equation}
 	#4
 	\begin{alignedat}{4}
@@ -225,12 +299,11 @@
 	\BODY
 	\end{alignedat}
 	\end{equation}
+\setStandardMini
 }
 
 \NewEnviron{argmaxi}[5][]{%
-	\ifthenelse{\equal{#1}{1}}{
-		\let\bodyconst\bodyconstBelow
-	}{}
+\selectConstraint{#1}
 	\begin{equation}
 	#4
 	\begin{alignedat}{4}
@@ -238,12 +311,11 @@
 	\BODY
 	\end{alignedat}
 	\end{equation}
+\setStandardMini
 }
 
 \NewEnviron{maxi*}[5][]{%
-	\ifthenelse{\equal{#1}{1}}{
-		\let\bodyconst\bodyconstBelow
-	}{}
+\selectConstraint{#1}
 	\begin{equation*}
 	#4
 	\begin{alignedat}{4}
@@ -251,12 +323,11 @@
 	\BODY
 	\end{alignedat}
 	\end{equation*}
+\setStandardMini
 }
 
 \NewEnviron{argmaxi*}[5][]{%
-	\ifthenelse{\equal{#1}{1}}{
-		\let\bodyconst\bodyconstBelow
-	}{}
+\selectConstraint{#1}
 	\begin{equation*}
 	#4
 	\begin{alignedat}{4}
@@ -264,6 +335,7 @@
 	\BODY
 	\end{alignedat}
 	\end{equation*}
+\setStandardMini
 }
 
 
@@ -277,7 +349,8 @@
 		\bodyobj{#2}{#3}{maximize}{#5}		
 		\BODY
 		\end{alignat}
-	\end{subequations}			
+	\end{subequations}	
+\setStandardMini		
 }
 
 \NewEnviron{argmaxi!}[5][]{%
@@ -290,5 +363,6 @@
 		\bodyobj{#2}{#3}{arg maxi}{#5}		
 		\BODY
 		\end{alignat}
-	\end{subequations}			
+	\end{subequations}
+\setStandardMini			
 }
