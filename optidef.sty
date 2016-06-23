@@ -18,6 +18,7 @@
 \RequirePackage{mathtools}	
 \RequirePackage{xifthen}	
 \RequirePackage{etoolbox}	
+\RequirePackage{xparse}	
 \newtoggle{bodyCon}
 \toggletrue{bodyCon}
 
@@ -28,35 +29,79 @@
 {
 	\ifthenelse{\isempty{#4}}
 	{
-		&\underset{\displaystyle #1}{\mbox{#3}} \quad #2\span\span\span\span
+		&\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
 	}
 	{
-		#4 ~~ &\underset{\displaystyle #1}{\mbox{#3}} \quad #2\span\span\span\span
+		#4 ~~ &\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
 	}
 }
 
 
-\newcommand{\bodyconst}[2]
-{\\ &\text{subject to} \quad &#1 & #2}
-
-\newcommand{\bodyconstRight}[2]
-{\\ &\text{subject to} \quad &#1 & #2}
-
-\newcommand{\bodyconstBelow}[2]
-{\\ &\text{subject to} \span\span \\
-	 &\quad&#1 & #2}
-
-\newcommand{\bodyconstBelowMult}[2]
-{\\ &\text{subject to} \span\span\span\span \nonumber \\
-	&\quad&#1 & #2}
-
-\newcommand{\addConstraint}[2]{
-	\iftoggle{bodyCon}{
-		\bodyconst{#1}{#2}
-		\togglefalse{bodyCon}
+\DeclareDocumentCommand{\bodyconst}{m G{}}
+{	\ifthenelse{\equal{#2}{}}{
+	\\ &\mathrm{subject~to} \quad &&#1 #2
 	}{
-	,\\&\quad &#1 & #2
-	\togglefalse{bodyCon}
+	\\ &\mathrm{subject~to} \quad &#1 & #2
+	}
+}
+
+\DeclareDocumentCommand{\bodyconstOneAlign}{m}
+{
+	\\ &\mathrm{subject~to} \quad &&#1 #2
+}
+
+\DeclareDocumentCommand{\bodyconstOneAlignBelow}{m}
+{
+		\\ &\mathrm{subject~to} \span\span \\
+		&\quad&&#1 #2		
+}
+
+\DeclareDocumentCommand{\bodyconstBelow}{m G{}}
+{	\ifthenelse{\equal{#2}{}}{
+		\\ &\mathrm{subject~to} \span\span \\
+		&\quad&&#1 #2		
+	}{
+	\\ &\mathrm{subject~to} \span\span \\
+	 &\quad&#1 & #2
+	}
+}
+
+\DeclareDocumentCommand{\bodyconstRight}{m G{}}
+{	\ifthenelse{\equal{#2}{}}{
+		\\ &\mathrm{subject~to} \quad &&#1 #2
+	}{
+	\\ &\mathrm{subject~to} \quad &#1 & #2
+}
+}
+
+\DeclareDocumentCommand{\bodyconstBelowMult}{m G{}}
+{	\ifthenelse{\equal{#2}{}}{
+		\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+		&\quad&&#1 #2		
+	}{
+	\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+	&\quad&#1 & #2
+}
+}
+
+
+\DeclareDocumentCommand{\addConstraint}{m G{} G{}}{
+	\ifthenelse{\equal{#2}{}}{
+		\iftoggle{bodyCon}{
+			\bodyconst{#1}
+			\togglefalse{bodyCon}
+		}{
+		,\\&\quad &&#1 #2
+		\togglefalse{bodyCon}
+			}
+	}{
+		\iftoggle{bodyCon}{
+			\bodyconst{#1}{#2}
+			\togglefalse{bodyCon}
+		}{
+		,\\&\quad &#1 & #2
+		\togglefalse{bodyCon}
+		}
 	}
 }
 
@@ -68,8 +113,16 @@
 
 \NewEnviron{mini}[5][]{%
 	\ifthenelse{\equal{#1}{1}}{
-		\let\bodyconst\bodyconstBelow
-	}{}
+			\let\bodyconst\bodyconstBelow
+	}{
+		\ifthenelse{\equal{#1}{2}}{
+			\let\bodyconst\bodyconstOneAlign
+		}{
+			\ifthenelse{\equal{#1}{2}}{
+			\let\bodyconst\bodyconstOneAlignBelow
+			}{}
+		}
+	}
 	\begin{equation}
 	#4
 	\begin{alignedat}{4}
@@ -84,7 +137,15 @@
 \NewEnviron{argmini}[5][]{%
 	\ifthenelse{\equal{#1}{1}}{
 		\let\bodyconst\bodyconstBelow
+	}{
+	\ifthenelse{\equal{#1}{2}}{
+		\let\bodyconst\bodyconstOneAlign
+	}{
+	\ifthenelse{\equal{#1}{2}}{
+		\let\bodyconst\bodyconstOneAlignBelow
 	}{}
+}
+}
 	\begin{equation}
 	#4
 	\begin{alignedat}{4}

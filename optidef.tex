@@ -24,7 +24,7 @@ This small library provides a standard set of environments for writing minimizat
 		\begin{enumerate}
 			\item Alignment at the beginning of the words \textit{minimize/argmin} and \textit{subject to}.
 			\item Double format for the location of the constraints: either to the right of  \textit{subject to} aligned with the objective function or below \textit{subject to}.
-			\item Alignment at the $=,~>,~<$ signs of the constraints.
+			\item Optional alignment at the $=,~>,~<$ signs of the constraints.
 			\item Optionally, the user can add manually a double align character \&\& to align some common constraints feature. A clear example could be the constraints names, e.g. (boundary constraint) alignment with (dynamic constraint), or the index of the constraints, e.g. in the case of having something like $h(x_k,u_k)\leq 0,\quad k=0,\ldots,N$, align the indexes $k=0,\ldots,N$ across constraint lines.
 		\end{enumerate}
 
@@ -62,23 +62,40 @@ There are three basic environments depending on the type of referencing that sho
 			\end{mini!}		
 \end{enumerate}
 
-\section{Environment types}
-There are two basic output formats. By default the constraints are aligned with the objective function and to the right of \textit{subject to}. However the user can choose to locate them below \textit{subject to}.
-\begin{enumerate}
-	\item Standard format:
-	\begin{mini}
-		{w}{f(w)+ R(w+6x)}
-		{\label{eq:Ex1}}{}
-		\addConstraint{g(w)}{=0}
-	\end{mini}
-	\item Alternative format:
-	\begin{mini}[1]
-		{w}{f(w)+ R(w+6x)}
-		{\label{eq:Ex1}}{}
-		\addConstraint{g(w)}{=0}
-	\end{mini}
-\end{enumerate}
-
+\section{Output formats}
+\label{sec:format}
+There are four basic output formats. 
+ \begin{enumerate}
+ 	\item \textbf{Standard format}: by default the constraints are aligned with the objective function, to the right of \textit{subject to} and with a second alignment point at the $=,~\leq,~\geq$:
+ 	\begin{mini}
+ 		{w}{f(w)+ R(w+6x)}
+ 		{\label{eq:Ex1}}{}
+ 		\addConstraint{g(w)+h(w)}{=0}
+ 		\addConstraint{t(w)}{=0.}
+ 	\end{mini}
+ 	\item \textbf{Alternative 1}: a possible variation is to locate the constraints below \textit{subject to}:
+ 	\begin{mini}[1]
+ 		{w}{f(w)+ R(w+6x)}
+ 		{\label{eq:Ex1}}{}
+ 		\addConstraint{g(w)+h(w)}{=0}
+ 		\addConstraint{t(w)}{=0.}
+ 	\end{mini}
+ 	\item \textbf{Alternative 2}: a second variation is to copletely remove the second alignment point:
+ 	\begin{mini}
+ 		{w}{f(w)+ R(w+6x)}
+ 		{\label{eq:Ex1}}{}
+ 		\addConstraint{g(w)+h(w)=0}
+ 		\addConstraint{t(w)=0.}
+ 	\end{mini} 	
+ 	\item \textbf{Alternative 3}: a third variation would be the combination of both of them:
+ 	\begin{mini}[1]
+ 		{w}{f(w)+ R(w+6x)}
+ 		{\label{eq:Ex1}}{}
+ 		\addConstraint{g(w)+h(w)=0}
+ 		\addConstraint{t(w)=0.}
+ 	\end{mini}
+ \end{enumerate}
+ 
 \section{Environment Syntaxes}
 The three environments use the same syntax with the same number of parameters. In particular, considering that LHS stands for Left-hand-side and RHS for Right-hand-side, the basic structure to define a general optimization problem is:
 \begin{verbatim}
@@ -124,7 +141,7 @@ After the definition of this parameters, the environment accepts the definition 
 \noindent has to be used, where:
 \begin{enumerate}
 	\item \verb|LHS Constraint|: the left-hand side of the any constraint, e.g. $3w^\top w$.
-	\item \verb|RHS Constraint|: the right-hand side of the first constraints including the equal, less and greater signs, e.g. $\leq \|w\|_\infty$, as well as the constraint label.
+	\item \verb|RHS Constraint|: the right-hand side of the first constraints including the equal, less and greater signs, e.g. $\leq \|w\|_\infty$, as well as the constraint label.\textbf{ Keep in mind that this parameter is optional and if not included all the constraints will be aligned to the left (See alternative format 2 and 3 in Section \ref{sec:format}).}
 \end{enumerate}
 
 \subsubsection{Constraints referencing}
