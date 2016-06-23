@@ -151,6 +151,7 @@
 	}{
 	\ifthenelse{\equal{#2}{}}{
 		,\\&&&#1  #2
+		\togglefalse{bodyCon}
 	}{
 	,\\ &&#1  &#2}
 	\togglefalse{bodyCon}
@@ -179,6 +180,32 @@
 }
 }
 
+% Adding constraints below subject to for multiple references
+\DeclareDocumentCommand{\BelowAddConstraintMult}{m G{} G{}}{
+	\iftoggle{bodyCon}{
+		\bodyconstBelowMult{#1}{#2}
+		\togglefalse{bodyCon}
+	}{
+	\ifthenelse{\equal{#2}{}}{
+		,\\&&&#1  #2
+		\togglefalse{bodyCon}
+	}{
+	,\\ &&#1  &#2}
+\togglefalse{bodyCon}
+}
+}
+
+% Adding constraints for a single alignment point and with the constraints below for multiple references
+\DeclareDocumentCommand{\oneAlignBelowAddConstraintMult}{m G{} G{}}{
+	\iftoggle{bodyCon}{
+		\bodyconstOneAlignBelowMult{#1}{#2}
+		\togglefalse{bodyCon}
+	}{
+	,\\& &&#1  #2
+	\togglefalse{bodyCon}
+}
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  ------------- SELECTING TYPE OF FORMAT  -----------%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -191,7 +218,24 @@
 	}{
 	\ifthenelse{\equal{#1}{3}}{
 		\let\addConstraint\oneAlignBelowAddConstraint
-	}{}
+	}{
+		\let\addConstraint\standardAddConstraint}
+}
+}
+}
+
+% Selecting for multiple references
+\newcommand{\selectConstraintMult}[1]{
+	\ifthenelse{\equal{#1}{1}}{
+		\let\addConstraint\BelowAddConstraintMult
+	}{
+	\ifthenelse{\equal{#1}{2}}{
+		\let\addConstraint\oneAlignAddConstraint
+	}{
+	\ifthenelse{\equal{#1}{3}}{
+		\let\addConstraint\oneAlignBelowAddConstraintMult
+	}{
+	\let\addConstraint\standardAddConstraint}
 }
 }
 }
@@ -215,7 +259,7 @@
 \selectConstraint{#1}
 	\begin{equation}
 	#4
-	\begin{alignedat}{4}
+	\begin{alignedat}{5}
 	\bodyobj{#2}{#3}{minimize}{#5}
 	\BODY
 	\end{alignedat}
@@ -227,7 +271,7 @@
 \selectConstraint{#1}
 	\begin{equation}
 	#4
-	\begin{alignedat}{4}
+	\begin{alignedat}{5}
 	\bodyobj{#2}{#3}{arg min}{#5}
 	\BODY
 	\end{alignedat}
@@ -239,7 +283,7 @@
 \selectConstraint{#1}
 	\begin{equation*}
 	#4
-	\begin{alignedat}{4}
+	\begin{alignedat}{5}
 	\bodyobj{#2}{#3}{minimize}{#5}
 	\BODY
 	\end{alignedat}
@@ -251,7 +295,7 @@
 \selectConstraint{#1}
 	\begin{equation*}
 	#4
-	\begin{alignedat}{4}
+	\begin{alignedat}{5}
 	\bodyobj{#2}{#3}{arg min}{#5}
 	\BODY
 	\end{alignedat}
@@ -261,12 +305,10 @@
 
 
 \NewEnviron{mini!}[5][]{%
-	\ifthenelse{\equal{#1}{1}}{
-		\let\bodyconst\bodyconstBelowMult
-	}{}
+\selectConstraintMult{#1}
 	\begin{subequations}
 		#4
-		\begin{alignat}{4}
+		\begin{alignat}{5}
 		\bodyobj{#2}{#3}{minimize}{#5}
 		\BODY
 		\end{alignat}
@@ -275,12 +317,10 @@
 }
 
 \NewEnviron{argmini!}[5][]{%
-	\ifthenelse{\equal{#1}{1}}{
-		\let\bodyconst\bodyconstBelowMult
-	}{}
+\selectConstraintMult{#1}
 	\begin{subequations}
 		#4
-		\begin{alignat}{4}
+		\begin{alignat}{5}
 		\bodyobj{#2}{#3}{arg min}{#5}
 		\BODY
 		\end{alignat}
@@ -294,7 +334,7 @@
 \selectConstraint{#1}
 	\begin{equation}
 	#4
-	\begin{alignedat}{4}
+	\begin{alignedat}{5}
 	\bodyobj{#2}{#3}{maximize}{#5}
 	\BODY
 	\end{alignedat}
@@ -306,7 +346,7 @@
 \selectConstraint{#1}
 	\begin{equation}
 	#4
-	\begin{alignedat}{4}
+	\begin{alignedat}{5}
 	\bodyobj{#2}{#3}{arg maxi}{#5}
 	\BODY
 	\end{alignedat}
@@ -318,7 +358,7 @@
 \selectConstraint{#1}
 	\begin{equation*}
 	#4
-	\begin{alignedat}{4}
+	\begin{alignedat}{5}
 	\bodyobj{#2}{#3}{maximize}{#5}
 	\BODY
 	\end{alignedat}
@@ -330,7 +370,7 @@
 \selectConstraint{#1}
 	\begin{equation*}
 	#4
-	\begin{alignedat}{4}
+	\begin{alignedat}{5}
 	\bodyobj{#2}{#3}{arg maxi}{#5}
 	\BODY
 	\end{alignedat}
@@ -340,12 +380,10 @@
 
 
 \NewEnviron{maxi!}[5][]{%
-	\ifthenelse{\equal{#1}{1}}{
-		\let\bodyconst\bodyconstBelowMult
-	}{}
+\selectConstraintMult{#1}
 	\begin{subequations}
 		#4
-		\begin{alignat}{4}
+		\begin{alignat}{5}
 		\bodyobj{#2}{#3}{maximize}{#5}		
 		\BODY
 		\end{alignat}
@@ -354,12 +392,10 @@
 }
 
 \NewEnviron{argmaxi!}[5][]{%
-	\ifthenelse{\equal{#1}{1}}{
-		\let\bodyconst\bodyconstBelowMult
-	}{}
+\selectConstraintMult{#1}
 	\begin{subequations}
 		#4
-		\begin{alignat}{4}
+		\begin{alignat}{5}
 		\bodyobj{#2}{#3}{arg maxi}{#5}		
 		\BODY
 		\end{alignat}
