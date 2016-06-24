@@ -2,10 +2,6 @@
 
 Optidef is a small library that provides a standard set of environments for writing optimization problems. 
 
-## Usage
-
-Import the package by directly adding \usepackage{optidef} to your LaTeX document. Consult the documentation for different examples and syntax usage.
-
 
 ## Features:
 
@@ -30,7 +26,11 @@ The most important features are:
    * maximize
    * arg mini
    * arg maxi
- 
+
+## Usage
+
+Import the package by directly adding \usepackage{optidef} to your LaTeX document. Consult the documentation for different examples and syntax usage.
+
 
 ## Syntax:
     
@@ -65,11 +65,11 @@ Finally note that \begin{mini#} can be substituted by \begin{maxi#}, \begin{argm
 ## Contact for problems and suggestions:
 
 E-mail: jesus.lago.garcia@venus.uni-freiburg.de
+
 Github: https://github.com/jeslago/optidef
 
-## Latest stable version:
+## Latest stable version: Optidef 1.1
 
-Optidef 1.1
 CTAN: https://www.ctan.org/pkg/optidef
 
 ## Licensing:
