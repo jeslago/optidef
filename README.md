@@ -3,7 +3,7 @@
 Optidef is a small library that provides a standard set of environments for writing optimization problems. 
 
 
-## Features:
+## Features
 
 The most important features are:
 
@@ -32,7 +32,7 @@ The most important features are:
 Import the package by directly adding \usepackage{optidef} to your LaTeX document. Consult the documentation for different examples and syntax usage.
 
 
-## Syntax:
+## Syntax
     
 The syntax to define an optimization problem is given by:
  
@@ -62,7 +62,7 @@ After the definition of this parameters, the environment accepts the definition 
 
 Finally note that \begin{mini#} can be substituted by \begin{maxi#}, \begin{argmini#} or \begin{argmaxi#}. 
 
-## Contact for problems and suggestions:
+## Contact for issue reporting or suggestions
 
 E-mail: jesus.lago.garcia@venus.uni-freiburg.de
 
@@ -72,7 +72,7 @@ Github: https://github.com/jeslago/optidef
 
 CTAN: https://www.ctan.org/pkg/optidef
 
-## Licensing:
+## Licensing
 
 Copyright 2016 Jesus Lago Garcia
 
