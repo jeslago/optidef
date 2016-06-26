@@ -10,7 +10,7 @@ The most important features are:
 - It automatically aligns the problems in the most convenient way allowing even two different output formats:
    * Beginning of the words "minimize/argmin" and "subject to"
    * Double format for the location of the constraints: either to the right of  subject to aligned with the objective function or below subject to.
-   * The $= | > | <$ signs of the constraints.
+   * The =, > and < signs of the constraints.
    * Optionally, an alignment point for some constraints features. An example could be the constraints names, e.g. align (boundary constraint) with (dynamic constraint), or the index of the constraints, e.g. in the case of having something like h(xk,uk) < 0, k=0, ...,N, the third alignment point can align the constraint indexes k=0, ...,N across different constraint lines.
 
 
@@ -42,14 +42,11 @@ The syntax to define an optimization problem is given by:
             {\label{Global referece of Optimization Problem}}  
             {Result of the optimization problem or any expression on the left
             of the minimize word}
-            \addConstraint{LHS Constraint 1}{RHS Constraint 1 \label{Reference
-                   Constraint 1}}{Extra Info Constraint 1}
-            \addConstraint{LHS Constraint 2}{RHS Constraint 2 \label{Reference 
-                   Constraint 2}}{Extra Info Constraint 2}
+            \addConstraint{LHS Constraint 1}{RHS Constraint 1 \label{Reference Constraint 1}}{Extra Info Constraint 1}
+            \addConstraint{LHS Constraint 2}{RHS Constraint 2 \label{Reference Constraint 2}}{Extra Info Constraint 2}
             .
             .
-            \addConstraint{LHS N}{RHSConstraint N \label{Reference 
-                   Constraint N}}{Extra Info Constraint N}
+            \addConstraint{LHS N}{RHSConstraint N \label{Reference Constraint N}}{Extra Info Constraint N}
         \end{mini#}
 
 
