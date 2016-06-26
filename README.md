@@ -11,7 +11,7 @@ The most important features are:
    * Beginning of the words "minimize/argmin" and "subject to"
    * Double format for the location of the constraints: either to the right of  subject to aligned with the objective function or below subject to.
    * The $= | > | <$ signs of the constraints.
-   * Optionally, the user can add manually a double align character \&\& to align some common constraints feature. A clear example could be the constraints names, e.g. (boundary constraint) alignment with (dynamic constraint), or the index of the constraints, e.g. in the case of having something like $h(x_k,u_k)\leq 0,\quad k=0,\ldots,N$, align the indexes $k=0,\ldots,N$ across constraint lines.
+   * Optionally, an alignment point for some constraints features. An example could be the constraints names, e.g. align (boundary constraint) with (dynamic constraint), or the index of the constraints, e.g. in the case of having something like h(xk,uk) < 0, k=0, ...,N, the third alignment point can align the constraint indexes k=0, ...,N across different constraint lines.
 
 
 - It provides an easy interface to define optimization problem for three different reference situations:
@@ -40,12 +40,16 @@ The syntax to define an optimization problem is given by:
             {Optimization variable}
             {Objective function \label{Objective function referece}}
             {\label{Global referece of Optimization Problem}}  
-            {Result of the optimization problem or any expression on the left of the minimize word}
-            \addConstraint{LHS Constraint 1}{RHS Constraint 1 \label{Reference Constraint 1}}
-            \addConstraint{LHS Constraint 2}{RHS Constraint 2 \label{Reference Constraint 2}}
+            {Result of the optimization problem or any expression on the left
+            of the minimize word}
+            \addConstraint{LHS Constraint 1}{RHS Constraint 1 \label{Reference
+                   Constraint 1}}{Extra Info Constraint 1}
+            \addConstraint{LHS Constraint 2}{RHS Constraint 2 \label{Reference 
+                   Constraint 2}}{Extra Info Constraint 2}
             .
             .
-            \addConstraint{LHS N}  {RHSConstraint N \label{Reference Constraint N}}
+            \addConstraint{LHS N}{RHSConstraint N \label{Reference 
+                   Constraint N}}{Extra Info Constraint N}
         \end{mini#}
 
 

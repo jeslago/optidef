@@ -1,6 +1,7 @@
 \documentclass[]{report}
 \usepackage{remreset}
 \usepackage{optidef}
+\usepackage{listings}
 
 % Title Page
 \title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 1.1}}
@@ -20,12 +21,37 @@
 
 This small library provides a standard set of environments for writing minimization problems. The most important features are:
 \begin{enumerate}
-	\item It automatically aligns the problems in the most convenient way allowing even two different output formats:
+	\item It automatically aligns the problems in the most convenient way allowing different output formats:
 		\begin{enumerate}
-			\item Alignment at the beginning of the words \textit{minimize/argmin} and \textit{subject to}.
+			\item Alignment at the beginning of the words \textit{minimize/argmin} and \textit{subject to}:
+					\begin{mini*}
+						{w}{f(w)+ R(w+6x)}
+						{\label{eq:Ex1}}{}
+						\addConstraint{g(w)}{=0}
+					\end{mini*}
 			\item Double format for the location of the constraints: either to the right of  \textit{subject to} aligned with the objective function or below \textit{subject to}.
 			\item Optional alignment at the $=,~>,~<$ signs of the constraints.
-			\item Optionally, the user can add manually a double align character \&\& to align some common constraints feature. A clear example could be the constraints names, e.g. (boundary constraint) alignment with (dynamic constraint), or the index of the constraints, e.g. in the case of having something like $h(x_k,u_k)\leq 0,\quad k=0,\ldots,N$, align the indexes $k=0,\ldots,N$ across constraint lines.
+								\begin{mini*}
+									{w}{f(w)+ R(w+6x)}
+									{\label{eq:Ex1}}{}
+									\addConstraint{g(w)+h(w)}{=0}
+									\addConstraint{l(w)}{=5w.}
+								\end{mini*}
+			\item Optionally, the user can add a third alignment point on the constraints to set some constraint features. A clear example could be the constraints names:
+						\begin{mini*}
+							{w}{f(w)+ R(w+6x)}
+							{\label{eq:Ex1}}{}
+							\addConstraint{g(w)+h(w)}{=0,}{\text{(Topological Constraint)}}
+							\addConstraint{l(w)}{=5w,\quad}{\text{(Boundary Constraint)}}
+						\end{mini*}
+			
+			or the index of the constraints:
+						\begin{mini*}
+							{w,u}{f(w)+ R(w+6x)}
+							{\label{eq:Ex1}}{}
+							\addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1}
+							\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
+						\end{mini*}
 		\end{enumerate}
 
 \item It provides an easy interface to define optimization problem for three different reference situations:
@@ -96,7 +122,7 @@ There are four basic output formats.
  \end{enumerate}
  
 \section{Environment Syntaxes}
-The three environments use the same syntax with the same number of parameters. In particular, considering that LHS stands for Left-hand-side and RHS for Right-hand-side, the basic structure to define a general optimization problem is:
+The three environments use the same syntax with the same number of parameters. In particular, considering that \textit{Const} stands for constraint ,\textit{LHS} stands for Left-hand-side and \textit{RHS} for Right-hand-side, the basic structure to define a general optimization problem is:
 \begin{verbatim}
 
 \begin{mini#}[Format]
@@ -106,11 +132,14 @@ The three environments use the same syntax with the same number of parameters. I
    {Result of the optimization problem or any expression on 
    the left of the minimize word}
 
-   \addConstraint{LHS Constraint 1}{RHS Constraint 1 \label{Reference Constraint 1}}
-   \addConstraint{LHS Constraint 2}{RHS Constraint 2 \label{Reference Constraint 2}}
+   \addConstraint{LHS Const 1}{RHS Const 1 \label{Reference
+    Const 1}}{Extra Const 1 Info}
+   \addConstraint{LHS Const 2}{RHS Const 2 \label{Reference
+    Constraint 2}}{Extra Const 2 Info}
    .
    .
-   \addConstraint{LHS N}{RHSConstraint N \label{Reference Constraint N}}
+   \addConstraint{LHS N}{RHS Const N \label{Reference 
+   Const N}}{Extra Const N Info}
 \end{mini#}
 \end{verbatim}
 
@@ -141,12 +170,15 @@ After the definition of this parameters, the environment accepts the definition 
 \verb|\addConstraint{LHS Constraint k}|
 
 \verb|{RHS Constraint k \label{Reference Constraint k}}| 
+
+\verb|{Extra Infor Contraint k}| 
 ~\\
 
 \noindent has to be used, where:
 \begin{enumerate}
 	\item \verb|LHS Constraint|: the left-hand side of the any constraint, e.g. $3w^\top w$.
-	\item \verb|RHS Constraint|: the right-hand side of the first constraints including the equal, less and greater signs, e.g. $\leq \|w\|_\infty$, as well as the constraint label.\textbf{ Keep in mind that this parameter is optional and if not included all the constraints will be aligned to the left (See alternative format 2 and 3 in Section \ref{sec:format}).}
+	\item \verb|RHS Constraint|: the right-hand side of the first constraints including the equal, less and greater signs, e.g. $\leq \|w\|_\infty$, as well as the constraint label.\textbf{ Keep in mind that this parameter is optional and if not included or leave it blank all the constraints will be aligned to the left (See alternative format 2 and 3 in Section \ref{sec:format}).}
+	\item \verb|Extra Info|: optional parameter to add extra info such as contraints set definition or constraint name. Look Example 8 or the fourth described feature in Section 1.
 \end{enumerate}
 
 \subsubsection{Constraints referencing}
@@ -347,13 +379,12 @@ Adding the fourth optional alignment to add constraint names:
 
 \begin{verbatim}
 \begin{mini*}
-{w}{f(w)+ R(w+6x)}
-{}{}
-
-\addConstraint{g(w)}{=0, \quad && \text{(Dynamic constraint)}}
-\addConstraint{n(w)}{= 6, \quad && \text{(Boundary constraint)}}
-\addConstraint{L(w)+r(x)}{=Kw+p, \quad && \text{(Random constraint)}}
-\addConstraint{h(x)}{=0.\quad && \text{(Path constraint)}}  
+	{w}{f(w)+ R(w+6x)}
+	{}{}
+	\addConstraint{g(w)}{=0,}{ \quad  \text{(Dynamic constraint)}}
+	\addConstraint{n(w)}{= 6,}{ \quad  \text{(Boundary constraint)}}
+	\addConstraint{L(w)+r(x)}{=Kw+p,}{ \quad  \text{(Random constraint)}}
+	\addConstraint{h(x)}{=0,}{ \quad  \text{(Path constraint).}}
 \end{mini*}
 \end{verbatim}
 
@@ -361,10 +392,10 @@ Adding the fourth optional alignment to add constraint names:
 \begin{mini*}
 	{w}{f(w)+ R(w+6x)}
 	{}{}
-	\addConstraint{g(w)}{=0, \quad && \text{(Dynamic constraint)}}
-	\addConstraint{n(w)}{= 6, \quad && \text{(Boundary constraint)}}
-	\addConstraint{L(w)+r(x)}{=Kw+p, \quad && \text{(Random constraint)}}
-	\addConstraint{h(x)}{=0. \quad && \text{(Path constraint).}}
+	\addConstraint{g(w)}{=0,}{ \quad  \text{(Dynamic constraint)}}
+	\addConstraint{n(w)}{= 6,}{ \quad  \text{(Boundary constraint)}}
+	\addConstraint{L(w)+r(x)}{=Kw+p,}{ \quad  \text{(Random constraint)}}
+	\addConstraint{h(x)}{=0,}{ \quad  \text{(Path constraint).}}
 \end{mini*}
 
 

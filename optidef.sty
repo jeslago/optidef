@@ -19,10 +19,17 @@
 \RequirePackage{xifthen}	
 \RequirePackage{etoolbox}	
 \RequirePackage{xparse}	
+\RequirePackage{multirow}	
+
+% Toogle to indicate if during the addConstraint command the first constraint should be built together with "subject to"
 \newtoggle{bodyCon}
 \toggletrue{bodyCon}
 
-% Input minimization evironments
+% If the previous constraints has 3 elements, we avoid setting \span\span at the beginning of the next constraint. If there is no previous third element, \span\span must be included for correct alignment
+\newtoggle{previousThird}
+\togglefalse{previousThird}
+\newcommand{\spanit}{}
+
 
 % Macros for objective definition, constraint definition and extra constraint definition
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,61 +53,114 @@
 
 \DeclareDocumentCommand{\bodyconst}{m G{}}
 {	\ifthenelse{\equal{#2}{}}{
-	\\ &\mathrm{subject~to} \quad &&#1 #2
+	\\ &\mathrm{subject~to} \quad &&#1 #2 
 	}{
 	\\ &\mathrm{subject~to} \quad &#1 & #2
 	}
 }
 
 % Standard version
-\DeclareDocumentCommand{\bodyconstRight}{m G{}}
-{	\ifthenelse{\equal{#2}{}}{
-		\\ &\mathrm{subject~to} \quad &&#1 #2
+\DeclareDocumentCommand{\bodyconstRight}{m G{} G{}}
+{	\ifthenelse{\equal{#3}{}}{
+			\ifthenelse{\equal{#2}{}}{
+			\\ &\mathrm{subject~to} \quad &&#1 #2 	
+		}{
+		\\ &\mathrm{subject~to} \quad &#1 & #2 
+		}
+		\togglefalse{previousThird}
 	}{
-	\\ &\mathrm{subject~to} \quad &#1 & #2
-}
+		\ifthenelse{\equal{#2}{}}{
+			\\ &\mathrm{subject~to} \quad &&#1 #2 &&#3
+		}{
+		\\ &\mathrm{subject~to} \quad &#1 & #2 &&#3
+		}
+		\toggletrue{previousThird}
+	}
 }
 
 % Single alignment point
-\DeclareDocumentCommand{\bodyconstOneAlign}{m G{}}
+\DeclareDocumentCommand{\bodyconstOneAlign}{m G{} G{}}
 {
-	\\ &\mathrm{subject~to} \quad &&#1 #2
+	\ifthenelse{\equal{#3}{}}{
+		\\ &\mathrm{subject~to} \quad &&#1 #2 	\togglefalse{previousThird}
+	}{
+		\\ &\mathrm{subject~to} \quad &&#1 #2 &&#3
+		\toggletrue{previousThird}
+	}
 }
 
 % Contraints below subject to and with a single alignment point
-\DeclareDocumentCommand{\bodyconstOneAlignBelow}{m G{}}
+\DeclareDocumentCommand{\bodyconstOneAlignBelow}{m G{} G{}}
 {
-		\\ &\mathrm{subject~to} \span\span \\
-		&&&#1 #2		
+	\ifthenelse{\equal{#3}{}}{
+		\\ &\mathrm{subject~to} \span\span\span\span \\
+		&&&#1 #2 \togglefalse{previousThird}
+	}{
+		\\ &\mathrm{subject~to} \span\span\span\span \\
+		&&&#1 #2 &&#3	
+		\toggletrue{previousThird}
+	}	
 }
 
 % Contraints below subject to
-\DeclareDocumentCommand{\bodyconstBelow}{m G{}}
-{	\ifthenelse{\equal{#2}{}}{
+\DeclareDocumentCommand{\bodyconstBelow}{m G{} G{}}
+{
+	\ifthenelse{\equal{#3}{}}{
+		\ifthenelse{\equal{#2}{}}{
+			\\ &\mathrm{subject~to} \span\span\span\span \\
+			&&&#1 #2 
+		}{
 		\\ &\mathrm{subject~to} \span\span\span\span \\
-		&&&#1 #2		
+		 &&#1 & #2 
+		}
+		\togglefalse{previousThird}
 	}{
-	\\ &\mathrm{subject~to} \span\span\span\span \\
-	 &&#1 & #2
+		\ifthenelse{\equal{#2}{}}{
+			\\ &\mathrm{subject~to} \span\span\span\span \\
+			&&&#1 #2 &&#3
+		}{
+		\\ &\mathrm{subject~to} \span\span\span\span \\
+		&&#1 & #2 &&#3
+		}
+		\toggletrue{previousThird}	
 	}
 }
 
 % Contraints below subject to for the case of having multiple equations
-\DeclareDocumentCommand{\bodyconstBelowMult}{m G{}}
-{	\ifthenelse{\equal{#2}{}}{
+\DeclareDocumentCommand{\bodyconstBelowMult}{m G{} G{}}
+{
+	\ifthenelse{\equal{#3}{}}{
+		\ifthenelse{\equal{#2}{}}{
+			\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+			&&&#1 #2	
+		}{
 		\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
-		&&&#1 #2		
+		&&#1 & #2 
+		}
+		\togglefalse{previousThird}
 	}{
-	\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
-	&&#1 & #2
-}
+		\ifthenelse{\equal{#2}{}}{
+			\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+			&&&#1 #2	&&#3
+		}{
+		\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+		&&#1 & #2 &&#3
+		}
+		\toggletrue{previousThird}	
+	}
 }
 
 % Contraints below subject to and with a single alignment point for the case of having several equations
-\DeclareDocumentCommand{\bodyconstOneAlignBelowMult}{m G{}}
+\DeclareDocumentCommand{\bodyconstOneAlignBelowMult}{m G{} G{}}
 {
-	\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
-	&&&#1 #2		
+	\ifthenelse{\equal{#3}{}}{
+		\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+		&&&#1 #2		\togglefalse{previousThird}
+	}{
+		\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+		&&&#1 #2 &&	#3
+		\toggletrue{previousThird}
+	}
 }
 
 
@@ -109,35 +169,66 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \DeclareDocumentCommand{\addConstraint}{m G{} G{}}{
-	\ifthenelse{\equal{#2}{}}{
-		\iftoggle{bodyCon}{
-			\bodyconst{#1}
+\ifthenelse{\equal{#3}{}}{	
+		\ifthenelse{\equal{#2}{}}{
+			\iftoggle{bodyCon}{
+				\bodyconst{#1}
+				\togglefalse{bodyCon}
+			}{
+			,\\&\quad &&#1 #2\span\span
 			\togglefalse{bodyCon}
+				}
 		}{
-		,\\&\quad &&#1 #2
-		\togglefalse{bodyCon}
+			\iftoggle{bodyCon}{
+				\bodyconst{#1}{#2}
+				\togglefalse{bodyCon}
+			}{
+			,\\&\quad &#1 & #2\span\span
+			\togglefalse{bodyCon}
 			}
-	}{
-		\iftoggle{bodyCon}{
-			\bodyconst{#1}{#2}
-			\togglefalse{bodyCon}
-		}{
-		,\\&\quad &#1 & #2
-		\togglefalse{bodyCon}
 		}
-	}
+			\togglefalse{previousThird}
+	}{
+			\iftoggle{bodyCon}{
+				\bodyconst{#1}{#2}{#3}
+				\togglefalse{bodyCon}
+			}{
+				\ifthenelse{\equal{#2}{}}{
+					,\\&\quad &&#1 #2 && #3
+				}{
+					,\\&\quad &#1 & #2 && #3
+				}
+				\togglefalse{bodyCon}
+			}
+		\toggletrue{previousThird}
+		}
 }
 
 % Standard version of adding constraints
 \DeclareDocumentCommand{\standardAddConstraint}{m G{} G{}}{
+	\iftoggle{previousThird}
+	{\renewcommand{\spanit}{}}
+	{\renewcommand{\spanit}{\span\span}}
 \iftoggle{bodyCon}{
-	\bodyconstRight{#1}{#2}
+	\bodyconstRight{#1}{#2}{#3}
 	\togglefalse{bodyCon}
 }{
 	\ifthenelse{\equal{#2}{}}{
-		,\\&\quad &&#1 #2
+		\ifthenelse{\equal{#3}{}}{
+			,\spanit\\&\quad &&#1 #2 
+			\togglefalse{previousThird}
+		}{
+			,\spanit\\&\quad &&#1 #2 && #3
+			\toggletrue{previousThird}
+		}
 	}{
-		,\\&\quad &#1 & #2
+		\ifthenelse{\equal{#3}{}}{
+			,\spanit\\&\quad &#1 & #2 
+			\togglefalse{previousThird}
+		}{
+			,\spanit\\&\quad &#1 & #2 && #3
+			\toggletrue{previousThird}
+		}
 }
 \togglefalse{bodyCon}
 }
@@ -146,25 +237,40 @@
 % Adding constraints below subject to
 \DeclareDocumentCommand{\BelowAddConstraint}{m G{} G{}}{
 	\iftoggle{bodyCon}{
-		\bodyconstBelow{#1}{#2}
+		\bodyconstBelow{#1}{#2}{#3}
 		\togglefalse{bodyCon}
 	}{
-	\ifthenelse{\equal{#2}{}}{
-		,\\&&&#1  #2
+		\ifthenelse{\equal{#2}{}}{
+			\ifthenelse{\equal{#3}{}}{
+				,\spanit\\&&&#1  #2 		\togglefalse{previousThird}
+			}{
+				,\spanit\\&&&#1  #2 && #3
+				\toggletrue{previousThird}		
+			}
+		}{
+			\ifthenelse{\equal{#3}{}}{
+				,\spanit\\ &&#1  &#2 \togglefalse{previousThird}
+			}{
+				,\spanit\\ &&#1  &#2 && #3
+				\toggletrue{previousThird}
+			}
+		}
 		\togglefalse{bodyCon}
-	}{
-	,\\ &&#1  &#2}
-	\togglefalse{bodyCon}
-}
+	}
 }
 
 % Adding constraints for a single alignment point
 \DeclareDocumentCommand{\oneAlignAddConstraint}{m G{} G{}}{
 		\iftoggle{bodyCon}{
-			\bodyconstOneAlign{#1}{#2}
+			\bodyconstOneAlign{#1}{#2}{#3}
 			\togglefalse{bodyCon}
 		}{
-		,\\&\quad &&#1  #2
+			\ifthenelse{\equal{#3}{}}{
+				,\spanit\\&\quad &&#1  #2 \togglefalse{previousThird}
+			}{
+				,\spanit\\&\quad &&#1  #2 && #3
+				\toggletrue{previousThird}
+			}
 		\togglefalse{bodyCon}
 		}
 }
@@ -172,27 +278,41 @@
 % Adding constraints for a single alignment point and with the constraints below
 \DeclareDocumentCommand{\oneAlignBelowAddConstraint}{m G{} G{}}{
 	\iftoggle{bodyCon}{
-		\bodyconstOneAlignBelow{#1}{#2}
+		\bodyconstOneAlignBelow{#1}{#2}{#3}
 		\togglefalse{bodyCon}
 	}{
-	,\\& &&#1  #2
-	\togglefalse{bodyCon}
-}
+		\ifthenelse{\equal{#3}{}}{
+			,\spanit\\& &&#1  #2\togglefalse{previousThird}
+		}{
+			,\spanit\\& &&#1  #2 && #3
+			\toggletrue{previousThird}
+		}
+		\togglefalse{bodyCon}
+	}
 }
 
 % Adding constraints below subject to for multiple references
 \DeclareDocumentCommand{\BelowAddConstraintMult}{m G{} G{}}{
 	\iftoggle{bodyCon}{
-		\bodyconstBelowMult{#1}{#2}
+		\bodyconstBelowMult{#1}{#2}{#3}
 		\togglefalse{bodyCon}
 	}{
-	\ifthenelse{\equal{#2}{}}{
-		,\\&&&#1  #2
+		\ifthenelse{\equal{#3}{}}{
+			\ifthenelse{\equal{#2}{}}{
+				,\spanit\\&&&#1  #2
+			}{
+			,\spanit\\ &&#1  &#2
+			}
+			\togglefalse{previousThird}
+		}{
+			\ifthenelse{\equal{#2}{}}{
+				,\spanit\\&&&#1  #2 && #3
+			}{
+			,\spanit\\ &&#1  &#2&& #3}
+		\toggletrue{previousThird}
+		}
 		\togglefalse{bodyCon}
-	}{
-	,\\ &&#1  &#2}
-\togglefalse{bodyCon}
-}
+	}
 }
 
 % Adding constraints for a single alignment point and with the constraints below for multiple references
@@ -201,7 +321,12 @@
 		\bodyconstOneAlignBelowMult{#1}{#2}
 		\togglefalse{bodyCon}
 	}{
-	,\\& &&#1  #2
+		\ifthenelse{\equal{#3}{}}{
+			,\spanit\\& &&#1  #2 \togglefalse{previousThird}
+		}{
+			,\spanit\\& &&#1  #2 && #3
+			\toggletrue{previousThird}
+		}
 	\togglefalse{bodyCon}
 }
 }
@@ -257,6 +382,7 @@
 
 \NewEnviron{mini}[5][]{%
 \selectConstraint{#1}
+\let\addConstraint\standardAddConstraint
 	\begin{equation}
 	#4
 	\begin{alignedat}{5}
@@ -281,25 +407,19 @@
 
 \NewEnviron{mini*}[5][]{%
 \selectConstraint{#1}
-	\begin{equation*}
-	#4
-	\begin{alignedat}{5}
+	\begin{alignat*}{5}
 	\bodyobj{#2}{#3}{minimize}{#5}
 	\BODY
-	\end{alignedat}
-\end{equation*}
+	\end{alignat*}
 \setStandardMini
 }
 
 \NewEnviron{argmini*}[5][]{%
 \selectConstraint{#1}
-	\begin{equation*}
-	#4
-	\begin{alignedat}{5}
-	\bodyobj{#2}{#3}{arg min}{#5}
+	\begin{alignat*}{5}
+	\bodyobj{#2}{#3}{arg~mini}{#5}
 	\BODY
-	\end{alignedat}
-	\end{equation*}
+	\end{alignat*}
 \setStandardMini	
 }
 
@@ -356,25 +476,19 @@
 
 \NewEnviron{maxi*}[5][]{%
 \selectConstraint{#1}
-	\begin{equation*}
-	#4
-	\begin{alignedat}{5}
+	\begin{alignat*}{5}
 	\bodyobj{#2}{#3}{maximize}{#5}
 	\BODY
-	\end{alignedat}
-	\end{equation*}
+	\end{alignat*}
 \setStandardMini
 }
 
 \NewEnviron{argmaxi*}[5][]{%
 \selectConstraint{#1}
-	\begin{equation*}
-	#4
-	\begin{alignedat}{5}
+	\begin{alignat*}{5}
 	\bodyobj{#2}{#3}{arg maxi}{#5}
 	\BODY
-	\end{alignedat}
-	\end{equation*}
+	\end{alignat*}
 \setStandardMini
 }
 
