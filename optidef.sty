@@ -39,13 +39,13 @@
 {
 	\ifthenelse{\isempty{#4}}
 	{
-		&\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
+%		&\underset{\displaystyle #1}{\mathrlap{\mathrm{#3}}\phantom{\mathrm{subject~to}}} \quad #2\span\span\span\span
+		&\underset{\displaystyle #1}{\mathrm{#3}} \quad &#2\span\omit\span\omit
 	}
 	{
-		#4 ~~ &\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
+		#4 ~~ &\underset{\displaystyle #1}{\mathrm{#3}} \quad &#2\span\omit\span\omit\span\omit
 	}
 }
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  -------- DEFINITION DIFFERENT TYPE OF BODY CONSTRAINTS  --------%
@@ -398,7 +398,7 @@
 	\begin{equation}
 	#4
 	\begin{alignedat}{5}
-	\bodyobj{#2}{#3}{arg min}{#5}
+	\bodyobj{#2}{#3}{arg~min}{#5}
 	\BODY
 	\end{alignedat}
 	\end{equation}
@@ -441,7 +441,7 @@
 	\begin{subequations}
 		#4
 		\begin{alignat}{5}
-		\bodyobj{#2}{#3}{arg min}{#5}
+		\bodyobj{#2}{#3}{arg~min}{#5}
 		\BODY
 		\end{alignat}
 	\end{subequations}	
@@ -467,7 +467,7 @@
 	\begin{equation}
 	#4
 	\begin{alignedat}{5}
-	\bodyobj{#2}{#3}{arg maxi}{#5}
+	\bodyobj{#2}{#3}{arg~maxi}{#5}
 	\BODY
 	\end{alignedat}
 	\end{equation}
@@ -486,7 +486,7 @@
 \NewEnviron{argmaxi*}[5][]{%
 \selectConstraint{#1}
 	\begin{alignat*}{5}
-	\bodyobj{#2}{#3}{arg maxi}{#5}
+	\bodyobj{#2}{#3}{arg~maxi}{#5}
 	\BODY
 	\end{alignat*}
 \setStandardMini
@@ -510,7 +510,7 @@
 	\begin{subequations}
 		#4
 		\begin{alignat}{5}
-		\bodyobj{#2}{#3}{arg maxi}{#5}		
+		\bodyobj{#2}{#3}{arg~maxi}{#5}		
 		\BODY
 		\end{alignat}
 	\end{subequations}
