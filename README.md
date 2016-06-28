@@ -69,7 +69,7 @@ E-mail: jesus.lago.garcia@venus.uni-freiburg.de
 
 Github: https://github.com/jeslago/optidef
 
-## Latest stable version: Optidef 1.1
+## Latest stable version: Optidef 1.2
 
 CTAN: https://www.ctan.org/pkg/optidef
 

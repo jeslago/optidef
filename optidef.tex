@@ -2,9 +2,12 @@
 \usepackage{remreset}
 \usepackage{optidef}
 \usepackage{listings}
-
+\lstset{
+	language=TeX,
+	breaklines=true,
+}
 % Title Page
-\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 1.1}}
+\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 1.2}}
 
 \author{Jesus Lago Garcia}
 
@@ -259,7 +262,7 @@ On the other hand:
 	\addConstraint{g(w)}{=0 \label{eq:C1Example3}}
 	\addConstraint{n(w)}{= 6 \label{eq:C2Example3}}
 	\addConstraint{L(w)+r(x)}{=Kw+p \label{eq:C3Example3}}
-	\addConstraint{h(x)}{=0. \label{eq:C4Example3}}
+	\addConstraint{h(x)}{=0.\label{eq:C4Example3}}
 \end{mini!}
 
 \subsubsection{Example 4 - mini + problem result}
@@ -399,7 +402,7 @@ Adding the fourth optional alignment to add constraint names:
 \end{mini*}
 
 
-\subsubsection{Example 7 - mini environment on the unconstrained case}
+\subsubsection{Example 9 - mini environment on the unconstrained case}
 
 \begin{verbatim}
 
@@ -499,52 +502,40 @@ One current limitation is that the size of the optimization variables must be sm
 	\addConstraint{r(x_0,x_N)}{= 0.  \label{dOCP:boundary}}
 \end{mini!}
 
-\noindent If you want to increase the size of the optimization variables:
-\noindent A possible way to avoid this is to stack them with the command: \begin{verbatim}
-\substack{\displaystyle x_0,u_0,x_1,\hdots,\\ \displaystyle u_{N-1},x_N}
-\end{verbatim}
-
-\begin{mini!}
-	{\substack{\displaystyle x_0,u_0,x_1,\hdots,\\ \displaystyle u_{N-1},x_N}}
-	{\sum_{k=0}^{N-1} L(x_k,u_k)\!\!+\!\!E(x_N)\label{OCPobj}}
-	{\label{eq:OCP}}{}
-	\addConstraint{x_{k+1}-f(x_k,u_k)}{=  0, \label{dOCP:modelc}\quad k=0,\dots,N-1}
-	\addConstraint{h(x_k,u_k)}{\leq 0,  \quad k=0,\dots,N-1}
-	\addConstraint{r(x_0,x_N)}{= 0.  \label{dOCP:boundary}}
-\end{mini!}
-
 \section{Code definition}
-\begin{verbatim}
-%optidef - Version 1.1
+\begin{lstlisting}
+% optidef - Version 1.2
+%
 %Copyright 2016 J. Lago Garcia
-
-%This work may be distributed and/or modified under the conditions of the LaTeX
-%Project Public License, either version 1.3 of this license or (at your option) any 
-%later version.
-%The latest version of this license is in http://www.latex-project.org/lppl.txt and 
-version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or 
-%later.
-
-%This work has the LPPL maintenance status 'maintained'. The Current Maintainer 
-% of this work is J. Lago Garcia, under the supervision of Prof. Dr. Moritz Diehl 
-%and Prof. Dr. Sebastien Gross.
-
+%
+%This work may be distributed and/or modified under the conditions of the LaTeX Project Public License, either version 1.3 of this license or (at your option) any later version.
+%The latest version of this license is in http://www.latex-project.org/lppl.txt and version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or later.
+%
+%This work has the LPPL maintenance status 'maintained'. The Current Maintainer of this work is J. Lago Garcia, under the supervision of Prof. Dr. Moritz Diehl and Prof. Dr. Sebastien Gross.
+%
 %E-mail: jesus.lago.garcia@venus.uni-freiburg.de
-
+%
 %This work consists of the file optidef.sty.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{optidef}[2016/06/26 - version=1.1,  Package for defining optimization problems]
+\ProvidesPackage{optidef}[2016/06/28 - version=1.2,  Package for defining optimization problems]
 
 \RequirePackage{environ}
 \RequirePackage{mathtools}	
 \RequirePackage{xifthen}	
 \RequirePackage{etoolbox}	
 \RequirePackage{xparse}	
+\RequirePackage{multirow}	
+
+% Toogle to indicate if during the addConstraint command the first constraint should be built together with "subject to"
 \newtoggle{bodyCon}
 \toggletrue{bodyCon}
 
-% Input minimization evironments
+% If the previous constraints has 3 elements, we avoid setting \span\span at the beginning of the next constraint. If there is no previous third element, \span\span must be included for correct alignment
+\newtoggle{previousThird}
+\togglefalse{previousThird}
+\newcommand{\spanit}{}
+
 
 % Macros for objective definition, constraint definition and extra constraint definition
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -554,10 +545,12 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 {
 \ifthenelse{\isempty{#4}}
 {
-&\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
+%&\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
+&\underset{\displaystyle #1}{\mathrlap{\mathrm{#3}}\phantom{\mathrm{subject~to}}} \quad #2\span\span\span\span
 }
 {
-#4 ~~ &\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
+%#4 ~~ &\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
+#4 ~~ &\underset{\displaystyle #1}{\mathrlap{\mathrm{#3}}\phantom{\mathrm{subject~to}}} \quad #2\span\span\span\span
 }
 }
 
@@ -568,61 +561,114 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 
 \DeclareDocumentCommand{\bodyconst}{m G{}}
 {	\ifthenelse{\equal{#2}{}}{
-\\ &\mathrm{subject~to} \quad &&#1 #2
+\\ &\mathrm{subject~to} \quad &&#1 #2 
 }{
 \\ &\mathrm{subject~to} \quad &#1 & #2
 }
 }
 
 % Standard version
-\DeclareDocumentCommand{\bodyconstRight}{m G{}}
-{	\ifthenelse{\equal{#2}{}}{
-\\ &\mathrm{subject~to} \quad &&#1 #2
+\DeclareDocumentCommand{\bodyconstRight}{m G{} G{}}
+{	\ifthenelse{\equal{#3}{}}{
+\ifthenelse{\equal{#2}{}}{
+\\ &\mathrm{subject~to} \quad &&#1 #2 	
 }{
-\\ &\mathrm{subject~to} \quad &#1 & #2
+\\ &\mathrm{subject~to} \quad &#1 & #2 
+}
+\togglefalse{previousThird}
+}{
+\ifthenelse{\equal{#2}{}}{
+\\ &\mathrm{subject~to} \quad &&#1 #2 &&#3
+}{
+\\ &\mathrm{subject~to} \quad &#1 & #2 &&#3
+}
+\toggletrue{previousThird}
 }
 }
 
 % Single alignment point
-\DeclareDocumentCommand{\bodyconstOneAlign}{m G{}}
+\DeclareDocumentCommand{\bodyconstOneAlign}{m G{} G{}}
 {
-\\ &\mathrm{subject~to} \quad &&#1 #2
+\ifthenelse{\equal{#3}{}}{
+\\ &\mathrm{subject~to} \quad &&#1 #2 	\togglefalse{previousThird}
+}{
+\\ &\mathrm{subject~to} \quad &&#1 #2 &&#3
+\toggletrue{previousThird}
+}
 }
 
 % Contraints below subject to and with a single alignment point
-\DeclareDocumentCommand{\bodyconstOneAlignBelow}{m G{}}
+\DeclareDocumentCommand{\bodyconstOneAlignBelow}{m G{} G{}}
 {
-\\ &\mathrm{subject~to} \span\span \\
-&&&#1 #2		
+\ifthenelse{\equal{#3}{}}{
+\\ &\mathrm{subject~to} \span\span\span\span \\
+&&&#1 #2 \togglefalse{previousThird}
+}{
+\\ &\mathrm{subject~to} \span\span\span\span \\
+&&&#1 #2 &&#3	
+\toggletrue{previousThird}
+}	
 }
 
 % Contraints below subject to
-\DeclareDocumentCommand{\bodyconstBelow}{m G{}}
-{	\ifthenelse{\equal{#2}{}}{
+\DeclareDocumentCommand{\bodyconstBelow}{m G{} G{}}
+{
+\ifthenelse{\equal{#3}{}}{
+\ifthenelse{\equal{#2}{}}{
 \\ &\mathrm{subject~to} \span\span\span\span \\
-&&&#1 #2		
+&&&#1 #2 
 }{
 \\ &\mathrm{subject~to} \span\span\span\span \\
-&&#1 & #2
+&&#1 & #2 
+}
+\togglefalse{previousThird}
+}{
+\ifthenelse{\equal{#2}{}}{
+\\ &\mathrm{subject~to} \span\span\span\span \\
+&&&#1 #2 &&#3
+}{
+\\ &\mathrm{subject~to} \span\span\span\span \\
+&&#1 & #2 &&#3
+}
+\toggletrue{previousThird}	
 }
 }
 
 % Contraints below subject to for the case of having multiple equations
-\DeclareDocumentCommand{\bodyconstBelowMult}{m G{}}
-{	\ifthenelse{\equal{#2}{}}{
+\DeclareDocumentCommand{\bodyconstBelowMult}{m G{} G{}}
+{
+\ifthenelse{\equal{#3}{}}{
+\ifthenelse{\equal{#2}{}}{
 \\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
-&&&#1 #2		
+&&&#1 #2	
 }{
 \\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
-&&#1 & #2
+&&#1 & #2 
+}
+\togglefalse{previousThird}
+}{
+\ifthenelse{\equal{#2}{}}{
+\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+&&&#1 #2	&&#3
+}{
+\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+&&#1 & #2 &&#3
+}
+\toggletrue{previousThird}	
 }
 }
 
 % Contraints below subject to and with a single alignment point for the case of having several equations
-\DeclareDocumentCommand{\bodyconstOneAlignBelowMult}{m G{}}
+\DeclareDocumentCommand{\bodyconstOneAlignBelowMult}{m G{} G{}}
 {
+\ifthenelse{\equal{#3}{}}{
 \\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
-&&&#1 #2		
+&&&#1 #2		\togglefalse{previousThird}
+}{
+\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+&&&#1 #2 &&	#3
+\toggletrue{previousThird}
+}
 }
 
 
@@ -631,12 +677,13 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \DeclareDocumentCommand{\addConstraint}{m G{} G{}}{
+\ifthenelse{\equal{#3}{}}{	
 \ifthenelse{\equal{#2}{}}{
 \iftoggle{bodyCon}{
 \bodyconst{#1}
 \togglefalse{bodyCon}
 }{
-,\\&\quad &&#1 #2
+,\\&\quad &&#1 #2\span\span
 \togglefalse{bodyCon}
 }
 }{
@@ -644,22 +691,52 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 \bodyconst{#1}{#2}
 \togglefalse{bodyCon}
 }{
-,\\&\quad &#1 & #2
+,\\&\quad &#1 & #2\span\span
 \togglefalse{bodyCon}
 }
+}
+\togglefalse{previousThird}
+}{
+\iftoggle{bodyCon}{
+\bodyconst{#1}{#2}{#3}
+\togglefalse{bodyCon}
+}{
+\ifthenelse{\equal{#2}{}}{
+,\\&\quad &&#1 #2 && #3
+}{
+,\\&\quad &#1 & #2 && #3
+}
+\togglefalse{bodyCon}
+}
+\toggletrue{previousThird}
 }
 }
 
 % Standard version of adding constraints
 \DeclareDocumentCommand{\standardAddConstraint}{m G{} G{}}{
+\iftoggle{previousThird}
+{\renewcommand{\spanit}{}}
+{\renewcommand{\spanit}{\span\span}}
 \iftoggle{bodyCon}{
-\bodyconstRight{#1}{#2}
+\bodyconstRight{#1}{#2}{#3}
 \togglefalse{bodyCon}
 }{
 \ifthenelse{\equal{#2}{}}{
-,\\&\quad &&#1 #2
+\ifthenelse{\equal{#3}{}}{
+,\spanit\\&\quad &&#1 #2 
+\togglefalse{previousThird}
 }{
-,\\&\quad &#1 & #2
+,\spanit\\&\quad &&#1 #2 && #3
+\toggletrue{previousThird}
+}
+}{
+\ifthenelse{\equal{#3}{}}{
+,\spanit\\&\quad &#1 & #2 
+\togglefalse{previousThird}
+}{
+,\spanit\\&\quad &#1 & #2 && #3
+\toggletrue{previousThird}
+}
 }
 \togglefalse{bodyCon}
 }
@@ -668,13 +745,24 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 % Adding constraints below subject to
 \DeclareDocumentCommand{\BelowAddConstraint}{m G{} G{}}{
 \iftoggle{bodyCon}{
-\bodyconstBelow{#1}{#2}
+\bodyconstBelow{#1}{#2}{#3}
 \togglefalse{bodyCon}
 }{
 \ifthenelse{\equal{#2}{}}{
-,\\&&&#1  #2
+\ifthenelse{\equal{#3}{}}{
+,\spanit\\&&&#1  #2 		\togglefalse{previousThird}
 }{
-,\\ &&#1  &#2}
+,\spanit\\&&&#1  #2 && #3
+\toggletrue{previousThird}		
+}
+}{
+\ifthenelse{\equal{#3}{}}{
+,\spanit\\ &&#1  &#2 \togglefalse{previousThird}
+}{
+,\spanit\\ &&#1  &#2 && #3
+\toggletrue{previousThird}
+}
+}
 \togglefalse{bodyCon}
 }
 }
@@ -682,10 +770,15 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 % Adding constraints for a single alignment point
 \DeclareDocumentCommand{\oneAlignAddConstraint}{m G{} G{}}{
 \iftoggle{bodyCon}{
-\bodyconstOneAlign{#1}{#2}
+\bodyconstOneAlign{#1}{#2}{#3}
 \togglefalse{bodyCon}
 }{
-,\\&\quad &&#1  #2
+\ifthenelse{\equal{#3}{}}{
+,\spanit\\&\quad &&#1  #2 \togglefalse{previousThird}
+}{
+,\spanit\\&\quad &&#1  #2 && #3
+\toggletrue{previousThird}
+}
 \togglefalse{bodyCon}
 }
 }
@@ -693,10 +786,55 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 % Adding constraints for a single alignment point and with the constraints below
 \DeclareDocumentCommand{\oneAlignBelowAddConstraint}{m G{} G{}}{
 \iftoggle{bodyCon}{
-\bodyconstOneAlignBelow{#1}{#2}
+\bodyconstOneAlignBelow{#1}{#2}{#3}
 \togglefalse{bodyCon}
 }{
-,\\& &&#1  #2
+\ifthenelse{\equal{#3}{}}{
+,\spanit\\& &&#1  #2\togglefalse{previousThird}
+}{
+,\spanit\\& &&#1  #2 && #3
+\toggletrue{previousThird}
+}
+\togglefalse{bodyCon}
+}
+}
+
+% Adding constraints below subject to for multiple references
+\DeclareDocumentCommand{\BelowAddConstraintMult}{m G{} G{}}{
+\iftoggle{bodyCon}{
+\bodyconstBelowMult{#1}{#2}{#3}
+\togglefalse{bodyCon}
+}{
+\ifthenelse{\equal{#3}{}}{
+\ifthenelse{\equal{#2}{}}{
+,\spanit\\&&&#1  #2
+}{
+,\spanit\\ &&#1  &#2
+}
+\togglefalse{previousThird}
+}{
+\ifthenelse{\equal{#2}{}}{
+,\spanit\\&&&#1  #2 && #3
+}{
+,\spanit\\ &&#1  &#2&& #3}
+\toggletrue{previousThird}
+}
+\togglefalse{bodyCon}
+}
+}
+
+% Adding constraints for a single alignment point and with the constraints below for multiple references
+\DeclareDocumentCommand{\oneAlignBelowAddConstraintMult}{m G{} G{}}{
+\iftoggle{bodyCon}{
+\bodyconstOneAlignBelowMult{#1}{#2}
+\togglefalse{bodyCon}
+}{
+\ifthenelse{\equal{#3}{}}{
+,\spanit\\& &&#1  #2 \togglefalse{previousThird}
+}{
+,\spanit\\& &&#1  #2 && #3
+\toggletrue{previousThird}
+}
 \togglefalse{bodyCon}
 }
 }
@@ -713,7 +851,24 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 }{
 \ifthenelse{\equal{#1}{3}}{
 \let\addConstraint\oneAlignBelowAddConstraint
-}{}
+}{
+\let\addConstraint\standardAddConstraint}
+}
+}
+}
+
+% Selecting for multiple references
+\newcommand{\selectConstraintMult}[1]{
+\ifthenelse{\equal{#1}{1}}{
+\let\addConstraint\BelowAddConstraintMult
+}{
+\ifthenelse{\equal{#1}{2}}{
+\let\addConstraint\oneAlignAddConstraint
+}{
+\ifthenelse{\equal{#1}{3}}{
+\let\addConstraint\oneAlignBelowAddConstraintMult
+}{
+\let\addConstraint\standardAddConstraint}
 }
 }
 }
@@ -735,9 +890,10 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 
 \NewEnviron{mini}[5][]{%
 \selectConstraint{#1}
+\let\addConstraint\standardAddConstraint
 \begin{equation}
 #4
-\begin{alignedat}{4}
+\begin{alignedat}{5}
 \bodyobj{#2}{#3}{minimize}{#5}
 \BODY
 \end{alignedat}
@@ -749,8 +905,8 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 \selectConstraint{#1}
 \begin{equation}
 #4
-\begin{alignedat}{4}
-\bodyobj{#2}{#3}{arg min}{#5}
+\begin{alignedat}{5}
+\bodyobj{#2}{#3}{arg~min}{#5}
 \BODY
 \end{alignedat}
 \end{equation}
@@ -759,36 +915,28 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 
 \NewEnviron{mini*}[5][]{%
 \selectConstraint{#1}
-\begin{equation*}
-#4
-\begin{alignedat}{4}
+\begin{alignat*}{5}
 \bodyobj{#2}{#3}{minimize}{#5}
 \BODY
-\end{alignedat}
-\end{equation*}
+\end{alignat*}
 \setStandardMini
 }
 
 \NewEnviron{argmini*}[5][]{%
 \selectConstraint{#1}
-\begin{equation*}
-#4
-\begin{alignedat}{4}
-\bodyobj{#2}{#3}{arg min}{#5}
+\begin{alignat*}{5}
+\bodyobj{#2}{#3}{arg~mini}{#5}
 \BODY
-\end{alignedat}
-\end{equation*}
+\end{alignat*}
 \setStandardMini	
 }
 
 
 \NewEnviron{mini!}[5][]{%
-\ifthenelse{\equal{#1}{1}}{
-\let\bodyconst\bodyconstBelowMult
-}{}
+\selectConstraintMult{#1}
 \begin{subequations}
 #4
-\begin{alignat}{4}
+\begin{alignat}{5}
 \bodyobj{#2}{#3}{minimize}{#5}
 \BODY
 \end{alignat}
@@ -797,13 +945,11 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 }
 
 \NewEnviron{argmini!}[5][]{%
-\ifthenelse{\equal{#1}{1}}{
-\let\bodyconst\bodyconstBelowMult
-}{}
+\selectConstraintMult{#1}
 \begin{subequations}
 #4
-\begin{alignat}{4}
-\bodyobj{#2}{#3}{arg min}{#5}
+\begin{alignat}{5}
+\bodyobj{#2}{#3}{arg~min}{#5}
 \BODY
 \end{alignat}
 \end{subequations}	
@@ -816,7 +962,7 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 \selectConstraint{#1}
 \begin{equation}
 #4
-\begin{alignedat}{4}
+\begin{alignedat}{5}
 \bodyobj{#2}{#3}{maximize}{#5}
 \BODY
 \end{alignedat}
@@ -828,8 +974,8 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 \selectConstraint{#1}
 \begin{equation}
 #4
-\begin{alignedat}{4}
-\bodyobj{#2}{#3}{arg maxi}{#5}
+\begin{alignedat}{5}
+\bodyobj{#2}{#3}{arg~maxi}{#5}
 \BODY
 \end{alignedat}
 \end{equation}
@@ -838,36 +984,28 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 
 \NewEnviron{maxi*}[5][]{%
 \selectConstraint{#1}
-\begin{equation*}
-#4
-\begin{alignedat}{4}
+\begin{alignat*}{5}
 \bodyobj{#2}{#3}{maximize}{#5}
 \BODY
-\end{alignedat}
-\end{equation*}
+\end{alignat*}
 \setStandardMini
 }
 
 \NewEnviron{argmaxi*}[5][]{%
 \selectConstraint{#1}
-\begin{equation*}
-#4
-\begin{alignedat}{4}
-\bodyobj{#2}{#3}{arg maxi}{#5}
+\begin{alignat*}{5}
+\bodyobj{#2}{#3}{arg~maxi}{#5}
 \BODY
-\end{alignedat}
-\end{equation*}
+\end{alignat*}
 \setStandardMini
 }
 
 
 \NewEnviron{maxi!}[5][]{%
-\ifthenelse{\equal{#1}{1}}{
-\let\bodyconst\bodyconstBelowMult
-}{}
+\selectConstraintMult{#1}
 \begin{subequations}
 #4
-\begin{alignat}{4}
+\begin{alignat}{5}
 \bodyobj{#2}{#3}{maximize}{#5}		
 \BODY
 \end{alignat}
@@ -876,18 +1014,16 @@ version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or
 }
 
 \NewEnviron{argmaxi!}[5][]{%
-\ifthenelse{\equal{#1}{1}}{
-\let\bodyconst\bodyconstBelowMult
-}{}
+\selectConstraintMult{#1}
 \begin{subequations}
 #4
-\begin{alignat}{4}
-\bodyobj{#2}{#3}{arg maxi}{#5}		
+\begin{alignat}{5}
+\bodyobj{#2}{#3}{arg~maxi}{#5}		
 \BODY
 \end{alignat}
 \end{subequations}
 \setStandardMini			
 }
-\end{verbatim}
+\end{lstlisting}
 
 \end{document}          
