@@ -39,11 +39,9 @@
 {
 	\ifthenelse{\isempty{#4}}
 	{
-		%&\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
 		&\underset{\displaystyle #1}{\mathrlap{\mathrm{#3}}\phantom{\mathrm{subject~to}}} \quad #2\span\span\span\span
 	}
 	{
-		%#4 ~~ &\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
 		#4 ~~ &\underset{\displaystyle #1}{\mathrlap{\mathrm{#3}}\phantom{\mathrm{subject~to}}} \quad #2\span\span\span\span
 	}
 }
@@ -53,34 +51,38 @@
 %  -------- DEFINITION DIFFERENT TYPE OF BODY CONSTRAINTS  --------%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% A BODY CONSTRAINT IS THE INITIAL CONSTRAINT DEFINED WITH THE 'SUBJECT TO', DEPENDING ON THE TYPE OF PROBLEM A DIFFERENT VERSION IS USED
+
+
+% Main command. Dynamically redefined at every new problem definition.
 \DeclareDocumentCommand{\bodyconst}{m G{}}
 {	\ifthenelse{\equal{#2}{}}{
-	\\ &\mathrm{subject~to} \quad &&#1 #2 
+	\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}} \quad &&#1 #2 
 	}{
-	\\ &\mathrm{subject~to} \quad &#1 & #2
+	\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}}  \quad &#1 & #2
 	}
 }
 
-% Standard version
+% Standard version.
 \DeclareDocumentCommand{\bodyconstRight}{m G{} G{}}
 {	\ifthenelse{\equal{#3}{}}{
 			\ifthenelse{\equal{#2}{}}{
-			\\ &\mathrm{subject~to} \quad &&#1 #2 	
+			\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}}  \quad &&#1 #2 	
 		}{
-		\\ &\mathrm{subject~to} \quad &#1 & #2 
+		\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}}  \quad &#1 & #2 
 		}
 		\togglefalse{previousThird}
 	}{
 		\ifthenelse{\equal{#2}{}}{
-			\\ &\mathrm{subject~to} \quad &&#1 #2 &&#3
+			\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}}  \quad &&#1 #2 &&#3
 		}{
-		\\ &\mathrm{subject~to} \quad &#1 & #2 &&#3
+		\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}}  \quad &#1 & #2 &&#3
 		}
 		\toggletrue{previousThird}
 	}
 }
 
-% Single alignment point
+% Single alignment point but next to subject to
 \DeclareDocumentCommand{\bodyconstOneAlign}{m G{} G{}}
 {
 	\ifthenelse{\equal{#3}{}}{
@@ -104,7 +106,7 @@
 	}	
 }
 
-% Contraints below subject to
+% Contraints below subject to but with double alignment point
 \DeclareDocumentCommand{\bodyconstBelow}{m G{} G{}}
 {
 	\ifthenelse{\equal{#3}{}}{
@@ -128,7 +130,7 @@
 	}
 }
 
-% Contraints below subject to for the case of having multiple equations
+% Contraints below subject to for the case of having a reference/label for each individual equation
 \DeclareDocumentCommand{\bodyconstBelowMult}{m G{} G{}}
 {
 	\ifthenelse{\equal{#3}{}}{
@@ -152,7 +154,7 @@
 	}
 }
 
-% Contraints below subject to and with a single alignment point for the case of having several equations
+% Contraints below subject to and with a single alignment point for the case of having a reference/label for each individual equation
 \DeclareDocumentCommand{\bodyconstOneAlignBelowMult}{m G{} G{}}
 {
 	\ifthenelse{\equal{#3}{}}{
@@ -170,6 +172,8 @@
 %  -------- DEFINITION DIFFERENT TYPE OF ADDING CONSTRAINTS  --- --%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+% Main command. Dynamically redefined at every problem definiton.
 \DeclareDocumentCommand{\addConstraint}{m G{} G{}}{
 \ifthenelse{\equal{#3}{}}{	
 		\ifthenelse{\equal{#2}{}}{
@@ -261,7 +265,7 @@
 	}
 }
 
-% Adding constraints for a single alignment point
+% Adding constraints with a single alignment point but next to subject to
 \DeclareDocumentCommand{\oneAlignAddConstraint}{m G{} G{}}{
 		\iftoggle{bodyCon}{
 			\bodyconstOneAlign{#1}{#2}{#3}
@@ -293,7 +297,7 @@
 	}
 }
 
-% Adding constraints below subject to for multiple references
+% Adding constraints below "subject to" for multiple references
 \DeclareDocumentCommand{\BelowAddConstraintMult}{m G{} G{}}{
 	\iftoggle{bodyCon}{
 		\bodyconstBelowMult{#1}{#2}{#3}
@@ -376,15 +380,20 @@
 }
 
 
+
 \newcommand{\breakObjectiveOneConstraint}[1]{&&&#1\\}
 
 
+% Defining variable to storage problem variable
+\newcommand{\localOptimalVariable}{}
 
 %MINIMIZATION ENVIRONMENTS
 
 \NewEnviron{mini}[5][]{%
 \selectConstraint{#1}
 \let\addConstraint\standardAddConstraint
+\renewcommand{\localOptimalVariable}{#2}
+
 	\begin{equation}
 	#4
 	\begin{alignedat}{5}
@@ -392,11 +401,13 @@
 	\BODY
 	\end{alignedat}
 	\end{equation}
+	
 \setStandardMini
 }
 
 \NewEnviron{argmini}[5][]{%
 \selectConstraint{#1}
+\renewcommand{\localOptimalVariable}{#2}
 	\begin{equation}
 	#4
 	\begin{alignedat}{5}
@@ -409,15 +420,19 @@
 
 \NewEnviron{mini*}[5][]{%
 \selectConstraint{#1}
-	\begin{alignat*}{5}
-	\bodyobj{#2}{#3}{minimize}{#5}
-	\BODY
-	\end{alignat*}
+\renewcommand{\localOptimalVariable}{#2}
+
+\begin{alignat*}{5}
+\bodyobj{#2}{#3}{minimize}{#5}
+\BODY
+\end{alignat*}
+
 \setStandardMini
 }
 
 \NewEnviron{argmini*}[5][]{%
 \selectConstraint{#1}
+\renewcommand{\localOptimalVariable}{#2}
 	\begin{alignat*}{5}
 	\bodyobj{#2}{#3}{arg~mini}{#5}
 	\BODY
@@ -428,6 +443,7 @@
 
 \NewEnviron{mini!}[5][]{%
 \selectConstraintMult{#1}
+\renewcommand{\localOptimalVariable}{#2}
 	\begin{subequations}
 		#4
 		\begin{alignat}{5}
@@ -440,10 +456,11 @@
 
 \NewEnviron{argmini!}[5][]{%
 \selectConstraintMult{#1}
+\renewcommand{\localOptimalVariable}{#2}
 	\begin{subequations}
 		#4
 		\begin{alignat}{5}
-		\bodyobj{#2}{#3}{arg~min}{#5}
+		\bodyobj{#2}{#3}{arg~mini}{#5}
 		\BODY
 		\end{alignat}
 	\end{subequations}	
@@ -454,6 +471,7 @@
 
 \NewEnviron{maxi}[5][]{%
 \selectConstraint{#1}
+\renewcommand{\localOptimalVariable}{#2}
 	\begin{equation}
 	#4
 	\begin{alignedat}{5}
@@ -466,6 +484,7 @@
 
 \NewEnviron{argmaxi}[5][]{%
 \selectConstraint{#1}
+\renewcommand{\localOptimalVariable}{#2}
 	\begin{equation}
 	#4
 	\begin{alignedat}{5}
@@ -478,6 +497,7 @@
 
 \NewEnviron{maxi*}[5][]{%
 \selectConstraint{#1}
+\renewcommand{\localOptimalVariable}{#2}
 	\begin{alignat*}{5}
 	\bodyobj{#2}{#3}{maximize}{#5}
 	\BODY
@@ -487,6 +507,7 @@
 
 \NewEnviron{argmaxi*}[5][]{%
 \selectConstraint{#1}
+\renewcommand{\localOptimalVariable}{#2}
 	\begin{alignat*}{5}
 	\bodyobj{#2}{#3}{arg~maxi}{#5}
 	\BODY
@@ -497,6 +518,7 @@
 
 \NewEnviron{maxi!}[5][]{%
 \selectConstraintMult{#1}
+\renewcommand{\localOptimalVariable}{#2}
 	\begin{subequations}
 		#4
 		\begin{alignat}{5}
@@ -509,6 +531,7 @@
 
 \NewEnviron{argmaxi!}[5][]{%
 \selectConstraintMult{#1}
+\renewcommand{\localOptimalVariable}{#2}
 	\begin{subequations}
 		#4
 		\begin{alignat}{5}
