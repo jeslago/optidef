@@ -9,10 +9,10 @@ The most important features are:
 
 - It automatically aligns the problems in the most convenient way allowing even two different output formats:
    * Beginning of the words "minimize/argmin" and "subject to"
-   * Double format for the location of the constraints: either to the right of  subject to aligned with the objective function or below subject to.
-   * The =, > and < signs of the constraints.
-   * Optionally, an alignment point for some constraints features. An example could be the constraints names, e.g. align (boundary constraint) with (dynamic constraint), or the index of the constraints, e.g. in the case of having something like h(xk,uk) < 0, k=0, ...,N, the third alignment point can align the constraint indexes k=0, ...,N across different constraint lines.
+   * Four different alignment schemes for the location of the constraints.
+   * Optionally, an alignment point for some constraints features. An example could be the constraints names, e.g. align (boundary constraint) with (dynamic constraint).
 
+- It allows a short output format where minimize is substituted by min and subject to by s.t.
 
 - It provides an easy interface to define optimization problem for three different reference situations:
    * Where no equation is referenced/numbered.
@@ -36,17 +36,16 @@ Import the package by directly adding \usepackage{optidef} to your LaTeX documen
     
 The syntax to define an optimization problem is given by:
  
-        >\begin{mini#}[Format]
-            {Optimization variable}
-            {Objective function \label{Objective function referece}}
-            {\label{Global referece of Optimization Problem}}  
-            {Result of the optimization problem or any expression on the left
-            of the minimize word}
-            \addConstraint{LHS Constraint 1}{RHS Constraint 1 \label{Reference Constraint 1}}{Extra Info Constraint 1}
-            \addConstraint{LHS Constraint 2}{RHS Constraint 2 \label{Reference Constraint 2}}{Extra Info Constraint 2}
+        >\begin{mini#}|sizeFormat|[constraintFormat]
+            {optimizationVariable}
+            {objectiveFunction \label{objectiveReference}}
+            {\label{problemReference}}  
+            {problemResult}
+            \addConstraint{LHS.1}{RHS.1 \label{Const.1}}{extraInfo.1}
+            \addConstraint{LHS.2}{RHS.2 \label{Const.2}}{extraInfo.2}
             .
             .
-            \addConstraint{LHS N}{RHSConstraint N \label{Reference Constraint N}}{Extra Info Constraint N}
+            \addConstraint{LHS.N}{RHS.N \label{Const.N}}{extraInfo.N}
         \end{mini#}
 
 
@@ -56,10 +55,9 @@ where mini# takes any of the following values:
  - mini! for referencing each equation 
  - mini for referencing with a single label the whole problem. 
     
-Notice that only the first two parameters will be really necessary in every definition, nevertheless and for the sake of having homogeneous definitions, we opted for requiring the 4 parameters in every definition and expecting empty parameters definitions, i.e. \{\}, when they are not needed.
-    
-After the definition of this parameters, the environment accepts the definition of an infinite number of constraints.
+The last two defined problem parameters, \verb|\label{optimizationProblem}| and \verb|optimizationResult|, are mandatory to allow line breaking between the 6 parameters.
 
+After the definition of this parameters, the environment accepts the definition of an infinite number of constraints.
 
 Finally note that \begin{mini#} can be substituted by \begin{maxi#}, \begin{argmini#} or \begin{argmaxi#}. 
 
@@ -69,7 +67,7 @@ E-mail: jesus.lago.garcia@venus.uni-freiburg.de
 
 Github: https://github.com/jeslago/optidef
 
-## Latest stable version: Optidef 1.2
+## Latest stable version: Optidef 2.0
 
 CTAN: https://www.ctan.org/pkg/optidef
 

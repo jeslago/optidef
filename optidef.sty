@@ -1,4 +1,4 @@
-% optidef - Version 1.2
+% optidef - Version 2.0
 %
 %Copyright 2016 J. Lago Garcia
 %
@@ -12,14 +12,34 @@
 %This work consists of the file optidef.sty.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{optidef}[2016/06/28 - version=1.2,  Package for defining optimization problems]
+\ProvidesPackage{optidef}[2016/08/07 - version=2.0,  Package for defining optimization problems]
 
 \RequirePackage{environ}
 \RequirePackage{mathtools}	
 \RequirePackage{xifthen}	
 \RequirePackage{etoolbox}	
 \RequirePackage{xparse}	
-\RequirePackage{multirow}	
+\RequirePackage{calc}	
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% DEFINING PACKAGE OPTIONS
+%%%%%%%%%%%%%%%%%%%%%%%
+% Default
+\newcommand{\defaultProblemFormat}{l}
+
+\DeclareOption{short}{
+	\renewcommand{\defaultProblemFormat}{s}
+}
+
+\DeclareOption{long}{
+\renewcommand{\defaultProblemFormat}{l}
+}
+
+\ProcessOptions\relax
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% VARIABLES DEFINITION
+%%%%%%%%%%%%%%%%%%%%%%%
 
 % Toogle to indicate if during the addConstraint command the first constraint should be built together with "subject to"
 \newtoggle{bodyCon}
@@ -30,11 +50,23 @@
 \togglefalse{previousThird}
 \newcommand{\spanit}{}
 
+% Variable used to define the subject to word for short and long versions
+\newcommand{\bodySubjectTo}{Unset Subject to}
 
-% Macros for objective definition, constraint definition and extra constraint definition
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% % -------- DEFINITION COMMAND OBJECTIVE  -----------
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Variable used for defining if the long problem format or the short problem format is used
+\newcommand{\localProblemFormat}{l}
+
+% Variable to storage which type of of local problem is being solved
+\newcommand{\localProblemType}{minimize}
+
+% Defining variable to storage problem variable
+\newcommand{\localOptimalVariable}{}
+
+\newlength\stextwidth
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% OBJECTIVE COMMAND DEFINITION
+%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\bodyobj}[4]
 {
 	\ifthenelse{\isempty{#4}}
@@ -42,14 +74,38 @@
 		&\underset{\displaystyle #1}{\mathrlap{\mathrm{#3}}\phantom{\mathrm{subject~to}}} \quad #2\span\span\span\span
 	}
 	{
-		#4 ~~ &\underset{\displaystyle #1}{\mathrlap{\mathrm{#3}}\phantom{\mathrm{subject~to}}} \quad #2\span\span\span\span
+		#4~ &\underset{\displaystyle #1}{\mathrlap{\mathrm{#3}}\phantom{\mathrm{subject~to}}} \quad #2\span\span\span\span
 	}
 }
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  -------- DEFINITION DIFFERENT TYPE OF BODY CONSTRAINTS  --------%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% LONG VERSION "minimize" instead of   "min" 
+\newcommand{\bodyobjLong}[4]
+{
+	\ifthenelse{\isempty{#4}}
+	{
+		&\mathmakebox[\widthof{$\underset{\displaystyle #1}{\mathrm{subject~to}}$}]{\underset{\displaystyle #1}{\mathrm{#3}}} \quad #2\span\span\span\span
+	}
+	{
+		#4~ &\mathmakebox[\widthof{$\underset{\displaystyle #1}{\mathrm{subject~to}}$}]{\underset{\displaystyle #1}{\mathrm{#3}}} \quad #2\span\span\span\span		
+	}
+}
+
+%% SHORT VERSION "min" instead of "minimize"
+\newcommand{\bodyobjShort}[4]
+{
+	\ifthenelse{\isempty{#4}}
+	{
+		&\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
+	}
+	{
+		#4 ~ &\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
+	}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEFINITION DIFFERENT TYPE OF BODY CONSTRAINTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% A BODY CONSTRAINT IS THE INITIAL CONSTRAINT DEFINED WITH THE 'SUBJECT TO', DEPENDING ON THE TYPE OF PROBLEM A DIFFERENT VERSION IS USED
 
@@ -63,32 +119,49 @@
 	}
 }
 
+\newcommand{\bodySubjectToDefinition}{
+%## If the short version of "subject to", i.e. "s.t.", should be used the command \bodySubjectTo should be modified
+\ifthenelse{\equal{\localProblemFormat}{s}}
+{%%
+\global\def\bodySubjectTo{\mathmakebox[\widthof{$\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{\localProblemType}}$}][c]{\mathmakebox[\widthof{$\mathrm{\localProblemType}$}][l]{\mathrm{\kern 0.1em s.t.}}}}
+}{%%
+\global\def\bodySubjectTo{\mathmakebox[\widthof{$\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{\,subject~to}}$}][c]{\mathmakebox[\widthof{$\mathrm{\localProblemType}$}][l]{\mathrm{subject~to}}}}
+}%%
+%
+}
+
 % Standard version.
 \DeclareDocumentCommand{\bodyconstRight}{m G{} G{}}
-{	\ifthenelse{\equal{#3}{}}{
-			\ifthenelse{\equal{#2}{}}{
-			\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}}  \quad &&#1 #2 	
-		}{
-		\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}}  \quad &#1 & #2 
-		}
-		\togglefalse{previousThird}
-	}{
-		\ifthenelse{\equal{#2}{}}{
-			\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}}  \quad &&#1 #2 &&#3
-		}{
-		\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}}  \quad &#1 & #2 &&#3
-		}
-		\toggletrue{previousThird}
-	}
-}
+{%%%
+\bodySubjectToDefinition
+%##  Set the first constraint according to the format used for "subject to"
+\ifthenelse{\equal{#3}{}}{%%
+		\ifthenelse{\equal{#2}{}}{%
+		\\ & \bodySubjectTo \quad &&#1 #2 	
+	}{%
+	\\ &\bodySubjectTo \quad &#1 & #2
+	}%
+	\togglefalse{previousThird}
+}{%%
+	\ifthenelse{\equal{#2}{}}{%
+		\\ &\bodySubjectTo \quad &&#1 #2 &&#3
+	}{%
+	\\ &\bodySubjectTo \quad &#1 & #2 &&#3
+	}%
+	\toggletrue{previousThird}
+}%%
+}%%%
+
 
 % Single alignment point but next to subject to
 \DeclareDocumentCommand{\bodyconstOneAlign}{m G{} G{}}
 {
+\bodySubjectToDefinition
+%##  Set the first constraint according to the format used for "subject to"	
 	\ifthenelse{\equal{#3}{}}{
-		\\ &\mathrm{subject~to} \quad &&#1 #2 	\togglefalse{previousThird}
+		\\ &\bodySubjectTo\quad &&#1 #2 	\togglefalse{previousThird}
 	}{
-		\\ &\mathrm{subject~to} \quad &&#1 #2 &&#3
+		\\ &\bodySubjectTo\quad &&#1 #2 &&#3
 		\toggletrue{previousThird}
 	}
 }
@@ -96,11 +169,13 @@
 % Contraints below subject to and with a single alignment point
 \DeclareDocumentCommand{\bodyconstOneAlignBelow}{m G{} G{}}
 {
+\bodySubjectToDefinition
+%##  Set the first constraint according to the format used for "subject to"	
 	\ifthenelse{\equal{#3}{}}{
-		\\ &\mathrm{subject~to} \span\span\span\span \\
+		\\ &\bodySubjectTo \span\span\span\span \\
 		&&&#1 #2 \togglefalse{previousThird}
 	}{
-		\\ &\mathrm{subject~to} \span\span\span\span \\
+		\\ &\bodySubjectTo \span\span\span\span \\
 		&&&#1 #2 &&#3	
 		\toggletrue{previousThird}
 	}	
@@ -109,21 +184,23 @@
 % Contraints below subject to but with double alignment point
 \DeclareDocumentCommand{\bodyconstBelow}{m G{} G{}}
 {
+\bodySubjectToDefinition
+%##  Set the first constraint according to the format used for "subject to"	
 	\ifthenelse{\equal{#3}{}}{
 		\ifthenelse{\equal{#2}{}}{
-			\\ &\mathrm{subject~to} \span\span\span\span \\
+			\\ &\bodySubjectTo\span\span\span\span \\
 			&&&#1 #2 
 		}{
-		\\ &\mathrm{subject~to} \span\span\span\span \\
+		\\ &\bodySubjectTo \span\span\span\span \\
 		 &&#1 & #2 
 		}
 		\togglefalse{previousThird}
 	}{
 		\ifthenelse{\equal{#2}{}}{
-			\\ &\mathrm{subject~to} \span\span\span\span \\
+			\\ &\bodySubjectTo \span\span\span\span \\
 			&&&#1 #2 &&#3
 		}{
-		\\ &\mathrm{subject~to} \span\span\span\span \\
+		\\ &\bodySubjectTo\span\span\span\span \\
 		&&#1 & #2 &&#3
 		}
 		\toggletrue{previousThird}	
@@ -133,21 +210,23 @@
 % Contraints below subject to for the case of having a reference/label for each individual equation
 \DeclareDocumentCommand{\bodyconstBelowMult}{m G{} G{}}
 {
+\bodySubjectToDefinition
+%##  Set the first constraint according to the format used for "subject to"	
 	\ifthenelse{\equal{#3}{}}{
 		\ifthenelse{\equal{#2}{}}{
-			\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+			\\ &\bodySubjectTo\span\span\span\span \nonumber \\
 			&&&#1 #2	
 		}{
-		\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+		\\ &\bodySubjectTo \span\span\span\span \nonumber \\
 		&&#1 & #2 
 		}
 		\togglefalse{previousThird}
 	}{
 		\ifthenelse{\equal{#2}{}}{
-			\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+			\\ &\bodySubjectTo\span\span\span\span \nonumber \\
 			&&&#1 #2	&&#3
 		}{
-		\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+		\\ &\bodySubjectTo \span\span\span\span \nonumber \\
 		&&#1 & #2 &&#3
 		}
 		\toggletrue{previousThird}	
@@ -157,25 +236,29 @@
 % Contraints below subject to and with a single alignment point for the case of having a reference/label for each individual equation
 \DeclareDocumentCommand{\bodyconstOneAlignBelowMult}{m G{} G{}}
 {
+\bodySubjectToDefinition
+%##  Set the first constraint according to the format used for "subject to"	
 	\ifthenelse{\equal{#3}{}}{
-		\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+		\\ &\bodySubjectTo\span\span\span\span \nonumber \\
 		&&&#1 #2		\togglefalse{previousThird}
 	}{
-		\\ &\mathrm{subject~to} \span\span\span\span \nonumber \\
+		\\ &\bodySubjectTo\span\span\span\span \nonumber \\
 		&&&#1 #2 &&	#3
 		\toggletrue{previousThird}
 	}
 }
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  -------- DEFINITION DIFFERENT TYPE OF ADDING CONSTRAINTS  --- --%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEFINITION DIFFERENT TYPE OF ADDING CONSTRAINTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Main command. Dynamically redefined at every problem definiton.
 \DeclareDocumentCommand{\addConstraint}{m G{} G{}}{
+% "If clause" selecting whether a third parameter (#3) defining extra constraint information is used
 \ifthenelse{\equal{#3}{}}{	
+		% Second "If clause" selecting whether two or 1 elements for the constraints are used
 		\ifthenelse{\equal{#2}{}}{
 			\iftoggle{bodyCon}{
 				\bodyconst{#1}
@@ -337,9 +420,9 @@
 }
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  ------------- SELECTING TYPE OF FORMAT  -----------%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%
+% SELECTING TYPE OF FORMAT
+%%%%%%%%%%%%%%%%%%%%
 \newcommand{\selectConstraint}[1]{
 	\ifthenelse{\equal{#1}{1}}{
 		\let\addConstraint\BelowAddConstraint
@@ -371,173 +454,180 @@
 }
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  ------------- SETTING DEFAULT FORMAT  -------------%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%
+% SETTING DEFAULT FORMAT
+%%%%%%%%%%%%%%%%%%%
 \newcommand{\setStandardMini}{
 	\toggletrue{bodyCon}
 	\let\addConstraint\standardAddConstraint	
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% COMMANDS TO DEFINE ALL REQUIRED PROPERTIES TO CHOOSE SHORT/LONG FORMAT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\setFormatShort}[1]{\global\def\localProblemFormat{s} \let\bodyobj\bodyobjShort \renewcommand{\localProblemType}{#1}}
 
+\newcommand{\setFormatLong}[1]{\global\def\localProblemFormat{l} \let\bodyobj\bodyobjLong \renewcommand{\localProblemType}{#1}}
 
 \newcommand{\breakObjectiveOneConstraint}[1]{&&&#1\\}
 
-
-% Defining variable to storage problem variable
-\newcommand{\localOptimalVariable}{}
-
+%%%%%%%%%%%%%%%%%%%%%
 %MINIMIZATION ENVIRONMENTS
+%%%%%%%%%%%%%%%%%%%%
 
-\NewEnviron{mini}[5][]{%
+
+% BASE ENVIRONMENTS
+% Base environment for the three possible types of referencing: 1 label, no label or multilabel
+% Base environment defined using NewEnviron package because of \BODY command
+\NewEnviron{BaseMini}[6]{%
 \selectConstraint{#1}
-\let\addConstraint\standardAddConstraint
 \renewcommand{\localOptimalVariable}{#2}
-
-	\begin{equation}
-	#4
-	\begin{alignedat}{5}
-	\bodyobj{#2}{#3}{minimize}{#5}
-	\BODY
-	\end{alignedat}
-	\end{equation}
-	
+\begin{equation}
+#4
+\begin{alignedat}{5}
+\bodyobj{#2}{#3}{#6}{#5}
+\BODY
+\end{alignedat}
+\end{equation}	
 \setStandardMini
 }
 
-\NewEnviron{argmini}[5][]{%
+\NewEnviron{BaseMiniStar}[5]{%
 \selectConstraint{#1}
 \renewcommand{\localOptimalVariable}{#2}
-	\begin{equation}
-	#4
-	\begin{alignedat}{5}
-	\bodyobj{#2}{#3}{arg~min}{#5}
-	\BODY
-	\end{alignedat}
-	\end{equation}
-\setStandardMini
-}
-
-\NewEnviron{mini*}[5][]{%
-\selectConstraint{#1}
-\renewcommand{\localOptimalVariable}{#2}
-
 \begin{alignat*}{5}
-\bodyobj{#2}{#3}{minimize}{#5}
+\bodyobj{#2}{#3}{#5}{#4}
 \BODY
 \end{alignat*}
-
 \setStandardMini
 }
 
-\NewEnviron{argmini*}[5][]{%
-\selectConstraint{#1}
-\renewcommand{\localOptimalVariable}{#2}
-	\begin{alignat*}{5}
-	\bodyobj{#2}{#3}{arg~mini}{#5}
-	\BODY
-	\end{alignat*}
-\setStandardMini	
-}
 
-
-\NewEnviron{mini!}[5][]{%
-\selectConstraintMult{#1}
-\renewcommand{\localOptimalVariable}{#2}
+\NewEnviron{BaseMiniExclam}[6]{%
+	\selectConstraintMult{#1}
+	\renewcommand{\localOptimalVariable}{#2}
 	\begin{subequations}
 		#4
 		\begin{alignat}{5}
-		\bodyobj{#2}{#3}{minimize}{#5}
+		\bodyobj{#2}{#3}{#6}{#5}
 		\BODY
 		\end{alignat}
 	\end{subequations}
-\setStandardMini
+	\setStandardMini
 }
 
-\NewEnviron{argmini!}[5][]{%
-\selectConstraintMult{#1}
-\renewcommand{\localOptimalVariable}{#2}
-	\begin{subequations}
-		#4
-		\begin{alignat}{5}
-		\bodyobj{#2}{#3}{arg~mini}{#5}
-		\BODY
-		\end{alignat}
-	\end{subequations}	
-\setStandardMini		
-}
+
+% INDIVIDUAL AND SPECIFIC ENVIRONMENTS (mini, maxi, argmini*...)
+% Specific environments defined with xparse package due to arguments options
+
+%MINIMIZATION ENVIRONMENTS
+% Single reference probems
+\DeclareDocumentEnvironment{mini}{D||{\defaultProblemFormat} O{0} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+% Short version problem
+{\setFormatShort{min} \BaseMini{#2}{#3}{#4}{#5}{#6}{min}}
+% Long version problem	
+{\setFormatLong{minimize} \BaseMini{#2}{#3}{#4}{#5}{#6}{minimize}}
+}{\endBaseMini}
+
+\DeclareDocumentEnvironment{argmini}{D||{\defaultProblemFormat} O{0} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+% Short version problem
+{\setFormatShort{arg~min} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~min}}
+% Long version problem	
+{\setFormatLong{arg~min} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~min}}
+}{\endBaseMini}
+
+
+% No reference
+\DeclareDocumentEnvironment{mini*}{D||{\defaultProblemFormat} O{0} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{min} \BaseMiniStar{#2}{#3}{#4}{#6}{min}}
+	% Long version problem	
+	{\setFormatLong{minimize} \BaseMiniStar{#2}{#3}{#4}{#6}{minimize}}
+}{\textbf{\endBaseMiniStar}}
+		
+\DeclareDocumentEnvironment{argmini*}{D||{l} O{0} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+% Short version problem
+{\setFormatShort{arg~min}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~min}}
+% Long version problem	
+{\setFormatLong{arg~min} \BaseMiniStar{#2}{#3}{#4}{#6}{arg~min}}
+}{\textbf{\endBaseMiniStar}}
+
+
+% Multiple reference
+\DeclareDocumentEnvironment{mini!}{D||{\defaultProblemFormat} O{0} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{min} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{min}}
+	% Long version problem	
+	{\setFormatLong{minimize} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{minimize}}
+}{\endBaseMiniExclam}
+
+\DeclareDocumentEnvironment{argmini!}{D||{\defaultProblemFormat} O{0} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{arg~min}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
+	% Long version problem	
+	{\setFormatLong{arg~min} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
+}{\endBaseMiniExclam}
+
+
+
 
 %MAXIMIZATION ENVIRONMENTS
 
-\NewEnviron{maxi}[5][]{%
-\selectConstraint{#1}
-\renewcommand{\localOptimalVariable}{#2}
-	\begin{equation}
-	#4
-	\begin{alignedat}{5}
-	\bodyobj{#2}{#3}{maximize}{#5}
-	\BODY
-	\end{alignedat}
-	\end{equation}
-\setStandardMini
-}
+% Single reference probems
+\DeclareDocumentEnvironment{maxi}{D||{\defaultProblemFormat} O{0} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{max} \BaseMini{#2}{#3}{#4}{#5}{#6}{max}}
+	% Long version problem	
+	{\setFormatLong{maximize} \BaseMini{#2}{#3}{#4}{#5}{#6}{maximize}}
+}{\endBaseMini}
 
-\NewEnviron{argmaxi}[5][]{%
-\selectConstraint{#1}
-\renewcommand{\localOptimalVariable}{#2}
-	\begin{equation}
-	#4
-	\begin{alignedat}{5}
-	\bodyobj{#2}{#3}{arg~maxi}{#5}
-	\BODY
-	\end{alignedat}
-	\end{equation}
-\setStandardMini
-}
-
-\NewEnviron{maxi*}[5][]{%
-\selectConstraint{#1}
-\renewcommand{\localOptimalVariable}{#2}
-	\begin{alignat*}{5}
-	\bodyobj{#2}{#3}{maximize}{#5}
-	\BODY
-	\end{alignat*}
-\setStandardMini
-}
-
-\NewEnviron{argmaxi*}[5][]{%
-\selectConstraint{#1}
-\renewcommand{\localOptimalVariable}{#2}
-	\begin{alignat*}{5}
-	\bodyobj{#2}{#3}{arg~maxi}{#5}
-	\BODY
-	\end{alignat*}
-\setStandardMini
-}
+\DeclareDocumentEnvironment{argmaxi}{D||{\defaultProblemFormat} O{0} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{arg~max} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~max}}
+	% Long version problem	
+	{\setFormatLong{arg~max} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~max}}
+}{\endBaseMini}
 
 
-\NewEnviron{maxi!}[5][]{%
-\selectConstraintMult{#1}
-\renewcommand{\localOptimalVariable}{#2}
-	\begin{subequations}
-		#4
-		\begin{alignat}{5}
-		\bodyobj{#2}{#3}{maximize}{#5}		
-		\BODY
-		\end{alignat}
-	\end{subequations}	
-\setStandardMini		
-}
+% No reference
+\DeclareDocumentEnvironment{maxi*}{D||{\defaultProblemFormat} O{0} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{max} \BaseMiniStar{#2}{#3}{#4}{#6}{max}}
+	% Long version problem	
+	{\setFormatLong{maximize} \BaseMiniStar{#2}{#3}{#4}{#6}{maximize}}
+}{\textbf{\endBaseMiniStar}}
 
-\NewEnviron{argmaxi!}[5][]{%
-\selectConstraintMult{#1}
-\renewcommand{\localOptimalVariable}{#2}
-	\begin{subequations}
-		#4
-		\begin{alignat}{5}
-		\bodyobj{#2}{#3}{arg~maxi}{#5}		
-		\BODY
-		\end{alignat}
-	\end{subequations}
-\setStandardMini			
-}
+\DeclareDocumentEnvironment{argmaxi*}{D||{l} O{0} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{arg~max}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~max}}
+	% Long version problem	
+	{\setFormatLong{arg~max} \BaseMiniStar{#2}{#3}{#4}{#6}{arg~max}}
+}{\textbf{\endBaseMiniStar}}
+
+
+% Multiple reference
+\DeclareDocumentEnvironment{maxi!}{D||{\defaultProblemFormat} O{0} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{max} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{max}}
+	% Long version problem	
+	{\setFormatLong{maximize} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{maximize}}
+}{\endBaseMiniExclam}
+
+\DeclareDocumentEnvironment{argmaxi!}{D||{\defaultProblemFormat} O{0} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{arg~max}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
+	% Long version problem	
+	{\setFormatLong{arg~max} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
+}{\endBaseMiniExclam}
