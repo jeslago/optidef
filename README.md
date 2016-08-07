@@ -7,21 +7,21 @@ Optidef is a small library that provides a standard set of environments for writ
 
 The most important features are:
 
-- It automatically aligns the problems in the most convenient way allowing even two different output formats:
-   * Beginning of the words "minimize/argmin" and "subject to"
+- Flexible alignment points between the different problem components:
+   * Beginning of the words "minimize/argmin/maximize/argmaxi" and "subject to"
    * Four different alignment schemes for the location of the constraints.
    * Optionally, an alignment point for some constraints features. An example could be the constraints names, e.g. align (boundary constraint) with (dynamic constraint).
 
-- It allows a short output format where minimize is substituted by min and subject to by s.t.
+- Implemenation of short format where "minimize" is substituted by "min" and "subject to" by "s.t."
 
-- It provides an easy interface to define optimization problem for three different reference situations:
-   * Where no equation is referenced/numbered.
-   * Where the problem is referenced with a single number.
-   * Where each equation has an individual reference.
+- It references optimization problem using three different policies: 
+   * No equation is referenced
+   * The problem is referenced with a single label
+   * Each equation has an individual reference.
 
-- It also allows a definition of any optimization problem without a limitless number of constraints.
+- Limitless number of constraints.
 
-- It defines four types of optimization problems:
+- Four types of optimization problems:
    * minimize
    * maximize
    * arg mini
