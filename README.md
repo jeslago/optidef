@@ -7,7 +7,7 @@ Optidef is a small library that provides a standard set of environments for writ
 
 The most important features are:
 
-- Flexible and easy alignment and location of constraints, objective function and other problem components.
+- Different alignment alternatives between the constraints, objective function and the other problem components.
 
 - Implemenation of a short format where "minimize" is substituted by "min" and "subject to" by "s.t."
 
