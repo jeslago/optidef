@@ -7,12 +7,9 @@ Optidef is a small library that provides a standard set of environments for writ
 
 The most important features are:
 
-- Flexible alignment points between the different problem components:
-   * Beginning of the words "minimize/argmin/maximize/argmaxi" and "subject to"
-   * Four different alignment schemes for the location of the constraints.
-   * Optionally, an alignment point for some constraints features. An example could be the constraints names, e.g. align (boundary constraint) with (dynamic constraint).
+- Flexible and easy alignment and location of constraints, objective function and other problem components.
 
-- Implemenation of short format where "minimize" is substituted by "min" and "subject to" by "s.t."
+- Implemenation of a short format where "minimize" is substituted by "min" and "subject to" by "s.t."
 
 - It references optimization problem using three different policies: 
    * No equation is referenced
@@ -55,7 +52,7 @@ where mini# takes any of the following values:
  - mini! for referencing each equation 
  - mini for referencing with a single label the whole problem. 
     
-The last two defined problem parameters, \verb|\label{optimizationProblem}| and \verb|optimizationResult|, are mandatory to allow line breaking between the 6 parameters.
+The last two defined problem parameters, "\label{optimizationProblem}"" and "optimizationResult", are mandatory to allow line breaking between the 6 parameters.
 
 After the definition of this parameters, the environment accepts the definition of an infinite number of constraints.
 
