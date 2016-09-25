@@ -1,4 +1,4 @@
-% optidef - Version 2.0
+% optidef - Version 2.1
 %
 %Copyright 2016 J. Lago Garcia
 %
@@ -12,11 +12,11 @@
 %This work consists of the file optidef.sty.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{optidef}[2016/08/07 - version=2.0,  Package for defining optimization problems]
+\ProvidesPackage{optidef}[2016/09/25 - version=2.1,  Package for defining optimization problems]
 
 \RequirePackage{environ}
 \RequirePackage{mathtools}	
-\RequirePackage{xifthen}	
+\RequirePackage{xifthen}
 \RequirePackage{etoolbox}	
 \RequirePackage{xparse}	
 \RequirePackage{calc}	
@@ -25,6 +25,7 @@
 % DEFINING PACKAGE OPTIONS
 %%%%%%%%%%%%%%%%%%%%%%%
 % Default
+\newcommand{\defaultOCPConstraint}{,}
 \newcommand{\defaultProblemFormat}{l}
 
 \DeclareOption{short}{
@@ -33,6 +34,10 @@
 
 \DeclareOption{long}{
 \renewcommand{\defaultProblemFormat}{l}
+}
+
+\DeclareOption{nocomma}{
+	\renewcommand{\defaultOCPConstraint}{}
 }
 
 \ProcessOptions\relax
@@ -264,7 +269,7 @@
 				\bodyconst{#1}
 				\togglefalse{bodyCon}
 			}{
-			,\\&\quad &&#1 #2\span\span
+			\defaultOCPConstraint\\&\quad &&#1 #2\span\span
 			\togglefalse{bodyCon}
 				}
 		}{
@@ -272,7 +277,7 @@
 				\bodyconst{#1}{#2}
 				\togglefalse{bodyCon}
 			}{
-			,\\&\quad &#1 & #2\span\span
+			\defaultOCPConstraint\\&\quad &#1 & #2\span\span
 			\togglefalse{bodyCon}
 			}
 		}
@@ -283,9 +288,9 @@
 				\togglefalse{bodyCon}
 			}{
 				\ifthenelse{\equal{#2}{}}{
-					,\\&\quad &&#1 #2 && #3
+					\defaultOCPConstraint\\&\quad &&#1 #2 && #3
 				}{
-					,\\&\quad &#1 & #2 && #3
+					\defaultOCPConstraint\\&\quad &#1 & #2 && #3
 				}
 				\togglefalse{bodyCon}
 			}
@@ -304,18 +309,18 @@
 }{
 	\ifthenelse{\equal{#2}{}}{
 		\ifthenelse{\equal{#3}{}}{
-			,\spanit\\&\quad &&#1 #2 
+			\defaultOCPConstraint\spanit\\&\quad &&#1 #2 
 			\togglefalse{previousThird}
 		}{
-			,\spanit\\&\quad &&#1 #2 && #3
+			\defaultOCPConstraint\spanit\\&\quad &&#1 #2 && #3
 			\toggletrue{previousThird}
 		}
 	}{
 		\ifthenelse{\equal{#3}{}}{
-			,\spanit\\&\quad &#1 & #2 
+			\defaultOCPConstraint\spanit\\&\quad &#1 & #2 
 			\togglefalse{previousThird}
 		}{
-			,\spanit\\&\quad &#1 & #2 && #3
+			\defaultOCPConstraint\spanit\\&\quad &#1 & #2 && #3
 			\toggletrue{previousThird}
 		}
 }
@@ -331,16 +336,16 @@
 	}{
 		\ifthenelse{\equal{#2}{}}{
 			\ifthenelse{\equal{#3}{}}{
-				,\spanit\\&&&#1  #2 		\togglefalse{previousThird}
+				\defaultOCPConstraint\spanit\\&&&#1  #2 		\togglefalse{previousThird}
 			}{
-				,\spanit\\&&&#1  #2 && #3
+				\defaultOCPConstraint\spanit\\&&&#1  #2 && #3
 				\toggletrue{previousThird}		
 			}
 		}{
 			\ifthenelse{\equal{#3}{}}{
-				,\spanit\\ &&#1  &#2 \togglefalse{previousThird}
+				\defaultOCPConstraint\spanit\\ &&#1  &#2 \togglefalse{previousThird}
 			}{
-				,\spanit\\ &&#1  &#2 && #3
+				\defaultOCPConstraint\spanit\\ &&#1  &#2 && #3
 				\toggletrue{previousThird}
 			}
 		}
@@ -355,9 +360,9 @@
 			\togglefalse{bodyCon}
 		}{
 			\ifthenelse{\equal{#3}{}}{
-				,\spanit\\&\quad &&#1  #2 \togglefalse{previousThird}
+				\defaultOCPConstraint\spanit\\&\quad &&#1  #2 \togglefalse{previousThird}
 			}{
-				,\spanit\\&\quad &&#1  #2 && #3
+				\defaultOCPConstraint\spanit\\&\quad &&#1  #2 && #3
 				\toggletrue{previousThird}
 			}
 		\togglefalse{bodyCon}
@@ -371,9 +376,9 @@
 		\togglefalse{bodyCon}
 	}{
 		\ifthenelse{\equal{#3}{}}{
-			,\spanit\\& &&#1  #2\togglefalse{previousThird}
+			\defaultOCPConstraint\spanit\\& &&#1  #2\togglefalse{previousThird}
 		}{
-			,\spanit\\& &&#1  #2 && #3
+			\defaultOCPConstraint\spanit\\& &&#1  #2 && #3
 			\toggletrue{previousThird}
 		}
 		\togglefalse{bodyCon}
@@ -388,16 +393,16 @@
 	}{
 		\ifthenelse{\equal{#3}{}}{
 			\ifthenelse{\equal{#2}{}}{
-				,\spanit\\&&&#1  #2
+				\defaultOCPConstraint\spanit\\&&&#1  #2
 			}{
-			,\spanit\\ &&#1  &#2
+			\defaultOCPConstraint\spanit\\ &&#1  &#2
 			}
 			\togglefalse{previousThird}
 		}{
 			\ifthenelse{\equal{#2}{}}{
-				,\spanit\\&&&#1  #2 && #3
+				\defaultOCPConstraint\spanit\\&&&#1  #2 && #3
 			}{
-			,\spanit\\ &&#1  &#2&& #3}
+			\defaultOCPConstraint\spanit\\ &&#1  &#2&& #3}
 		\toggletrue{previousThird}
 		}
 		\togglefalse{bodyCon}
@@ -411,9 +416,9 @@
 		\togglefalse{bodyCon}
 	}{
 		\ifthenelse{\equal{#3}{}}{
-			,\spanit\\& &&#1  #2 \togglefalse{previousThird}
+			\defaultOCPConstraint\spanit\\& &&#1  #2 \togglefalse{previousThird}
 		}{
-			,\spanit\\& &&#1  #2 && #3
+			\defaultOCPConstraint\spanit\\& &&#1  #2 && #3
 			\toggletrue{previousThird}
 		}
 	\togglefalse{bodyCon}

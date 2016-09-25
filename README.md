@@ -60,11 +60,11 @@ Finally note that \begin{mini#} can be substituted by \begin{maxi#}, \begin{argm
 
 ## Contact for issue reporting or suggestions
 
-E-mail: jesus.lago.garcia@venus.uni-freiburg.de
+E-mail: j.lagogarcia@tudelft.nl
 
 Github: https://github.com/jeslago/optidef
 
-## Latest stable version: Optidef 2.0
+## Latest stable version: Optidef 2.1
 
 CTAN: https://www.ctan.org/pkg/optidef
 

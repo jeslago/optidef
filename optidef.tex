@@ -1,16 +1,13 @@
 \documentclass[a4paper]{article}
 \usepackage{remreset}
-\usepackage{optidef}
+\usepackage[short]{optidef}
 \usepackage{listings}
 \usepackage{enumitem}
 \usepackage{hyperref}
 
-\lstset{
-	language=TeX,
-	breaklines=true,
-}
+\lstset{basicstyle=\ttfamily,breaklines=true}
 % Title Page
-\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 2.0}}
+\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 2.1}}
 
 \author{Jesus Lago Garcia}
 
@@ -39,6 +36,19 @@ This Latex library provides a standard set of environments for writing optimizat
 \item It allows the definition of a limitless number of constraints.
 \item Four different type of problems: \textit{minimize}, \textit{maximize}, \textit{arg min} and \textit{arg max}.
 \end{enumerate}
+
+\section{Using the package}
+The package can be imported by directly adding
+\begin{lstlisting}
+\usepackage{optidef}
+\end{lstlisting}
+to the document preamble. When importing the packages two options can be used, \verb|short| and \verb|nocomma|:
+
+\begin{lstlisting}
+\usepackage[short,nocomma]{optidef}
+\end{lstlisting}
+
+For an explanation of the \verb|short| option check Section \ref{sec:longshort}. For the \verb|nocomma| option check Section \ref{sec:comma}. For a detailed description of how to use the package keep reading the next section.
 
 \section{Environment Syntax Definition}
 Considering that \verb|Const.i| stands for constraint $i$, \verb|LHS.i| stands for the left-hand-side of constraint $i$, and \verb|RHS.i| for the right-hand-side counterpart, the basic structure to define a general optimization problem with $N$ constraints is:
@@ -171,6 +181,12 @@ Selected by \verb|sizeFormat|=s. It uses instead the shorter \textit{s.t.} and \
 	\addConstraint{g(w)}{=0}
 \end{mini*}
 
+\noindent By the default the long format is used. To change the default to  the short format the package must be imported with the \verb|short| option:
+
+\begin{lstlisting}
+\usepackage[short]{optidef}
+\end{lstlisting}
+
 \section{Alignment of Equations}
 \label{sec:alignment}
 
@@ -244,6 +260,13 @@ There are four basic output formats for the location of the constraints. They ar
  		\addConstraint{t(w)}{=0.}
  	\end{mini} 	
 
+\section{Default comma at the end of the constraint}
+\label{sec:comma}
+By default, the algorithms adds a comma at the end of any constraint that is not the last one. This feature was implemented due to correctness of mathematical notation. However, this behavior can be removed by adding the option \verb|nocomma| when importing the package:
+
+\begin{lstlisting}
+\usepackage[nocomma]{optidef}
+\end{lstlisting}
 
 \section{Examples}
 \subsection{Example 1 - mini environment}
@@ -586,7 +609,7 @@ The standard appearance for long optimization variables is as follows:
 
 \section{Code definition}
 \begin{lstlisting}
-% optidef - Version 2.0
+% optidef - Version 2.1
 %
 %Copyright 2016 J. Lago Garcia
 %
@@ -600,11 +623,11 @@ The standard appearance for long optimization variables is as follows:
 %This work consists of the file optidef.sty.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{optidef}[2016/08/07 - version=2.0,  Package for defining optimization problems]
+\ProvidesPackage{optidef}[2016/09/25 - version=2.1,  Package for defining optimization problems]
 
 \RequirePackage{environ}
 \RequirePackage{mathtools}	
-\RequirePackage{xifthen}	
+\RequirePackage{xifthen}
 \RequirePackage{etoolbox}	
 \RequirePackage{xparse}	
 \RequirePackage{calc}	
@@ -613,6 +636,7 @@ The standard appearance for long optimization variables is as follows:
 % DEFINING PACKAGE OPTIONS
 %%%%%%%%%%%%%%%%%%%%%%%
 % Default
+\newcommand{\defaultOCPConstraint}{,}
 \newcommand{\defaultProblemFormat}{l}
 
 \DeclareOption{short}{
@@ -621,6 +645,10 @@ The standard appearance for long optimization variables is as follows:
 
 \DeclareOption{long}{
 \renewcommand{\defaultProblemFormat}{l}
+}
+
+\DeclareOption{nocomma}{
+\renewcommand{\defaultOCPConstraint}{}
 }
 
 \ProcessOptions\relax
@@ -852,7 +880,7 @@ The standard appearance for long optimization variables is as follows:
 \bodyconst{#1}
 \togglefalse{bodyCon}
 }{
-,\\&\quad &&#1 #2\span\span
+\defaultOCPConstraint\\&\quad &&#1 #2\span\span
 \togglefalse{bodyCon}
 }
 }{
@@ -860,7 +888,7 @@ The standard appearance for long optimization variables is as follows:
 \bodyconst{#1}{#2}
 \togglefalse{bodyCon}
 }{
-,\\&\quad &#1 & #2\span\span
+\defaultOCPConstraint\\&\quad &#1 & #2\span\span
 \togglefalse{bodyCon}
 }
 }
@@ -871,9 +899,9 @@ The standard appearance for long optimization variables is as follows:
 \togglefalse{bodyCon}
 }{
 \ifthenelse{\equal{#2}{}}{
-,\\&\quad &&#1 #2 && #3
+\defaultOCPConstraint\\&\quad &&#1 #2 && #3
 }{
-,\\&\quad &#1 & #2 && #3
+\defaultOCPConstraint\\&\quad &#1 & #2 && #3
 }
 \togglefalse{bodyCon}
 }
@@ -892,18 +920,18 @@ The standard appearance for long optimization variables is as follows:
 }{
 \ifthenelse{\equal{#2}{}}{
 \ifthenelse{\equal{#3}{}}{
-,\spanit\\&\quad &&#1 #2 
+\defaultOCPConstraint\spanit\\&\quad &&#1 #2 
 \togglefalse{previousThird}
 }{
-,\spanit\\&\quad &&#1 #2 && #3
+\defaultOCPConstraint\spanit\\&\quad &&#1 #2 && #3
 \toggletrue{previousThird}
 }
 }{
 \ifthenelse{\equal{#3}{}}{
-,\spanit\\&\quad &#1 & #2 
+\defaultOCPConstraint\spanit\\&\quad &#1 & #2 
 \togglefalse{previousThird}
 }{
-,\spanit\\&\quad &#1 & #2 && #3
+\defaultOCPConstraint\spanit\\&\quad &#1 & #2 && #3
 \toggletrue{previousThird}
 }
 }
@@ -919,16 +947,16 @@ The standard appearance for long optimization variables is as follows:
 }{
 \ifthenelse{\equal{#2}{}}{
 \ifthenelse{\equal{#3}{}}{
-,\spanit\\&&&#1  #2 		\togglefalse{previousThird}
+\defaultOCPConstraint\spanit\\&&&#1  #2 		\togglefalse{previousThird}
 }{
-,\spanit\\&&&#1  #2 && #3
+\defaultOCPConstraint\spanit\\&&&#1  #2 && #3
 \toggletrue{previousThird}		
 }
 }{
 \ifthenelse{\equal{#3}{}}{
-,\spanit\\ &&#1  &#2 \togglefalse{previousThird}
+\defaultOCPConstraint\spanit\\ &&#1  &#2 \togglefalse{previousThird}
 }{
-,\spanit\\ &&#1  &#2 && #3
+\defaultOCPConstraint\spanit\\ &&#1  &#2 && #3
 \toggletrue{previousThird}
 }
 }
@@ -943,9 +971,9 @@ The standard appearance for long optimization variables is as follows:
 \togglefalse{bodyCon}
 }{
 \ifthenelse{\equal{#3}{}}{
-,\spanit\\&\quad &&#1  #2 \togglefalse{previousThird}
+\defaultOCPConstraint\spanit\\&\quad &&#1  #2 \togglefalse{previousThird}
 }{
-,\spanit\\&\quad &&#1  #2 && #3
+\defaultOCPConstraint\spanit\\&\quad &&#1  #2 && #3
 \toggletrue{previousThird}
 }
 \togglefalse{bodyCon}
@@ -959,9 +987,9 @@ The standard appearance for long optimization variables is as follows:
 \togglefalse{bodyCon}
 }{
 \ifthenelse{\equal{#3}{}}{
-,\spanit\\& &&#1  #2\togglefalse{previousThird}
+\defaultOCPConstraint\spanit\\& &&#1  #2\togglefalse{previousThird}
 }{
-,\spanit\\& &&#1  #2 && #3
+\defaultOCPConstraint\spanit\\& &&#1  #2 && #3
 \toggletrue{previousThird}
 }
 \togglefalse{bodyCon}
@@ -976,16 +1004,16 @@ The standard appearance for long optimization variables is as follows:
 }{
 \ifthenelse{\equal{#3}{}}{
 \ifthenelse{\equal{#2}{}}{
-,\spanit\\&&&#1  #2
+\defaultOCPConstraint\spanit\\&&&#1  #2
 }{
-,\spanit\\ &&#1  &#2
+\defaultOCPConstraint\spanit\\ &&#1  &#2
 }
 \togglefalse{previousThird}
 }{
 \ifthenelse{\equal{#2}{}}{
-,\spanit\\&&&#1  #2 && #3
+\defaultOCPConstraint\spanit\\&&&#1  #2 && #3
 }{
-,\spanit\\ &&#1  &#2&& #3}
+\defaultOCPConstraint\spanit\\ &&#1  &#2&& #3}
 \toggletrue{previousThird}
 }
 \togglefalse{bodyCon}
@@ -999,9 +1027,9 @@ The standard appearance for long optimization variables is as follows:
 \togglefalse{bodyCon}
 }{
 \ifthenelse{\equal{#3}{}}{
-,\spanit\\& &&#1  #2 \togglefalse{previousThird}
+\defaultOCPConstraint\spanit\\& &&#1  #2 \togglefalse{previousThird}
 }{
-,\spanit\\& &&#1  #2 && #3
+\defaultOCPConstraint\spanit\\& &&#1  #2 && #3
 \toggletrue{previousThird}
 }
 \togglefalse{bodyCon}
