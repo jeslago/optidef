@@ -64,7 +64,7 @@ E-mail: j.lagogarcia@tudelft.nl
 
 Github: https://github.com/jeslago/optidef
 
-## Latest stable version: Optidef 2.1
+## Latest stable version: Optidef 2.2
 
 CTAN: https://www.ctan.org/pkg/optidef
 
@@ -75,6 +75,6 @@ Copyright 2016 Jesus Lago Garcia
 This work may be distributed and/or modified under the conditions of the LaTeX Project Public License, either version 1.3 of this license or (at your option) any later version.
 The latest version of this license is in http://www.latex-project.org/lppl.txt and version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or later.
 
-This work has the LPPL maintenance status 'maintained'. The Current Maintainer of this work is J. Lago Garcia, under the supervision of Prof. Dr. Moritz Diehl and Prof. Dr. Sebastien Gross.
+This work has the LPPL maintenance status 'maintained'. The Current Maintainer of this work is J. Lago Garcia.
 
 This work consists of the file optidef.sty.
