@@ -67,7 +67,7 @@
 % Defining variable to storage problem variable
 \newcommand{\localOptimalVariable}{}
 
-\newlength\stextwidth
+\newlength\widthInit
 
 %%%%%%%%%%%%%%%%%%%%%%%
 % OBJECTIVE COMMAND DEFINITION
@@ -424,7 +424,15 @@
 	\togglefalse{bodyCon}
 }
 }
-
+%%%%%%%%%%%%%%%%%%%%
+% ADDING EXTRA LINE
+%%%%%%%%%%%%%%%%%%%%
+\newcommand{\breakObjective}[1]
+{
+\\&\mathmakebox[\widthInit]{} #1\span\span\span\span
+}
+	
+	
 %%%%%%%%%%%%%%%%%%%%
 % SELECTING TYPE OF FORMAT
 %%%%%%%%%%%%%%%%%%%%
@@ -470,11 +478,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % COMMANDS TO DEFINE ALL REQUIRED PROPERTIES TO CHOOSE SHORT/LONG FORMAT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\setFormatShort}[1]{\global\def\localProblemFormat{s} \let\bodyobj\bodyobjShort \renewcommand{\localProblemType}{#1}}
+\newcommand{\setFormatShort}[2]{\global\def\localProblemFormat{s} \let\bodyobj\bodyobjShort \renewcommand{\localProblemType}{#1} 
+	 \setlength{\widthInit}{\widthof{$\underset{\displaystyle #2}{\mathrm{#1}}$\quad}}
+	}
 
-\newcommand{\setFormatLong}[1]{\global\def\localProblemFormat{l} \let\bodyobj\bodyobjLong \renewcommand{\localProblemType}{#1}}
-
-\newcommand{\breakObjectiveOneConstraint}[1]{&&&#1\\}
+\newcommand{\setFormatLong}[2]{\global\def\localProblemFormat{l} \let\bodyobj\bodyobjLong \renewcommand{\localProblemType}{#1}
+\setlength{\widthInit}{\widthof{$\underset{\displaystyle #2}{\mathrm{subject~to}}$ \quad}}
+}
 
 %%%%%%%%%%%%%%%%%%%%%
 %MINIMIZATION ENVIRONMENTS
@@ -532,17 +542,17 @@
 \DeclareDocumentEnvironment{mini}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{min} \BaseMini{#2}{#3}{#4}{#5}{#6}{min}}
+{\setFormatShort{min}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{min}}
 % Long version problem	
-{\setFormatLong{minimize} \BaseMini{#2}{#3}{#4}{#5}{#6}{minimize}}
+{\setFormatLong{minimize}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{minimize}}
 }{\endBaseMini\toggletrue{bodyCon}}
 
 \DeclareDocumentEnvironment{argmini}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{arg~min} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~min}}
+{\setFormatShort{arg~min}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~min}}
 % Long version problem	
-{\setFormatLong{arg~min} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~min}}
+{\setFormatLong{arg~min}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~min}}
 }{\endBaseMini\toggletrue{bodyCon}}
 
 
@@ -550,17 +560,17 @@
 \DeclareDocumentEnvironment{mini*}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
-	{\setFormatShort{min} \BaseMiniStar{#2}{#3}{#4}{#6}{min}}
+	{\setFormatShort{min}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{min}}
 	% Long version problem	
-	{\setFormatLong{minimize} \BaseMiniStar{#2}{#3}{#4}{#6}{minimize}}
+	{\setFormatLong{minimize}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{minimize}}
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 		
 \DeclareDocumentEnvironment{argmini*}{D||{l} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{arg~min}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~min}}
+{\setFormatShort{arg~min}{#2}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~min}}
 % Long version problem	
-{\setFormatLong{arg~min} \BaseMiniStar{#2}{#3}{#4}{#6}{arg~min}}
+{\setFormatLong{arg~min}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{arg~min}}
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
 
@@ -568,17 +578,17 @@
 \DeclareDocumentEnvironment{mini!}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
-	{\setFormatShort{min} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{min}}
+	{\setFormatShort{min}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{min}}
 	% Long version problem	
-	{\setFormatLong{minimize} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{minimize}}
+	{\setFormatLong{minimize}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{minimize}}
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
 \DeclareDocumentEnvironment{argmini!}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
-	{\setFormatShort{arg~min}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
+	{\setFormatShort{arg~min}{#2}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
 	% Long version problem	
-	{\setFormatLong{arg~min} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
+	{\setFormatLong{arg~min}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
 
@@ -590,17 +600,17 @@
 \DeclareDocumentEnvironment{maxi}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
-	{\setFormatShort{max} \BaseMini{#2}{#3}{#4}{#5}{#6}{max}}
+	{\setFormatShort{max}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{max}}
 	% Long version problem	
-	{\setFormatLong{maximize} \BaseMini{#2}{#3}{#4}{#5}{#6}{maximize}}
+	{\setFormatLong{maximize}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{maximize}}
 }{\endBaseMini\toggletrue{bodyCon}}
 
 \DeclareDocumentEnvironment{argmaxi}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
-	{\setFormatShort{arg~max} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~max}}
+	{\setFormatShort{arg~max}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~max}}
 	% Long version problem	
-	{\setFormatLong{arg~max} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~max}}
+	{\setFormatLong{arg~max}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~max}}
 }{\endBaseMini\toggletrue{bodyCon}}
 
 
@@ -608,17 +618,17 @@
 \DeclareDocumentEnvironment{maxi*}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
-	{\setFormatShort{max} \BaseMiniStar{#2}{#3}{#4}{#6}{max}}
+	{\setFormatShort{max}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{max}}
 	% Long version problem	
-	{\setFormatLong{maximize} \BaseMiniStar{#2}{#3}{#4}{#6}{maximize}}
+	{\setFormatLong{maximize}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{maximize}}
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
 \DeclareDocumentEnvironment{argmaxi*}{D||{l} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
-	{\setFormatShort{arg~max}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~max}}
+	{\setFormatShort{arg~max}{#2}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~max}}
 	% Long version problem	
-	{\setFormatLong{arg~max} \BaseMiniStar{#2}{#3}{#4}{#6}{arg~max}}
+	{\setFormatLong{arg~max}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{arg~max}}
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
 
@@ -626,15 +636,15 @@
 \DeclareDocumentEnvironment{maxi!}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
-	{\setFormatShort{max} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{max}}
+	{\setFormatShort{max}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{max}}
 	% Long version problem	
-	{\setFormatLong{maximize} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{maximize}}
+	{\setFormatLong{maximize}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{maximize}}
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
 \DeclareDocumentEnvironment{argmaxi!}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
-	{\setFormatShort{arg~max}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
+	{\setFormatShort{arg~max}{#2}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
 	% Long version problem	
-	{\setFormatLong{arg~max} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
+	{\setFormatLong{arg~max}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
