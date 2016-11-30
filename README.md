@@ -24,6 +24,8 @@ The most important features are:
    * arg mini
    * arg maxi
 
+- The objective function can be broken in several lines without compromising the alignment or the structure of the problem.
+
 ## Usage
 
 Import the package by directly adding \usepackage{optidef} to your LaTeX document. Consult the documentation for different examples and syntax usage.
@@ -60,11 +62,11 @@ Finally note that \begin{mini#} can be substituted by \begin{maxi#}, \begin{argm
 
 ## Contact for issue reporting or suggestions
 
-E-mail: j.lagogarcia@tudelft.nl
+E-mail: j.lagogarcia(at)tudelft.nl
 
 Github: https://github.com/jeslago/optidef
 
-## Latest stable version: Optidef 2.2
+## Latest stable version: Optidef 2.3
 
 CTAN: https://www.ctan.org/pkg/optidef
 

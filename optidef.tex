@@ -7,7 +7,7 @@
 
 \lstset{basicstyle=\ttfamily,breaklines=true}
 % Title Page
-\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 2.2}}
+\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 2.3}}
 
 \author{Jesus Lago Garcia}
 
@@ -30,11 +30,12 @@
 
 This Latex library provides a standard set of environments for writing optimization problems. The most important features are:
 \begin{enumerate}
-\item It references optimization problem using three different policies: no equation is referenced, the problem is referenced with a single label, each equation has an individual reference.
-\item It defines two problem size formats: a long format and a short format.
-\item It allows four different outputs for the location of the constraints.
-\item It allows the definition of a limitless number of constraints.
-\item Four different type of problems: \textit{minimize}, \textit{maximize}, \textit{arg min} and \textit{arg max}.
+\item It references optimization problem using three different policies: no equation is referenced, the problem is referenced with a single label, each equation has an individual reference. For more details refer to Sections \ref{sec:syntax} and \ref{sec:environments}.
+\item It defines two problem size formats: a long format and a short format. For more details refer to Sections \ref{sec:syntax} and \ref{sec:longshort}.
+\item It allows four different outputs for the location of the constraints. For more details refer to Sections \ref{sec:syntax} and \ref{sec:format}.
+\item It allows the definition of a limitless number of constraints. For more details refer to Section \ref{subsec:syntax}.
+\item Four different type of problems: \textit{minimize}, \textit{maximize}, \textit{arg min} and \textit{arg max}. For more details refer to Sections \ref{sec:syntax} and \ref{sec:environments}.
+\item The objective function can be broken in several lines without compromising the alignment or the structure of the problem. For more details refer to Section \ref{sec:breakObj}.
 \end{enumerate}
 
 \section{Using the package}
@@ -51,6 +52,7 @@ to the document preamble. When importing the packages two options can be used, \
 For an explanation of the \verb|short| option check Section \ref{sec:longshort}. For the \verb|nocomma| option check Section \ref{sec:comma}. For a detailed description of how to use the package keep reading the next section.
 
 \section{Environment Syntax Definition}
+\label{sec:syntax}
 Considering that \verb|Const.i| stands for constraint $i$, \verb|LHS.i| stands for the left-hand-side of constraint $i$, and \verb|RHS.i| for the right-hand-side counterpart, the basic structure to define a general optimization problem with $N$ constraints is:
 \begin{verbatim}
 
@@ -93,7 +95,7 @@ Considering that \verb|Const.i| stands for constraint $i$, \verb|LHS.i| stands f
 The last two defined problem parameters,  \verb|\label{optimizationProblem}| and \verb|optimizationResult|, could be made optional. However, in order to improve the problem readibility, line breaking between the 7 parametes was implemented; unfortunately, linea breaking and optional parameters are not compatible and these two parameters had to be made mandatory.
 
 \subsection{Adding Constraints}
-
+\label{subsec:syntax}
 After the definition of the problem parameters, the environment accepts the definition of an infinite number of constraints. For this definitions the following command is used:
 ~\\
 
@@ -104,7 +106,7 @@ The command accepts three different parameters
 \begin{enumerate}
 	\item \verb|LHS.k|: the left-hand side of the the constraint $k$, e.g. $3w^\top w$.
 	\item (Optional) \verb|RHS.k\label{Const.k}|: the right-hand side of the constraint k if the equations should be aligned in the equality or inequality signs, e.g. $\leq \|w\|_\infty$. If required, the constraint label should also be included in this term. 
-	\item (Optional) \verb|extraConst.k|: optional parameter to add extra alignment point for additional constraint information. An example would be the constraint names. Look Example \ref{ex:extra} or the fourth described feature in Section \ref{sec:alignment}.
+	\item (Optional) \verb|extraConst.k|: optional parameter to add extra alignment point for additional constraint information. An example would be the constraint names. Look Example \ref{ex:extra} or the Section \ref{sec:extraAlign}.
 \end{enumerate}
 
 \subsubsection{Constraints referencing}
@@ -119,6 +121,7 @@ There are three basic environments depending on the type of referencing that sho
 	\begin{mini}
 		{w}{f(w)+R(w+6x)}
 		{\label{eq:Ex1}}{}
+		\breakObjective{+L(x)}
 		\addConstraint{g(w)}{=0}
 	\end{mini}
 	\item The \textbf{mini*} environment if the problem does not have to be referenced:
@@ -187,40 +190,40 @@ Selected by \verb|sizeFormat|=s. It uses instead the shorter \textit{s.t.} and \
 \usepackage[short]{optidef}
 \end{lstlisting}
 
-\section{Alignment of Equations}
-\label{sec:alignment}
-
-\begin{enumerate}
-\item Alignment at the beginning of the words \textit{minimize} and \textit{subject to}:
-\begin{mini}
-{w}{f(w)+ R(w+6x)}{}{}
-\addConstraint{g(w)}{=0}
-\end{mini}
-\item (Optional) Alignment at the $=,~>,~<$ signs of the constraints.
-\begin{mini*}[1]
-{w}{f(w)+ R(w+6x)}{}{}
-\addConstraint{g(w)+h(w)}{=0}
-\addConstraint{l(w)}{=5w.}
-\end{mini*}
-\item (Optional) Alignment of the longest constraint and the objective function:
-\begin{mini*}
-	{w}{f(w)+ R(w+6x)}{}{}
-	\addConstraint{g(w)+h(w)}{=0}
-	\addConstraint{l(w)}{=5w.}
-\end{mini*}
-\item (Optional) Third alignment point on the constraints to set some constraint features. A clear example could be the constraints names:
-\begin{mini*}
-{w}{f(w)+ R(w+6x)}{}{}
-\addConstraint{g(w)+h(w)}{=0,}{\text{(Topological Constraint)}}
-\addConstraint{l(w)}{=5w,\quad}{\text{(Boundary Constraint)}}
-\end{mini*}
-or the index of the constraints:
-\begin{mini*}
-{w,u}{f(w)+ R(w+6x)}{}{}
-\addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1}
-\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
-\end{mini*}
-\end{enumerate}
+%\section{Alignment of Equations}
+%\label{sec:alignment}
+%
+%\begin{enumerate}
+%\item Alignment at the beginning of the words \textit{minimize} and \textit{subject to}:
+%\begin{mini}
+%{w}{f(w)+ R(w+6x)}{}{}
+%\addConstraint{g(w)}{=0}
+%\end{mini}
+%\item (Optional) Alignment at the $=,~>,~<$ signs of the constraints.
+%\begin{mini*}[1]
+%{w}{f(w)+ R(w+6x)}{}{}
+%\addConstraint{g(w)+h(w)}{=0}
+%\addConstraint{l(w)}{=5w.}
+%\end{mini*}
+%\item (Optional) Alignment of the longest constraint and the objective function:
+%\begin{mini*}
+%	{w}{f(w)+ R(w+6x)}{}{}
+%	\addConstraint{g(w)+h(w)}{=0}
+%	\addConstraint{l(w)}{=5w.}
+%\end{mini*}
+%\item (Optional) Third alignment point on the constraints to set some constraint features. A clear example could be the constraints names:
+%\begin{mini*}
+%{w}{f(w)+ R(w+6x)}{}{}
+%\addConstraint{g(w)+h(w)}{=0,}{\text{(Topological Constraint)}}
+%\addConstraint{l(w)}{=5w,\quad}{\text{(Boundary Constraint)}}
+%\end{mini*}
+%or the index of the constraints:
+%\begin{mini*}
+%{w,u}{f(w)+ R(w+6x)}{}{}
+%\addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1}
+%\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
+%\end{mini*}
+%\end{enumerate}
 
 \section{Output Formats for the Constraints}
 \label{sec:format}
@@ -259,6 +262,61 @@ There are four basic output formats for the location of the constraints. They ar
  		\addConstraint{g(w)+h(w)}{=0}
  		\addConstraint{t(w)}{=0.}
  	\end{mini} 	
+
+ \subsection{Extra alignment alternative} 		
+ \label{sec:extraAlign}
+By default, the constraints have 2 aligned elements. However, a third alignment point can be used to set some constraint features. A clear example could be the constraints names:
+\begin{mini*}
+	{w}{f(w)+ R(w+6x)}{}{}
+	\addConstraint{g(w)+h(w)}{=0,}{\text{(Topological Constraint)}}
+	\addConstraint{l(w)}{=5w,\quad}{\text{(Boundary Constraint)}}
+\end{mini*}
+or the index of the constraints:
+\begin{mini*}
+	{w,u}{f(w)+ R(w+6x)}{}{}
+	\addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1}
+	\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
+\end{mini*}
+This extra alignment point can be added using a third input parameter on the \verb|\addConstraint| parameter. An example using the last constraint of the previous example would be:
+\begin{lstlisting}
+\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
+\end{lstlisting}
+
+\section{Breaking the objective across several lines}
+\label{sec:breakObj}
+In several cases, people encounter the problem of having an optimization problem which objective function is too long to be set in a single line. In such cases, a line breaking that respects the rest of the problem syntax would be desirable. To account for that, the command \verb|\breakObjective| can be used. The idea is that, if the objective function shall be split in $n$ different functions, e.g.~$f_1,\ldots,f_n$, the default objective parameter would include just $f_1$ and then, we would include $n-1$ statements \verb|\breakObjective|($f_k$), $\forall k=2,\ldots,n$ right before defining the \verb|\addConstraint| commands.
+
+Let's illustrate this with an example. We could consider the example from before:
+
+\begin{mini}
+	{w,u}{f(w)+ R(w+6x)}{}{}
+	\addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1}
+	\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
+\end{mini}
+If now the cost function were too long, i.e:
+\[
+f(w)+ R(w+6x)+ H(100w-x*w/500)-g(w^3-x^2*200+10000*w^5)
+\]
+We could split it as:
+
+\begin{mini}
+{w,u}{f(w)+ R(w+6x)+ H(100w-x*w/500)}{}{}
+\breakObjective{-g(w^3-x^2*200+10000*w^5)}
+\addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1}
+\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
+\end{mini}
+by simpling using the following command:
+
+\begin{lstlisting}
+\begin{mini*}
+{w,u}{f(w)+ R(w+6x)+ H(100w-x*w/500)}{}{}
+\breakObjective{-g(w^3-x^2*200+10000*w^5)}
+\addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1}
+\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
+\end{mini*}
+\end{lstlisting}
+
+It is important to notice the specific location of the \verb|\breakObjective| command. In order to work properly, it has to be defined right before \verb|\addConstraint| and right after the definition of the environment parameters; i.e.~in any case the command should be used right after defining the first part of the objective function and not finishing the definition of the mandatory environment parameters.
 
 \section{Default comma at the end of the constraint}
 \label{sec:comma}
@@ -487,6 +545,24 @@ On the other hand:
 	\addConstraint{h(x)}{=0.}
 \end{mini}
 
+\subsection{Example 9 - Breaking a long objective}
+\begin{lstlisting}
+\begin{mini*}
+   {w,u}{f(w)+ R(w+6x)+ H(100w-x*w/500)}{}{}
+   \breakObjective{-g(w^3-x^2*200+10000*w^5)}
+   \addConstraint{g(w_k)+h(w_k)}{=0,}
+   \addConstraint{l(w_k)}{=5u,\quad}
+\end{mini*}
+\end{lstlisting}
+outputs:
+\begin{mini}
+	{w,u}{f(w)+ R(w+6x)+ H(100w-x*w/500)}{}{}
+	\breakObjective{-g(w^3-x^2*200+10000*w^5)}
+	\addConstraint{g(w_k)+h(w_k)}{=0}
+	\addConstraint{l(w_k)}{=5u.}
+\end{mini}
+
+
 \subsection{Example 9 - Extra Alignment in the Constraints}
 \label{ex:extra}
 Adding optional alignment to add constraint names:
@@ -609,7 +685,7 @@ The standard appearance for long optimization variables is as follows:
 
 \section{Code definition}
 \begin{lstlisting}
-% optidef - Version 2.2
+% optidef - Version 2.3
 %
 %Copyright 2016 J. Lago Garcia
 %
@@ -623,7 +699,7 @@ The standard appearance for long optimization variables is as follows:
 %This work consists of the file optidef.sty.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{optidef}[2016/10/22 - version=2.2,  Package for defining optimization problems]
+\ProvidesPackage{optidef}[2016/10/22 - version=2.3,  Package for defining optimization problems]
 
 \RequirePackage{environ}
 \RequirePackage{mathtools}	
@@ -678,7 +754,7 @@ The standard appearance for long optimization variables is as follows:
 % Defining variable to storage problem variable
 \newcommand{\localOptimalVariable}{}
 
-\newlength\stextwidth
+\newlength\widthInit
 
 %%%%%%%%%%%%%%%%%%%%%%%
 % OBJECTIVE COMMAND DEFINITION
@@ -1035,6 +1111,14 @@ The standard appearance for long optimization variables is as follows:
 \togglefalse{bodyCon}
 }
 }
+%%%%%%%%%%%%%%%%%%%%
+% ADDING EXTRA LINE
+%%%%%%%%%%%%%%%%%%%%
+\newcommand{\breakObjective}[1]
+{
+\\&\mathmakebox[\widthInit]{\phantom{\underset{}{}}}#1\span\span\span\span
+}
+
 
 %%%%%%%%%%%%%%%%%%%%
 % SELECTING TYPE OF FORMAT
@@ -1081,11 +1165,13 @@ The standard appearance for long optimization variables is as follows:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % COMMANDS TO DEFINE ALL REQUIRED PROPERTIES TO CHOOSE SHORT/LONG FORMAT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\setFormatShort}[1]{\global\def\localProblemFormat{s} \let\bodyobj\bodyobjShort \renewcommand{\localProblemType}{#1}}
+\newcommand{\setFormatShort}[2]{\global\def\localProblemFormat{s} \let\bodyobj\bodyobjShort \renewcommand{\localProblemType}{#1} 
+\setlength{\widthInit}{\widthof{$\underset{\displaystyle #2}{\mathrm{#1}}$\quad}}
+}
 
-\newcommand{\setFormatLong}[1]{\global\def\localProblemFormat{l} \let\bodyobj\bodyobjLong \renewcommand{\localProblemType}{#1}}
-
-\newcommand{\breakObjectiveOneConstraint}[1]{&&&#1\\}
+\newcommand{\setFormatLong}[2]{\global\def\localProblemFormat{l} \let\bodyobj\bodyobjLong \renewcommand{\localProblemType}{#1}
+\setlength{\widthInit}{\widthof{$\underset{\displaystyle #2}{\mathrm{subject~to}}$ \quad}}
+}
 
 %%%%%%%%%%%%%%%%%%%%%
 %MINIMIZATION ENVIRONMENTS
@@ -1143,17 +1229,17 @@ The standard appearance for long optimization variables is as follows:
 \DeclareDocumentEnvironment{mini}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{min} \BaseMini{#2}{#3}{#4}{#5}{#6}{min}}
+{\setFormatShort{min}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{min}}
 % Long version problem	
-{\setFormatLong{minimize} \BaseMini{#2}{#3}{#4}{#5}{#6}{minimize}}
+{\setFormatLong{minimize}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{minimize}}
 }{\endBaseMini\toggletrue{bodyCon}}
 
 \DeclareDocumentEnvironment{argmini}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{arg~min} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~min}}
+{\setFormatShort{arg~min}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~min}}
 % Long version problem	
-{\setFormatLong{arg~min} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~min}}
+{\setFormatLong{arg~min}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~min}}
 }{\endBaseMini\toggletrue{bodyCon}}
 
 
@@ -1161,17 +1247,17 @@ The standard appearance for long optimization variables is as follows:
 \DeclareDocumentEnvironment{mini*}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{min} \BaseMiniStar{#2}{#3}{#4}{#6}{min}}
+{\setFormatShort{min}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{min}}
 % Long version problem	
-{\setFormatLong{minimize} \BaseMiniStar{#2}{#3}{#4}{#6}{minimize}}
+{\setFormatLong{minimize}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{minimize}}
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
 \DeclareDocumentEnvironment{argmini*}{D||{l} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{arg~min}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~min}}
+{\setFormatShort{arg~min}{#2}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~min}}
 % Long version problem	
-{\setFormatLong{arg~min} \BaseMiniStar{#2}{#3}{#4}{#6}{arg~min}}
+{\setFormatLong{arg~min}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{arg~min}}
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
 
@@ -1179,17 +1265,17 @@ The standard appearance for long optimization variables is as follows:
 \DeclareDocumentEnvironment{mini!}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{min} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{min}}
+{\setFormatShort{min}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{min}}
 % Long version problem	
-{\setFormatLong{minimize} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{minimize}}
+{\setFormatLong{minimize}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{minimize}}
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
 \DeclareDocumentEnvironment{argmini!}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{arg~min}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
+{\setFormatShort{arg~min}{#2}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
 % Long version problem	
-{\setFormatLong{arg~min} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
+{\setFormatLong{arg~min}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
 
@@ -1201,17 +1287,17 @@ The standard appearance for long optimization variables is as follows:
 \DeclareDocumentEnvironment{maxi}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{max} \BaseMini{#2}{#3}{#4}{#5}{#6}{max}}
+{\setFormatShort{max}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{max}}
 % Long version problem	
-{\setFormatLong{maximize} \BaseMini{#2}{#3}{#4}{#5}{#6}{maximize}}
+{\setFormatLong{maximize}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{maximize}}
 }{\endBaseMini\toggletrue{bodyCon}}
 
 \DeclareDocumentEnvironment{argmaxi}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{arg~max} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~max}}
+{\setFormatShort{arg~max}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~max}}
 % Long version problem	
-{\setFormatLong{arg~max} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~max}}
+{\setFormatLong{arg~max}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~max}}
 }{\endBaseMini\toggletrue{bodyCon}}
 
 
@@ -1219,17 +1305,17 @@ The standard appearance for long optimization variables is as follows:
 \DeclareDocumentEnvironment{maxi*}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{max} \BaseMiniStar{#2}{#3}{#4}{#6}{max}}
+{\setFormatShort{max}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{max}}
 % Long version problem	
-{\setFormatLong{maximize} \BaseMiniStar{#2}{#3}{#4}{#6}{maximize}}
+{\setFormatLong{maximize}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{maximize}}
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
 \DeclareDocumentEnvironment{argmaxi*}{D||{l} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{arg~max}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~max}}
+{\setFormatShort{arg~max}{#2}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~max}}
 % Long version problem	
-{\setFormatLong{arg~max} \BaseMiniStar{#2}{#3}{#4}{#6}{arg~max}}
+{\setFormatLong{arg~max}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{arg~max}}
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
 
@@ -1237,17 +1323,17 @@ The standard appearance for long optimization variables is as follows:
 \DeclareDocumentEnvironment{maxi!}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{max} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{max}}
+{\setFormatShort{max}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{max}}
 % Long version problem	
-{\setFormatLong{maximize} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{maximize}}
+{\setFormatLong{maximize}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{maximize}}
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
 \DeclareDocumentEnvironment{argmaxi!}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{arg~max}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
+{\setFormatShort{arg~max}{#2}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
 % Long version problem	
-{\setFormatLong{arg~max} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
+{\setFormatLong{arg~max}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 \end{lstlisting}
 

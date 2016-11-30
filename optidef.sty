@@ -1,4 +1,4 @@
-% optidef - Version 2.2
+% optidef - Version 2.3
 %
 %Copyright 2016 J. Lago Garcia
 %
@@ -12,7 +12,7 @@
 %This work consists of the file optidef.sty.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{optidef}[2016/10/22 - version=2.2,  Package for defining optimization problems]
+\ProvidesPackage{optidef}[2016/10/22 - version=2.3,  Package for defining optimization problems]
 
 \RequirePackage{environ}
 \RequirePackage{mathtools}	
@@ -429,7 +429,7 @@
 %%%%%%%%%%%%%%%%%%%%
 \newcommand{\breakObjective}[1]
 {
-\\&\mathmakebox[\widthInit]{} #1\span\span\span\span
+\\&\mathmakebox[\widthInit]{\phantom{\underset{}{}}}#1\span\span\span\span
 }
 	
 	
