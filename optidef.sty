@@ -412,7 +412,7 @@
 % Adding constraints for a single alignment point and with the constraints below for multiple references
 \DeclareDocumentCommand{\oneAlignBelowAddConstraintMult}{m G{} G{}}{
 	\iftoggle{bodyCon}{
-		\bodyconstOneAlignBelowMult{#1}{#2}
+		\bodyconstOneAlignBelowMult{#1}{#2}{#3}
 		\togglefalse{bodyCon}
 	}{
 		\ifthenelse{\equal{#3}{}}{
