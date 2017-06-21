@@ -7,7 +7,7 @@
 
 \lstset{basicstyle=\ttfamily,breaklines=true}
 % Title Page
-\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 2.4}}
+\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 2.5}}
 
 \author{Jesus Lago Garcia}
 
@@ -683,9 +683,41 @@ The standard appearance for long optimization variables is as follows:
 	\addConstraint{r(x_0,x_N)}{= 0.  \label{dOCP:boundary}}
 \end{mini!}
 
+\section{Compatibility issues with other packages}
+When using the cleveref package in couple with the optidef package two measures have to taken for the packages to work properly:
+
+\begin{enumerate}
+	\item As also indicated in the cleveref documentation, the optidef package has to be loaded before the cleveref package.
+	\item To avoid crashes, the \verb|\label| commands in the optidef environments have to be replaced by the protected counterparts \verb|\protect\label|. This is required because of the standard Latex issue of moving arguments and fragile commands\footnote{\url{goo.gl/wmKbNU}}.
+\end{enumerate} 
+
+\noindent A code example taking into account both measures is the following:
+
+\begin{verbatim}
+  \documentclass{article}
+  \usepackage{optidef}
+  \usepackage{cleveref}
+  
+  \begin{document}
+  
+  \begin{mini!}
+    {w}{f(w)+ R(w+6x) \protect\label{eq:ObjectiveExample1}}
+    {\label{eq:Example1}}{}
+    \addConstraint{g(w)}{=0 \protect\label{eq:C1Example3}}
+    \addConstraint{n(w)}{= 6 \protect\label{eq:C2Example1}}
+    \addConstraint{L(w)+r(x)}{=Kw+p \protect\label{eq:C3Example1}}
+  \end{mini!}
+
+  Example labels: \cref{eq:Example1} and \cref{eq:ObjectiveExample1}.
+
+  \end{document}
+\end{verbatim}
+
+	
+	
 \section{Code definition}
 \begin{lstlisting}
-% optidef - Version 2.4
+% optidef - Version 2.5
 %
 %Copyright 2017 J. Lago Garcia
 %
@@ -694,12 +726,12 @@ The standard appearance for long optimization variables is as follows:
 %
 %This work has the LPPL maintenance status 'maintained'. The Current Maintainer of this work is J. Lago Garcia.
 %
-%E-mail: j.lagogarcia@tudelft.nl
+%E-mail: J.LagoGarcia@tudelft.nl
 %
 %This work consists of the file optidef.sty.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{optidef}[2017/05/24 - version=2.4,  Package for defining optimization problems]
+\ProvidesPackage{optidef}[2017/06/21 - version=2.5,  Package for defining optimization problems]
 
 \RequirePackage{environ}
 \RequirePackage{mathtools}	
