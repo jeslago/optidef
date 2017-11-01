@@ -42,6 +42,11 @@
 
 \ProcessOptions\relax
 
+% This command is required to avoid breakdown of the \equal fragile command. In particular, before I had \equal{#2}{} tp check if argumetn #2 was empty. However, if the argument was a bmatrix object the command was breaking. Now this command is robust.
+\newcommand{\equalsNothing}[3]{%
+	\ifthenelse{\equal{\unexpanded{#1}}{}}{#2}{#3}%
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%
 % VARIABLES DEFINITION
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -117,7 +122,7 @@
 
 % Main command. Dynamically redefined at every new problem definition.
 \DeclareDocumentCommand{\bodyconst}{m G{}}
-{	\ifthenelse{\equal{#2}{}}{
+{	\equalsNothing{#2}{
 	\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}} \quad &&#1 #2 
 	}{
 	\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}}  \quad &#1 & #2
@@ -140,15 +145,15 @@
 {%%%
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"
-\ifthenelse{\equal{#3}{}}{%%
-		\ifthenelse{\equal{#2}{}}{%
+\equalsNothing{#3}{%%
+		\equalsNothing{#2}{%
 		\\ & \bodySubjectTo \quad &&#1 #2 	
 	}{%
 	\\ &\bodySubjectTo \quad &#1 & #2
 	}%
 	\togglefalse{previousThird}
 }{%%
-	\ifthenelse{\equal{#2}{}}{%
+	\equalsNothing{#2}{%
 		\\ &\bodySubjectTo \quad &&#1 #2 &&#3
 	}{%
 	\\ &\bodySubjectTo \quad &#1 & #2 &&#3
@@ -163,7 +168,7 @@
 {
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-	\ifthenelse{\equal{#3}{}}{
+	\equalsNothing{#3}{
 		\\ &\bodySubjectTo\quad &&#1 #2 	\togglefalse{previousThird}
 	}{
 		\\ &\bodySubjectTo\quad &&#1 #2 &&#3
@@ -176,7 +181,7 @@
 {
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-	\ifthenelse{\equal{#3}{}}{
+	\equalsNothing{#3}{
 		\\ &\bodySubjectTo \span\span\span\span \\
 		&&&#1 #2 \togglefalse{previousThird}
 	}{
@@ -191,8 +196,8 @@
 {
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-	\ifthenelse{\equal{#3}{}}{
-		\ifthenelse{\equal{#2}{}}{
+	\equalsNothing{#3}{
+		\equalsNothing{#2}{
 			\\ &\bodySubjectTo\span\span\span\span \\
 			&&&#1 #2 
 		}{
@@ -201,7 +206,7 @@
 		}
 		\togglefalse{previousThird}
 	}{
-		\ifthenelse{\equal{#2}{}}{
+		\equalsNothing{#2}{
 			\\ &\bodySubjectTo \span\span\span\span \\
 			&&&#1 #2 &&#3
 		}{
@@ -217,8 +222,8 @@
 {
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-	\ifthenelse{\equal{#3}{}}{
-		\ifthenelse{\equal{#2}{}}{
+	\equalsNothing{#3}{
+		\equalsNothing{#2}{
 			\\ &\bodySubjectTo\span\span\span\span \nonumber \\
 			&&&#1 #2	
 		}{
@@ -227,7 +232,7 @@
 		}
 		\togglefalse{previousThird}
 	}{
-		\ifthenelse{\equal{#2}{}}{
+		\equalsNothing{#2}{
 			\\ &\bodySubjectTo\span\span\span\span \nonumber \\
 			&&&#1 #2	&&#3
 		}{
@@ -243,7 +248,7 @@
 {
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-	\ifthenelse{\equal{#3}{}}{
+	\equalsNothing{#3}{
 		\\ &\bodySubjectTo\span\span\span\span \nonumber \\
 		&&&#1 #2		\togglefalse{previousThird}
 	}{
@@ -262,9 +267,9 @@
 % Main command. Dynamically redefined at every problem definiton.
 \DeclareDocumentCommand{\addConstraint}{m G{} G{}}{
 % "If clause" selecting whether a third parameter (#3) defining extra constraint information is used
-\ifthenelse{\equal{#3}{}}{	
+\equalsNothing{#3}{	
 		% Second "If clause" selecting whether two or 1 elements for the constraints are used
-		\ifthenelse{\equal{#2}{}}{
+		\equalsNothing{#2}{
 			\iftoggle{bodyCon}{
 				\bodyconst{#1}
 				\togglefalse{bodyCon}
@@ -287,7 +292,7 @@
 				\bodyconst{#1}{#2}{#3}
 				\togglefalse{bodyCon}
 			}{
-				\ifthenelse{\equal{#2}{}}{
+				\equalsNothing{#2}{
 					\defaultOCPConstraint\\&\quad &&#1 #2 && #3
 				}{
 					\defaultOCPConstraint\\&\quad &#1 & #2 && #3
@@ -299,25 +304,31 @@
 }
 
 % Standard version of adding constraints
+% The toggle previousThird indicates if the previous constraint had three arguments or two. According to that it adjust the required spans at the end of the previous contraint. It is needed because the line jump after a constraint it is done at the beginning of the next constraint, not after the constraint itself. That avoid the last jump of the last constraint.
+% The toggle bodyCon indicate that it is the first contraint. The first contraint is different that the rest because it contains "subject to"
+% The commands \equalsNothing checks if the optional arguments exists
 \DeclareDocumentCommand{\standardAddConstraint}{m G{} G{}}{
 	\iftoggle{previousThird}
-	{\renewcommand{\spanit}{}}
-	{\renewcommand{\spanit}{\span\span}}
+	{
+		\renewcommand{\spanit}{}
+	}{
+		\renewcommand{\spanit}{\span\span}
+	}
 \iftoggle{bodyCon}{
 	\bodyconstRight{#1}{#2}{#3}
 	\togglefalse{bodyCon}
 }{
-	\ifthenelse{\equal{#2}{}}{
-		\ifthenelse{\equal{#3}{}}{
-			\defaultOCPConstraint\spanit\\&\quad &&#1 #2 
+	\equalsNothing{#2}{
+		\equalsNothing{#3}{
+			\defaultOCPConstraint\spanit\\&\quad &&#1 #2
 			\togglefalse{previousThird}
 		}{
 			\defaultOCPConstraint\spanit\\&\quad &&#1 #2 && #3
 			\toggletrue{previousThird}
 		}
 	}{
-		\ifthenelse{\equal{#3}{}}{
-			\defaultOCPConstraint\spanit\\&\quad &#1 & #2 
+		\equalsNothing{#3}{
+			\defaultOCPConstraint\spanit\\&\quad &#1 & #2
 			\togglefalse{previousThird}
 		}{
 			\defaultOCPConstraint\spanit\\&\quad &#1 & #2 && #3
@@ -328,21 +339,22 @@
 }
 }
 
+
 % Adding constraints below subject to
 \DeclareDocumentCommand{\BelowAddConstraint}{m G{} G{}}{
 	\iftoggle{bodyCon}{
 		\bodyconstBelow{#1}{#2}{#3}
 		\togglefalse{bodyCon}
 	}{
-		\ifthenelse{\equal{#2}{}}{
-			\ifthenelse{\equal{#3}{}}{
+		\equalsNothing{#2}{
+			\equalsNothing{#3}{
 				\defaultOCPConstraint\spanit\\&&&#1  #2 		\togglefalse{previousThird}
 			}{
 				\defaultOCPConstraint\spanit\\&&&#1  #2 && #3
 				\toggletrue{previousThird}		
 			}
 		}{
-			\ifthenelse{\equal{#3}{}}{
+			\equalsNothing{#3}{
 				\defaultOCPConstraint\spanit\\ &&#1  &#2 \togglefalse{previousThird}
 			}{
 				\defaultOCPConstraint\spanit\\ &&#1  &#2 && #3
@@ -359,7 +371,7 @@
 			\bodyconstOneAlign{#1}{#2}{#3}
 			\togglefalse{bodyCon}
 		}{
-			\ifthenelse{\equal{#3}{}}{
+			\equalsNothing{#3}{
 				\defaultOCPConstraint\spanit\\&\quad &&#1  #2 \togglefalse{previousThird}
 			}{
 				\defaultOCPConstraint\spanit\\&\quad &&#1  #2 && #3
@@ -375,7 +387,7 @@
 		\bodyconstOneAlignBelow{#1}{#2}{#3}
 		\togglefalse{bodyCon}
 	}{
-		\ifthenelse{\equal{#3}{}}{
+		\equalsNothing{#3}{
 			\defaultOCPConstraint\spanit\\& &&#1  #2\togglefalse{previousThird}
 		}{
 			\defaultOCPConstraint\spanit\\& &&#1  #2 && #3
@@ -391,15 +403,15 @@
 		\bodyconstBelowMult{#1}{#2}{#3}
 		\togglefalse{bodyCon}
 	}{
-		\ifthenelse{\equal{#3}{}}{
-			\ifthenelse{\equal{#2}{}}{
+		\equalsNothing{#3}{
+			\equalsNothing{#2}{
 				\defaultOCPConstraint\spanit\\&&&#1  #2
 			}{
 			\defaultOCPConstraint\spanit\\ &&#1  &#2
 			}
 			\togglefalse{previousThird}
 		}{
-			\ifthenelse{\equal{#2}{}}{
+			\equalsNothing{#2}{
 				\defaultOCPConstraint\spanit\\&&&#1  #2 && #3
 			}{
 			\defaultOCPConstraint\spanit\\ &&#1  &#2&& #3}
@@ -415,7 +427,7 @@
 		\bodyconstOneAlignBelowMult{#1}{#2}{#3}
 		\togglefalse{bodyCon}
 	}{
-		\ifthenelse{\equal{#3}{}}{
+		\equalsNothing{#3}{
 			\defaultOCPConstraint\spanit\\& &&#1  #2 \togglefalse{previousThird}
 		}{
 			\defaultOCPConstraint\spanit\\& &&#1  #2 && #3
