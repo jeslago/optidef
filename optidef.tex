@@ -7,9 +7,9 @@
 
 \lstset{basicstyle=\ttfamily,breaklines=true}
 % Title Page
-\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 2.5}}
+\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 2.6}}
 
-\author{Jesus Lago Garcia}
+\author{Jesus Lago}
 
 \makeatletter
 \renewcommand \thesection {\@arabic\c@section}
@@ -714,24 +714,26 @@ When using the cleveref package in couple with the optidef package two measures 
 \end{verbatim}
 
 	
-	
+\section{Reporting bugs and feature requests}
+To report any bug or request some feature please use the issue section in the github repository: \url{https://github.com/jeslago/optidef/issues}. 
+
 \section{Code definition}
 \begin{lstlisting}
-% optidef - Version 2.5
+% optidef - Version 2.6
 %
-%Copyright 2017 J. Lago Garcia
+%Copyright 2017 Jesus Lago
 %
 %This work may be distributed and/or modified under the conditions of the LaTeX Project Public License, either version 1.3 of this license or (at your option) any later version.
 %The latest version of this license is in http://www.latex-project.org/lppl.txt and version 1.3 or later is part of all distributions of LaTeX version 2005/12/01 or later.
 %
-%This work has the LPPL maintenance status 'maintained'. The Current Maintainer of this work is J. Lago Garcia.
+%This work has the LPPL maintenance status 'maintained'. The Current Maintainer of this work is J. Lago.
 %
 %E-mail: J.LagoGarcia@tudelft.nl
 %
 %This work consists of the file optidef.sty.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{optidef}[2017/06/21 - version=2.5,  Package for defining optimization problems]
+\ProvidesPackage{optidef}[2017/11/29 - version=2.6,  Package for defining optimization problems]
 
 \RequirePackage{environ}
 \RequirePackage{mathtools}	
@@ -760,6 +762,11 @@ When using the cleveref package in couple with the optidef package two measures 
 }
 
 \ProcessOptions\relax
+
+% This command is required to avoid breakdown of the \equal fragile command. In particular, before I had \equal{#2}{} tp check if argumetn #2 was empty. However, if the argument was a bmatrix object the command was breaking. Now this command is robust.
+\newcommand{\equalsNothing}[3]{%
+\ifthenelse{\equal{\unexpanded{#1}}{}}{#2}{#3}%
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%
 % VARIABLES DEFINITION
@@ -836,7 +843,7 @@ When using the cleveref package in couple with the optidef package two measures 
 
 % Main command. Dynamically redefined at every new problem definition.
 \DeclareDocumentCommand{\bodyconst}{m G{}}
-{	\ifthenelse{\equal{#2}{}}{
+{	\equalsNothing{#2}{
 \\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}} \quad &&#1 #2 
 }{
 \\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}}  \quad &#1 & #2
@@ -859,15 +866,15 @@ When using the cleveref package in couple with the optidef package two measures 
 {%%%
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"
-\ifthenelse{\equal{#3}{}}{%%
-\ifthenelse{\equal{#2}{}}{%
+\equalsNothing{#3}{%%
+\equalsNothing{#2}{%
 \\ & \bodySubjectTo \quad &&#1 #2 	
 }{%
 \\ &\bodySubjectTo \quad &#1 & #2
 }%
 \togglefalse{previousThird}
 }{%%
-\ifthenelse{\equal{#2}{}}{%
+\equalsNothing{#2}{%
 \\ &\bodySubjectTo \quad &&#1 #2 &&#3
 }{%
 \\ &\bodySubjectTo \quad &#1 & #2 &&#3
@@ -882,7 +889,7 @@ When using the cleveref package in couple with the optidef package two measures 
 {
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-\ifthenelse{\equal{#3}{}}{
+\equalsNothing{#3}{
 \\ &\bodySubjectTo\quad &&#1 #2 	\togglefalse{previousThird}
 }{
 \\ &\bodySubjectTo\quad &&#1 #2 &&#3
@@ -895,7 +902,7 @@ When using the cleveref package in couple with the optidef package two measures 
 {
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-\ifthenelse{\equal{#3}{}}{
+\equalsNothing{#3}{
 \\ &\bodySubjectTo \span\span\span\span \\
 &&&#1 #2 \togglefalse{previousThird}
 }{
@@ -910,8 +917,8 @@ When using the cleveref package in couple with the optidef package two measures 
 {
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-\ifthenelse{\equal{#3}{}}{
-\ifthenelse{\equal{#2}{}}{
+\equalsNothing{#3}{
+\equalsNothing{#2}{
 \\ &\bodySubjectTo\span\span\span\span \\
 &&&#1 #2 
 }{
@@ -920,7 +927,7 @@ When using the cleveref package in couple with the optidef package two measures 
 }
 \togglefalse{previousThird}
 }{
-\ifthenelse{\equal{#2}{}}{
+\equalsNothing{#2}{
 \\ &\bodySubjectTo \span\span\span\span \\
 &&&#1 #2 &&#3
 }{
@@ -936,8 +943,8 @@ When using the cleveref package in couple with the optidef package two measures 
 {
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-\ifthenelse{\equal{#3}{}}{
-\ifthenelse{\equal{#2}{}}{
+\equalsNothing{#3}{
+\equalsNothing{#2}{
 \\ &\bodySubjectTo\span\span\span\span \nonumber \\
 &&&#1 #2	
 }{
@@ -946,7 +953,7 @@ When using the cleveref package in couple with the optidef package two measures 
 }
 \togglefalse{previousThird}
 }{
-\ifthenelse{\equal{#2}{}}{
+\equalsNothing{#2}{
 \\ &\bodySubjectTo\span\span\span\span \nonumber \\
 &&&#1 #2	&&#3
 }{
@@ -962,7 +969,7 @@ When using the cleveref package in couple with the optidef package two measures 
 {
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-\ifthenelse{\equal{#3}{}}{
+\equalsNothing{#3}{
 \\ &\bodySubjectTo\span\span\span\span \nonumber \\
 &&&#1 #2		\togglefalse{previousThird}
 }{
@@ -981,9 +988,9 @@ When using the cleveref package in couple with the optidef package two measures 
 % Main command. Dynamically redefined at every problem definiton.
 \DeclareDocumentCommand{\addConstraint}{m G{} G{}}{
 % "If clause" selecting whether a third parameter (#3) defining extra constraint information is used
-\ifthenelse{\equal{#3}{}}{	
+\equalsNothing{#3}{	
 % Second "If clause" selecting whether two or 1 elements for the constraints are used
-\ifthenelse{\equal{#2}{}}{
+\equalsNothing{#2}{
 \iftoggle{bodyCon}{
 \bodyconst{#1}
 \togglefalse{bodyCon}
@@ -1006,7 +1013,7 @@ When using the cleveref package in couple with the optidef package two measures 
 \bodyconst{#1}{#2}{#3}
 \togglefalse{bodyCon}
 }{
-\ifthenelse{\equal{#2}{}}{
+\equalsNothing{#2}{
 \defaultOCPConstraint\\&\quad &&#1 #2 && #3
 }{
 \defaultOCPConstraint\\&\quad &#1 & #2 && #3
@@ -1018,25 +1025,31 @@ When using the cleveref package in couple with the optidef package two measures 
 }
 
 % Standard version of adding constraints
+% The toggle previousThird indicates if the previous constraint had three arguments or two. According to that it adjust the required spans at the end of the previous contraint. It is needed because the line jump after a constraint it is done at the beginning of the next constraint, not after the constraint itself. That avoid the last jump of the last constraint.
+% The toggle bodyCon indicate that it is the first contraint. The first contraint is different that the rest because it contains "subject to"
+% The commands \equalsNothing checks if the optional arguments exists
 \DeclareDocumentCommand{\standardAddConstraint}{m G{} G{}}{
 \iftoggle{previousThird}
-{\renewcommand{\spanit}{}}
-{\renewcommand{\spanit}{\span\span}}
+{
+\renewcommand{\spanit}{}
+}{
+\renewcommand{\spanit}{\span\span}
+}
 \iftoggle{bodyCon}{
 \bodyconstRight{#1}{#2}{#3}
 \togglefalse{bodyCon}
 }{
-\ifthenelse{\equal{#2}{}}{
-\ifthenelse{\equal{#3}{}}{
-\defaultOCPConstraint\spanit\\&\quad &&#1 #2 
+\equalsNothing{#2}{
+\equalsNothing{#3}{
+\defaultOCPConstraint\spanit\\&\quad &&#1 #2
 \togglefalse{previousThird}
 }{
 \defaultOCPConstraint\spanit\\&\quad &&#1 #2 && #3
 \toggletrue{previousThird}
 }
 }{
-\ifthenelse{\equal{#3}{}}{
-\defaultOCPConstraint\spanit\\&\quad &#1 & #2 
+\equalsNothing{#3}{
+\defaultOCPConstraint\spanit\\&\quad &#1 & #2
 \togglefalse{previousThird}
 }{
 \defaultOCPConstraint\spanit\\&\quad &#1 & #2 && #3
@@ -1047,21 +1060,22 @@ When using the cleveref package in couple with the optidef package two measures 
 }
 }
 
+
 % Adding constraints below subject to
 \DeclareDocumentCommand{\BelowAddConstraint}{m G{} G{}}{
 \iftoggle{bodyCon}{
 \bodyconstBelow{#1}{#2}{#3}
 \togglefalse{bodyCon}
 }{
-\ifthenelse{\equal{#2}{}}{
-\ifthenelse{\equal{#3}{}}{
+\equalsNothing{#2}{
+\equalsNothing{#3}{
 \defaultOCPConstraint\spanit\\&&&#1  #2 		\togglefalse{previousThird}
 }{
 \defaultOCPConstraint\spanit\\&&&#1  #2 && #3
 \toggletrue{previousThird}		
 }
 }{
-\ifthenelse{\equal{#3}{}}{
+\equalsNothing{#3}{
 \defaultOCPConstraint\spanit\\ &&#1  &#2 \togglefalse{previousThird}
 }{
 \defaultOCPConstraint\spanit\\ &&#1  &#2 && #3
@@ -1078,7 +1092,7 @@ When using the cleveref package in couple with the optidef package two measures 
 \bodyconstOneAlign{#1}{#2}{#3}
 \togglefalse{bodyCon}
 }{
-\ifthenelse{\equal{#3}{}}{
+\equalsNothing{#3}{
 \defaultOCPConstraint\spanit\\&\quad &&#1  #2 \togglefalse{previousThird}
 }{
 \defaultOCPConstraint\spanit\\&\quad &&#1  #2 && #3
@@ -1094,7 +1108,7 @@ When using the cleveref package in couple with the optidef package two measures 
 \bodyconstOneAlignBelow{#1}{#2}{#3}
 \togglefalse{bodyCon}
 }{
-\ifthenelse{\equal{#3}{}}{
+\equalsNothing{#3}{
 \defaultOCPConstraint\spanit\\& &&#1  #2\togglefalse{previousThird}
 }{
 \defaultOCPConstraint\spanit\\& &&#1  #2 && #3
@@ -1110,15 +1124,15 @@ When using the cleveref package in couple with the optidef package two measures 
 \bodyconstBelowMult{#1}{#2}{#3}
 \togglefalse{bodyCon}
 }{
-\ifthenelse{\equal{#3}{}}{
-\ifthenelse{\equal{#2}{}}{
+\equalsNothing{#3}{
+\equalsNothing{#2}{
 \defaultOCPConstraint\spanit\\&&&#1  #2
 }{
 \defaultOCPConstraint\spanit\\ &&#1  &#2
 }
 \togglefalse{previousThird}
 }{
-\ifthenelse{\equal{#2}{}}{
+\equalsNothing{#2}{
 \defaultOCPConstraint\spanit\\&&&#1  #2 && #3
 }{
 \defaultOCPConstraint\spanit\\ &&#1  &#2&& #3}
@@ -1134,7 +1148,7 @@ When using the cleveref package in couple with the optidef package two measures 
 \bodyconstOneAlignBelowMult{#1}{#2}{#3}
 \togglefalse{bodyCon}
 }{
-\ifthenelse{\equal{#3}{}}{
+\equalsNothing{#3}{
 \defaultOCPConstraint\spanit\\& &&#1  #2 \togglefalse{previousThird}
 }{
 \defaultOCPConstraint\spanit\\& &&#1  #2 && #3
