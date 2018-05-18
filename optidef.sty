@@ -617,6 +617,23 @@
 
 
 
+\DeclareDocumentEnvironment{minie}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{min}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{min}}
+	% Long version problem	
+	{\setFormatLong{minimize}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{minimize}}
+}{\endBaseMiniExclam\toggletrue{bodyCon}}
+
+\DeclareDocumentEnvironment{argminie}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{arg~min}{#2}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
+	% Long version problem	
+	{\setFormatLong{arg~min}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
+}{\endBaseMiniExclam\toggletrue{bodyCon}}
+
+
 
 %MAXIMIZATION ENVIRONMENTS
 
@@ -666,6 +683,23 @@
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
 \DeclareDocumentEnvironment{argmaxi!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{arg~max}{#2}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
+	% Long version problem	
+	{\setFormatLong{arg~max}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
+}{\endBaseMiniExclam\toggletrue{bodyCon}}
+
+% Multiple reference
+\DeclareDocumentEnvironment{maxie}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
+{\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{max}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{max}}
+	% Long version problem	
+	{\setFormatLong{maximize}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{maximize}}
+}{\endBaseMiniExclam\toggletrue{bodyCon}}
+
+\DeclareDocumentEnvironment{argmaxie}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
 	{\setFormatShort{arg~max}{#2}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}

@@ -77,7 +77,7 @@ Considering that \verb|Const.i| stands for constraint $i$, \verb|LHS.i| stands f
 \subsection{Definition of Problem parameters}
 
 \begin{enumerate}[label=(\roman*)]
-	\item \verb|mini#|: defines the type of environment and reference used. There are four environments: \verb|mini|, \verb|maxi|, \verb|argmini|, and \verb|argmaxi|. There are three types of referencing: \verb|mini|, \verb|mini*| and \verb|mini!|. Consult Section \ref{sec:environments} for more details. 
+	\item \verb|mini#|: defines the type of environment and reference used. There are four environments: \verb|mini|, \verb|maxi|, \verb|argmini|, and \verb|argmaxi|. There are three types of referencing: \verb|mini|, \verb|mini*| and \verb|minie|. Consult Section \ref{sec:environments} for more details. 
 	\item (Optional) \verb|sizeFormat|: optional parameter to define the size format of the problem. The possible values are:
 	\begin{itemize}
 		\item l: for the long format as defined in Section \ref{sec:longshort}.
@@ -92,7 +92,7 @@ Considering that \verb|Const.i| stands for constraint $i$, \verb|LHS.i| stands f
 	\end{itemize}
 	\item \verb|optimizationVariable|: variable to be optimizated in the problem, e.g. $w \in \Re^N$.
 	\item \verb|objectiveFunction\label{objective}|: function to be minimized/maximized as a function of the optimization variable, e.g. $\|w\|_2$. If required, the objective function label should also be included withing this term
-	\item \verb|\label{optimizationProblem}|: it defines the main and general reference for the optimization problem. It is used for the \verb|mini| and \verb|mini!| enviroments. In the \verb|mini*| environment should be left blank, i.e. \{\}, \textbf{not to be ommited}.
+	\item \verb|\label{optimizationProblem}|: it defines the main and general reference for the optimization problem. It is used for the \verb|mini| and \verb|minie| enviroments. In the \verb|mini*| environment should be left blank, i.e. \{\}, \textbf{not to be ommited}.
 	\item \verb|optimizationResult|: a term expressing the result of the optimization problem, e.g. $J(w^*)~=$. If not needed leave it blank, \textbf{not to be ommited}.
 \end{enumerate}
 
@@ -114,12 +114,12 @@ The command accepts three different parameters
 \end{enumerate}
 
 \subsubsection{Constraints referencing}
-Notice that the label for the constraints is always included in the right hand side expression and it only makes sense for the case of using the \verb|mini!| enviroment. The label of the objective function can also be included in a similar way.
+Notice that the label for the constraints is always included in the right hand side expression and it only makes sense for the case of using the \verb|minie| enviroment. The label of the objective function can also be included in a similar way.
 
 
 \section{Environment Types}
 \label{sec:environments}
-There are three basic environments depending on the type of referencing that should be used.
+There are four basic environments depending on the type of referencing that should be used.
 \begin{enumerate}
 	\item The \textbf{mini} environment for defining problems with a single reference label:
 	\begin{mini}
@@ -134,12 +134,13 @@ There are three basic environments depending on the type of referencing that sho
 		{}{}
 		\addConstraint{g(w)}{=0}
 	\end{mini*}
-	\item  The \textbf{mini!} environment if each equation should be referenced:
-	\begin{mini!}
+	\item  The \textbf{minie} environment if each equation should be referenced:
+	\begin{minie}
 		{w}{f(w)+ R(w+6x)\label{eq:Ex2}}
 		{\label{eq:Ex1}}{}
 		\addConstraint{g(w)}{=0}
-	\end{mini!}		
+	\end{minie}	
+\item The \textbf{mini!} environment: in older versions of the package it was the same as the current \textbf{minie} environment. \textbf{mini!} has been re-branded to \textbf{minie} for compatibility issues with some languages in the babel package. While its use is deprecated, it is kept in the package to ensure back-compatibility with old documents.
 \end{enumerate}
 
 \noindent Additionally, there are four basic definitions of optimization problems:
@@ -393,12 +394,12 @@ On the other hand:
 	\addConstraint{h(x)}{=0.}
 \end{mini*}
 
-\subsection{Example 3 - mini! environment}
+\subsection{Example 3 - minie environment}
 
 \noindent Finally, the multireferencing environment outputs:
 
 \begin{verbatim}
-\begin{mini!}
+\begin{minie}
    {w}{f(w)+ R(w+6x) \label{eq:ObjectiveExample1}}
    {\label{eq:Example1}}{}
 
@@ -406,10 +407,10 @@ On the other hand:
    \addConstraint{n(w)}{= 6 \label{eq:C2Example1}}
    \addConstraint{L(w)+r(x)}{=Kw+p \label{eq:C3Example1}}
    \addConstraint{h(x)}{=0. \label{eq:C4Example1}}
-\end{mini!}
+\end{minie}
 \end{verbatim}
 
-\begin{mini!}
+\begin{minie}
 	{w}{f(w)+ R(w+6x)\label{eq:ObjectiveExample3}}
 	{\label{eq:Example3}}
 	{}
@@ -417,7 +418,7 @@ On the other hand:
 	\addConstraint{n(w)}{= 6 \label{eq:C2Example3}}
 	\addConstraint{L(w)+r(x)}{=Kw+p \label{eq:C3Example3}}
 	\addConstraint{h(x)}{=0.\label{eq:C4Example3}}
-\end{mini!}
+\end{minie}
 
 \subsection{Example 4 - Problem Result}
 
@@ -593,7 +594,7 @@ Adding optional alignment to add constraint names:
 \end{verbatim}
 
 \subsection{Example 10 - The \textit{argmini} Environment}
-Similar to the \verb|mini|, \verb|mini*| and \verb|mini!| environments, the environments \verb|argmini|, \verb|argmini*| and \verb|argmini!| are very similar environments that use the same syntax but the output is slightly different:
+Similar to the \verb|mini|, \verb|mini*| and \verb|minie| environments, the environments \verb|argmini|, \verb|argmini*| and \verb|argminie| are very similar environments that use the same syntax but the output is slightly different:
 
 \begin{verbatim}
 \begin{argmini}
@@ -651,17 +652,17 @@ Exactly the same syntax and definition as the previous environments, but now for
 \subsection{Example 12 - All Possible Parameters}
 
 \begin{verbatim}
-\begin{mini*}|s|[1]
+\begin{minie}|s|[1]
 {w}{f(w)+ R(w+6x)}
 {}{w^*=}
 \addConstraint{g(w)}{=0,}{ \quad  \text{(Dynamic constraint)}}
 \addConstraint{n(w)}{= 6,}{ \quad  \text{(Boundary constraint)}}
 \addConstraint{L(w)+r(x)}{=Kw+p,}{ \quad  \text{(Random constraint)}}
 \addConstraint{h(x)}{=0,}{ \quad  \text{(Path constraint).}}
-\end{mini*}
+\end{minie}
 \end{verbatim}
 
-\begin{mini!}|s|[2]
+\begin{minie}|s|[2]
 	{w}{f(w)+ R(w+6x)\label{eq:ObjectiveExample3}}
 	{\label{eq:Example3}}
 	{w^*=}
@@ -669,35 +670,37 @@ Exactly the same syntax and definition as the previous environments, but now for
 	\addConstraint{n(w)}{= 6 \label{eq:C2Example3}}
 	\addConstraint{L(w)+r(x)}{=Kw+p \label{eq:C3Example3}}
 	\addConstraint{h(x)}{=0.\label{eq:C4Example3}}
-\end{mini!}
+\end{minie}
 
 
 \section{Long Optimization Variables}
 The standard appearance for long optimization variables is as follows:
 
-\begin{mini!}
+\begin{minie}
 	{x_0,u_0,x_1,\hdots,u_{N-1},x_N}
 	{\sum_{k=0}^{N-1} L(x_k,u_k)\!\!+\!\!E(x_N)\label{OCPobj}}
 	{\label{eq:OCP}}{}
 	\addConstraint{x_{k+1}-f(x_k,u_k)}{=  0, \label{dOCP:modelc}\quad k=0,\dots,N-1}
 	\addConstraint{h(x_k,u_k)}{\leq 0,  \quad k=0,\dots,N-1}
 	\addConstraint{r(x_0,x_N)}{= 0.  \label{dOCP:boundary}}
-\end{mini!}
+\end{minie}
 
 \noindent A possible way to reduce the large variable spacing is to stack them with the command: \begin{verbatim}
 \substack{x_0,u_0,x_1,\hdots,\\u_{N-1},x_N}
 \end{verbatim}
 
-\begin{mini!}
+\begin{minie}
 	{\substack{x_0,u_0,x_1,\hdots,\\ u_{N-1},x_N}}
 	{\sum_{k=0}^{N-1} L(x_k,u_k)\!\!+\!\!E(x_N)\label{OCPobj}}
 	{\label{eq:OCP}}{}
 	\addConstraint{x_{k+1}-f(x_k,u_k)}{=  0, \label{dOCP:modelc}\quad k=0,\dots,N-1}
 	\addConstraint{h(x_k,u_k)}{\leq 0,  \quad k=0,\dots,N-1}
 	\addConstraint{r(x_0,x_N)}{= 0.  \label{dOCP:boundary}}
-\end{mini!}
+\end{minie}
 
 \section{Compatibility issues with other packages}
+Issues with two different packages have been reported: cleveref and babel.
+\subsection{Cleveref}
 When using the cleveref package in couple with the optidef package two measures have to taken for the packages to work properly:
 
 \begin{enumerate}
@@ -714,13 +717,13 @@ When using the cleveref package in couple with the optidef package two measures 
   
   \begin{document}
   
-  \begin{mini!}
+  \begin{minie}
     {w}{f(w)+ R(w+6x) \protect\label{eq:ObjectiveExample1}}
     {\label{eq:Example1}}{}
     \addConstraint{g(w)}{=0 \protect\label{eq:C1Example3}}
     \addConstraint{n(w)}{= 6 \protect\label{eq:C2Example1}}
     \addConstraint{L(w)+r(x)}{=Kw+p \protect\label{eq:C3Example1}}
-  \end{mini!}
+  \end{minie}
 
   Example labels: \cref{eq:Example1} and \cref{eq:ObjectiveExample1}.
 
@@ -735,6 +738,10 @@ As an alternative to the second step, i.e.~protecting the \verb|\label| command,
 \robustify{\label} 	
 \end{verbatim}
 
+\subsection{Babel}
+When importing the package babel with some specific languages, e.g.~French, the \verb|mini!| environment clashes because of the exclamation mark. 
+
+This issue has been resolved starting from Optidef 3.0, where the \verb|mini!| environment has been renamed \verb|minie|. The old environment \verb|mini!| will be kept in the library to ensure back-compatibility, but it is recommended to use the \verb|minie| environment to avoid any issue.
 
 \section{Reporting bugs and feature requests}
 To report any bug or request some feature please use the issue section in the github repository: \url{https://github.com/jeslago/optidef/issues}. 
@@ -1330,7 +1337,7 @@ To report any bug or request some feature please use the issue section in the gi
 
 
 % Multiple reference
-\DeclareDocumentEnvironment{mini!}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{minie}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
 {\setFormatShort{min}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{min}}
@@ -1338,7 +1345,7 @@ To report any bug or request some feature please use the issue section in the gi
 {\setFormatLong{minimize}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{minimize}}
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
-\DeclareDocumentEnvironment{argmini!}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{argminie}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
 {\setFormatShort{arg~min}{#2}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
@@ -1388,7 +1395,7 @@ To report any bug or request some feature please use the issue section in the gi
 
 
 % Multiple reference
-\DeclareDocumentEnvironment{maxi!}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{maxie}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
 {\setFormatShort{max}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{max}}
@@ -1396,7 +1403,7 @@ To report any bug or request some feature please use the issue section in the gi
 {\setFormatLong{maximize}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{maximize}}
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
-\DeclareDocumentEnvironment{argmaxi!}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{argmaxie}{D||{\defaultProblemFormat} O{0} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
 {\setFormatShort{arg~max}{#2}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
