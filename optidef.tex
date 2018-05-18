@@ -43,13 +43,17 @@ The package can be imported by directly adding
 \begin{lstlisting}
 \usepackage{optidef}
 \end{lstlisting}
-to the document preamble. When importing the packages two options can be used, \verb|short| and \verb|nocomma|:
+to the document preamble. When importing the packages three options can be used, \verb|short|, \verb|nocomma|, and either \verb|c1|, \verb|c2|, or \verb|c3|:
 
 \begin{lstlisting}
-\usepackage[short,nocomma]{optidef}
+\usepackage[short,c1|c2|c3,nocomma]{optidef}
 \end{lstlisting}
 
-For an explanation of the \verb|short| option check Section \ref{sec:longshort}. For the \verb|nocomma| option check Section \ref{sec:comma}. For a detailed description of how to use the package keep reading the next section.
+The first option changes the default long format of the optimization problems to a shorter format; for a better explanation (including examples) of the \verb|short| option check Section \ref{sec:longshort}. 
+
+The options \verb|c1|, \verb|c2|, and \verb|c3| change the default format of the constraints; the default format is format 0 (as defined in Section \ref{sec:format}); \verb|c1|, \verb|c2|, and \verb|c3| respectively change the default constraint arrangement to format 1, 2, and 3. For a better explanation of the four formats including examples, we refer to Section \ref{sec:format}.
+
+For the \verb|nocomma| option check Section \ref{sec:comma}. For a detailed description of how to use the package keep reading the next section.
 
 \section{Environment Syntax Definition}
 \label{sec:syntax}
@@ -228,16 +232,17 @@ Selected by \verb|sizeFormat|=s. It uses instead the shorter \textit{s.t.} and \
 \section{Output Formats for the Constraints}
 \label{sec:format}
 There are four basic output formats for the location of the constraints. They are controlled by the environment parameter \verb|constraintFormat|.
-\subsection{Standard Format}
-	It is the default format and if \verb|constraintFormat| left blank it is used. Alternatively can be also set by selecting \verb|constraintFormat|=0.
-	
- 	By default the constraints are aligned with the objective function, to the right of \textit{subject to} and with a second alignment point at the $=,~\leq,~\geq$:
+\subsection{Alternative 0}
+In this format option, the constraints are located to the right of \textit{subject to} and aligned with the objective function. It also has a second alignment point at the $=,~\leq,~\geq$ signs:
  	\begin{mini}
  		{w}{f(w)+ R(w+6x)}
  		{\label{eq:Ex1}}{}
  		\addConstraint{g(w)+h(w)}{=0}
  		\addConstraint{t(w)}{=0.}
  	\end{mini}
+
+\noindent	It is the default format if no format option is provided. Alternatively, it can also be set by selecting \verb|constraintFormat|=0.  
+ 
 \subsection{Alternative 1} 	
 	Selected by \verb|constraintFormat|=1. It locates the constraints below \textit{subject to} and keeps them aligned at the inequality/equality signs:
  	\begin{mini}[1]
@@ -263,6 +268,10 @@ There are four basic output formats for the location of the constraints. They ar
  		\addConstraint{t(w)}{=0.}
  	\end{mini} 	
 
+\begin{lstlisting}
+	\usepackage[c1|c2|c3]{optidef}
+	\end{lstlisting} 
+
  \subsection{Extra alignment alternative} 		
  \label{sec:extraAlign}
 By default, the constraints have 2 aligned elements. However, a third alignment point can be used to set some constraint features. A clear example could be the constraints names:
@@ -281,6 +290,11 @@ This extra alignment point can be added using a third input parameter on the \ve
 \begin{lstlisting}
 \addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
 \end{lstlisting}
+
+
+\subsection{Default format}
+The default format is alternative 0. To change the default format across the whole document, the package can be imported using one of the three options: \verb|c1|, \verb|c2|, \verb|c3|, i.e.:
+
 
 \section{Breaking the objective across several lines}
 \label{sec:breakObj}

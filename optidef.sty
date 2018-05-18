@@ -16,6 +16,7 @@
 
 \RequirePackage{environ}
 \RequirePackage{mathtools}	
+
 \RequirePackage{xifthen}
 \RequirePackage{etoolbox}	
 \RequirePackage{xparse}	
@@ -27,6 +28,7 @@
 % Default
 \newcommand{\defaultOCPConstraint}{,}
 \newcommand{\defaultProblemFormat}{l}
+\newcommand{\defaultConstraintFormat}{0}
 
 \DeclareOption{short}{
 	\renewcommand{\defaultProblemFormat}{s}
@@ -38,6 +40,16 @@
 
 \DeclareOption{nocomma}{
 	\renewcommand{\defaultOCPConstraint}{}
+}
+
+\DeclareOption{c1}{
+	\renewcommand{\defaultConstraintFormat}{1}
+}
+\DeclareOption{c2}{
+	\renewcommand{\defaultConstraintFormat}{2}
+}
+\DeclareOption{c3}{
+	\renewcommand{\defaultConstraintFormat}{3}
 }
 
 \ProcessOptions\relax
@@ -551,7 +563,7 @@
 % In the below definitions, \toggletrue{bodyCon} has to be added once the definition of the environment is finished. I tried to do inside the environment itself using \setStandardMini, but it produced some ugly text displacemente.
 
 % Single reference probems
-\DeclareDocumentEnvironment{mini}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{mini}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
 {\setFormatShort{min}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{min}}
@@ -559,7 +571,7 @@
 {\setFormatLong{minimize}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{minimize}}
 }{\endBaseMini\toggletrue{bodyCon}}
 
-\DeclareDocumentEnvironment{argmini}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{argmini}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
 {\setFormatShort{arg~min}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~min}}
@@ -569,7 +581,7 @@
 
 
 % No reference
-\DeclareDocumentEnvironment{mini*}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{mini*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
 	{\setFormatShort{min}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{min}}
@@ -577,7 +589,7 @@
 	{\setFormatLong{minimize}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{minimize}}
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 		
-\DeclareDocumentEnvironment{argmini*}{D||{l} O{0} m m m m}
+\DeclareDocumentEnvironment{argmini*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
 {\setFormatShort{arg~min}{#2}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~min}}
@@ -587,7 +599,7 @@
 
 
 % Multiple reference
-\DeclareDocumentEnvironment{mini!}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{mini!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
 	{\setFormatShort{min}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{min}}
@@ -595,7 +607,7 @@
 	{\setFormatLong{minimize}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{minimize}}
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
-\DeclareDocumentEnvironment{argmini!}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{argmini!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
 	{\setFormatShort{arg~min}{#2}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~min}}
@@ -609,7 +621,7 @@
 %MAXIMIZATION ENVIRONMENTS
 
 % Single reference probems
-\DeclareDocumentEnvironment{maxi}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{maxi}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
 	{\setFormatShort{max}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{max}}
@@ -617,7 +629,7 @@
 	{\setFormatLong{maximize}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{maximize}}
 }{\endBaseMini\toggletrue{bodyCon}}
 
-\DeclareDocumentEnvironment{argmaxi}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{argmaxi}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
 	{\setFormatShort{arg~max}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~max}}
@@ -627,7 +639,7 @@
 
 
 % No reference
-\DeclareDocumentEnvironment{maxi*}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{maxi*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
 	{\setFormatShort{max}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{max}}
@@ -635,7 +647,7 @@
 	{\setFormatLong{maximize}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{maximize}}
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
-\DeclareDocumentEnvironment{argmaxi*}{D||{l} O{0} m m m m}
+\DeclareDocumentEnvironment{argmaxi*}{D||{l} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
 	{\setFormatShort{arg~max}{#2}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~max}}
@@ -645,7 +657,7 @@
 
 
 % Multiple reference
-\DeclareDocumentEnvironment{maxi!}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{maxi!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
 	{\setFormatShort{max}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{max}}
@@ -653,7 +665,7 @@
 	{\setFormatLong{maximize}{#2} \BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{maximize}}
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
-\DeclareDocumentEnvironment{argmaxi!}{D||{\defaultProblemFormat} O{0} m m m m}
+\DeclareDocumentEnvironment{argmaxi!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
 	{\setFormatShort{arg~max}{#2}\BaseMiniExclam{#2}{#3}{#4}{#5}{#6}{arg~max}}
