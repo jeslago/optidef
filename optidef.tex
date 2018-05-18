@@ -727,7 +727,15 @@ When using the cleveref package in couple with the optidef package two measures 
   \end{document}
 \end{verbatim}
 
+As an alternative to the second step, i.e.~protecting the \verb|\label| command, the command can be robustify in the document preamble and then \verb|\protect| is not longer needed. To robustify the \verb|\label| command, the following has to be added to the preamble:
 	
+	
+\begin{verbatim}
+\usepackage{etoolbox}
+\robustify{\label} 	
+\end{verbatim}
+
+
 \section{Reporting bugs and feature requests}
 To report any bug or request some feature please use the issue section in the github repository: \url{https://github.com/jeslago/optidef/issues}. 
 
