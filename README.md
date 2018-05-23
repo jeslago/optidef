@@ -66,7 +66,7 @@ E-mail: J.LagoGarcia(at)tudelft.nl
 
 Github: https://github.com/jeslago/optidef
 
-## Latest stable version: Optidef 2.6
+## Latest stable version: Optidef 2.7
 
 CTAN: https://www.ctan.org/pkg/optidef
 
