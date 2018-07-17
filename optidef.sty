@@ -580,21 +580,44 @@
 % In the below definitions, \toggletrue{bodyCon} has to be added once the definition of the environment is finished. I tried to do inside the environment itself using \setStandardMini, but it produced some ugly text displacemente.
 
 % Single reference probems
-\DeclareDocumentEnvironment{mini}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
-{\ifthenelse{\equal{#1}{s}}
-% Short version problem
-{\setFormatShort{min}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{min}}
-% Long version problem	
-{\setFormatLong{minimize}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{minimize}}
-}{\endBaseMini\toggletrue{bodyCon}}
+\DeclareDocumentEnvironment{mini}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{
+\ifthenelse{\equal{#3}{b}}
+{
+	\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{min}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{min}{#3}}
+	% Long version problem	
+	{\setFormatLong{minimize}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{minimize}{#3}}
+}
+{
+	\ifthenelse{\equal{#1}{s}}
+	% Short version problem
+	{\setFormatShort{min}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{min}}
+	% Long version problem	
+	{\setFormatLong{minimize}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{minimize}}
+}
+}%
+{\endBaseMini\toggletrue{bodyCon}}
 
-\DeclareDocumentEnvironment{argmini}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
-{\ifthenelse{\equal{#1}{s}}
-% Short version problem
-{\setFormatShort{arg~min}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~min}}
-% Long version problem	
-{\setFormatLong{arg~min}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~min}}
-}{\endBaseMini\toggletrue{bodyCon}}
+
+\DeclareDocumentEnvironment{argmini}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{
+	\ifthenelse{\equal{#3}{b}}
+	{
+		\ifthenelse{\equal{#1}{s}}
+		% Short version problem
+		{\setFormatShort{arg~min}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~min}{#3}}
+		% Long version problem	
+		{\setFormatLong{arg~min}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~min}{#3}}
+	}
+	{
+		\ifthenelse{\equal{#1}{s}}
+		% Short version problem
+		{\setFormatShort{arg~min}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{arg~min}}
+		% Long version problem	
+		{\setFormatLong{arg~min}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{arg~min}}
+	}
+}%
+{\endBaseMini\toggletrue{bodyCon}}
 
 
 % No reference
@@ -655,22 +678,44 @@
 %MAXIMIZATION ENVIRONMENTS
 
 % Single reference probems
-\DeclareDocumentEnvironment{maxi}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
-{\ifthenelse{\equal{#1}{s}}
-	% Short version problem
-	{\setFormatShort{max}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{max}}
-	% Long version problem	
-	{\setFormatLong{maximize}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{maximize}}
-}{\endBaseMini\toggletrue{bodyCon}}
+\DeclareDocumentEnvironment{maxi}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{
+	\ifthenelse{\equal{#3}{b}}
+	{
+		\ifthenelse{\equal{#1}{s}}
+		% Short version problem
+		{\setFormatShort{max}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{max}{#3}}
+		% Long version problem	
+		{\setFormatLong{maximize}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{maximize}{#3}}
+	}
+	{
+		\ifthenelse{\equal{#1}{s}}
+		% Short version problem
+		{\setFormatShort{max}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{max}}
+		% Long version problem	
+		{\setFormatLong{maximize}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{maximize}}
+	}
+}%
+{\endBaseMini\toggletrue{bodyCon}}
 
-\DeclareDocumentEnvironment{argmaxi}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
-{\ifthenelse{\equal{#1}{s}}
-	% Short version problem
-	{\setFormatShort{arg~max}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~max}}
-	% Long version problem	
-	{\setFormatLong{arg~max}{#2} \BaseMini{#2}{#3}{#4}{#5}{#6}{arg~max}}
-}{\endBaseMini\toggletrue{bodyCon}}
 
+\DeclareDocumentEnvironment{argmaxi}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{
+	\ifthenelse{\equal{#3}{b}}
+	{
+		\ifthenelse{\equal{#1}{s}}
+		% Short version problem
+		{\setFormatShort{arg~max}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~max}{#3}}
+		% Long version problem	
+		{\setFormatLong{arg~max}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~max}{#3}}
+	}
+	{
+		\ifthenelse{\equal{#1}{s}}
+		% Short version problem
+		{\setFormatShort{arg~max}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{arg~max}}
+		% Long version problem	
+		{\setFormatLong{arg~max}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{arg~max}}
+	}
+}%
+{\endBaseMini\toggletrue{bodyCon}}
 
 % No reference
 \DeclareDocumentEnvironment{maxi*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
