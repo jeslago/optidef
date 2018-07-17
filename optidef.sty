@@ -26,9 +26,11 @@
 % DEFINING PACKAGE OPTIONS
 %%%%%%%%%%%%%%%%%%%%%%%
 % Default
+\allowdisplaybreaks
 \newcommand{\defaultOCPConstraint}{,}
 \newcommand{\defaultProblemFormat}{l}
 \newcommand{\defaultConstraintFormat}{0}
+\newcommand{\labelOP}[1]{\stepcounter{equation}\tag{\theequation}\label{#1}}
 
 \DeclareOption{short}{
 	\renewcommand{\defaultProblemFormat}{s}
