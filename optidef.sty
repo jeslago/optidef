@@ -26,7 +26,7 @@
 % DEFINING PACKAGE OPTIONS
 %%%%%%%%%%%%%%%%%%%%%%%
 % Default
-\allowdisplaybreaks
+
 \newcommand{\defaultOCPConstraint}{,}
 \newcommand{\defaultProblemFormat}{l}
 \newcommand{\defaultConstraintFormat}{0}
@@ -521,6 +521,7 @@
 % Base environment for the three possible types of referencing: 1 label, no label or multilabel
 % Base environment defined using NewEnviron package because of \BODY command
 \NewEnviron{BaseMini}[6]{%
+	
 \selectConstraint{#1}
 \renewcommand{\localOptimalVariable}{#2}
 \begin{equation}
@@ -529,17 +530,24 @@
 \bodyobj{#2}{#3}{#6}{#5}
 \BODY
 \end{alignedat}
-\end{equation}	
+\end{equation}
 \setStandardMini
 }
 
-\NewEnviron{BaseMiniStar}[5]{%
+\NewEnviron{BaseMiniStar}[6]{%
 \selectConstraint{#1}
 \renewcommand{\localOptimalVariable}{#2}
+\ifthenelse{\equal{#6}{b}}{
+	\begingroup
+	\allowdisplaybreaks
+}{}
 \begin{alignat*}{5}
 \bodyobj{#2}{#3}{#5}{#4}
 \BODY
 \end{alignat*}
+\ifthenelse{\equal{#6}{b}}{
+	\endgroup
+}{}
 \setStandardMini
 }
 
@@ -583,20 +591,20 @@
 
 
 % No reference
-\DeclareDocumentEnvironment{mini*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
+\DeclareDocumentEnvironment{mini*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 	% Short version problem
-	{\setFormatShort{min}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{min}}
+	{\setFormatShort{min}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{min}{#3}}
 	% Long version problem	
-	{\setFormatLong{minimize}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{minimize}}
+	{\setFormatLong{minimize}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{minimize}{#3}}
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 		
-\DeclareDocumentEnvironment{argmini*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
+\DeclareDocumentEnvironment{argmini*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
 {\ifthenelse{\equal{#1}{s}}
 % Short version problem
-{\setFormatShort{arg~min}{#2}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~min}}
+{\setFormatShort{arg~min}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~min}{#3}}
 % Long version problem	
-{\setFormatLong{arg~min}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{arg~min}}
+{\setFormatLong{arg~min}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~min}{#3}}
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
 
@@ -658,20 +666,20 @@
 
 
 % No reference
-\DeclareDocumentEnvironment{maxi*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} m m m m}
+\DeclareDocumentEnvironment{maxi*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
 {\ifthenelse{\equal{#1}{s}}
-	% Short version problem
-	{\setFormatShort{max}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{max}}
-	% Long version problem	
-	{\setFormatLong{maximize}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{maximize}}
+% Short version problem
+{\setFormatShort{max}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{max}{#3}}
+% Long version problem	
+{\setFormatLong{maximize}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{maximize}{#3}}	
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
 \DeclareDocumentEnvironment{argmaxi*}{D||{l} O{\defaultConstraintFormat} m m m m}
 {\ifthenelse{\equal{#1}{s}}
-	% Short version problem
-	{\setFormatShort{arg~max}{#2}\BaseMiniStar{#2}{#3}{#4}{#6}{arg~max}}
-	% Long version problem	
-	{\setFormatLong{arg~max}{#2} \BaseMiniStar{#2}{#3}{#4}{#6}{arg~max}}
+% Short version problem
+{\setFormatShort{arg~max}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~max}{#3}}
+% Long version problem	
+{\setFormatLong{arg~max}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~max}{#3}}		
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
 
