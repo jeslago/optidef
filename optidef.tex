@@ -7,7 +7,7 @@
 
 \lstset{basicstyle=\ttfamily,breaklines=true}
 % Title Page
-\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 2.7}}
+\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 3.0rc1}}
 
 \author{Jesus Lago}
 
@@ -60,7 +60,7 @@ For the \verb|nocomma| option check Section \ref{sec:comma}. For a detailed desc
 Considering that \verb|Const.i| stands for constraint $i$, \verb|LHS.i| stands for the left-hand-side of constraint $i$, and \verb|RHS.i| for the right-hand-side counterpart, the basic structure to define a general optimization problem with $N$ constraints is:
 \begin{verbatim}
 
-\begin{mini#}|sizeFormat|[constraintFormat]
+\begin{mini#}|sizeFormat|[constraintFormat]<break>
 {optimizationVariable}
 {objectiveFunction\label{objective}}
 {\label{optimizationProblem}}  
@@ -90,6 +90,7 @@ Considering that \verb|Const.i| stands for constraint $i$, \verb|LHS.i| stands f
 	\item 2: for Alternative 2 in Section \ref{sec:format}
 	\item 3: for Alternative 3 in Section \ref{sec:format}		
 	\end{itemize}
+	\item (Optional) \verb|break|: optional parameter to allow the optimization problem to break across multiple pages. For details on this feature, check Section \ref{sec:breakpages}.
 	\item \verb|optimizationVariable|: variable to be optimizated in the problem, e.g. $w \in \Re^N$.
 	\item \verb|objectiveFunction\label{objective}|: function to be minimized/maximized as a function of the optimization variable, e.g. $\|w\|_2$. If required, the objective function label should also be included withing this term
 	\item \verb|\label{optimizationProblem}|: it defines the main and general reference for the optimization problem. It is used for the \verb|mini| and \verb|mini!| enviroments. In the \verb|mini*| environment should be left blank, i.e. \{\}, \textbf{not to be ommited}.
@@ -297,6 +298,58 @@ This extra alignment point can be added using a third input parameter on the \ve
 \subsection{Default format}
 The default format is alternative 0. To change the default format across the whole document, the package can be imported using one of the three options: \verb|c1|, \verb|c2|, \verb|c3|, i.e.:
 
+\section{Breaking the optimization problem across multiple pages}
+\label{sec:breakpages}
+In several cases, people encounter the problem of having an optimization problem that is too long to fit in a single page. In those cases, optidef can automatically break the problem across multiple pages by simply using the optional argument \verb|<b>|. For example:
+
+\begin{lstlisting}
+\begin{mini*}<b>
+{w,u}{f(w)+ R(w+6x)+ H(100w-x*w/500)}{}{}
+\breakObjective{-g(w^3-x^2*200+10000*w^5)}
+\addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1}
+\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
+\end{mini*}
+\end{lstlisting}
+
+For the \verb|mini|, \verb|maxi|, \verb|argmini|, and \verb|argmaxi| environments, when the option \verb|<b>| is provided, the environment does not automatically set the numbering nor the label of the environment. To create the number/label, the command \verb|\labelOP{label}| should be used. In particular, in the equation/constraint of the optimization problem where the label/number should be located, simply add \verb|\labelOP{label}|. For example, the following code:
+
+\begin{lstlisting}
+\begin{mini}<b>
+{w,u}{f(w)+ R(w+6x)+ H(100w-x*w/500)}{}{}
+\breakObjective{-g(w^3-x^2*200+10000*w^5)}
+\addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1 \labelOP{eq:label}}
+\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
+\end{mini}
+\end{lstlisting}
+
+\noindent would display this:
+
+\begin{mini}<b>
+	{w,u}{f(w)+ R(w+6x)+ H(100w-x*w/500)}{}{}
+	\breakObjective{-g(w^3-x^2*200+10000*w^5)}
+	\addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1 \labelOP{eq:label}}
+	\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
+\end{mini}
+
+In addition to automatic breaking equations, manual breaks at selected locations can also be done using the \verb|\displaybreak| command. Just add \verb|\displaybreak| between the two constraints that need to be broken, e.g.:
+
+\begin{lstlisting}
+\begin{mini}<b>
+{w,u}{f(w)+ R(w+6x)+ H(100w-x*w/500)}{}{}
+\breakObjective{-g(w^3-x^2*200+10000*w^5)}
+\addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1 \labelOP{eq:label}}
+\displaybreak
+\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
+\end{mini}
+\end{lstlisting}
+\noindent would display:
+\begin{mini}<b>
+	{w,u}{f(w)+ R(w+6x)+ H(100w-x*w/500)}{}{}
+	\breakObjective{-g(w^3-x^2*200+10000*w^5)}
+	\addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1 \labelOP{eq:label}}
+	\displaybreak
+	\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
+\end{mini}
 
 \section{Breaking the objective across several lines}
 \label{sec:breakObj}
@@ -370,7 +423,7 @@ The standard appearance for long optimization variables is as follows:
 \end{mini!}
 
 \section{Compatibility issues with other packages}
-Issues with two different packages have been reported: cleveref and babel.
+Issues with three different packages have been reported: cleveref, babel, and mathabx.
 \subsection{Cleveref}
 When using the cleveref package in couple with the optidef package two measures have to taken for the packages to work properly:
 
@@ -414,6 +467,15 @@ As an alternative to the second step, i.e.~protecting the \verb|\label| command,
 When importing the package babel with some specific languages, e.g.~French, the \verb|mini!| environment clashes because of the exclamation mark. 
 
 This issue has been resolved starting from Optidef 2.7, where a working alternative to the \verb|mini!| environment is included: the \verb|minie| enviroment. Both environemnts have the same functionality, but when using the babel package it is recommended to use the \verb|minie| environment to avoid issues.
+
+\subsection{Mathabx}
+When using the mathabx package in couple with the optidef package, the optidef package must be loaded first in order to avoid malfunction of the mathabx package. In addition, the amsmath package should also be loaded before both of them. The preamble should look like:
+
+\begin{verbatim}
+\usepackage{amsmath}
+\usepackage{mathabx}
+\usepackage{optidef}
+\end{verbatim}
 
 
 \section{Examples}
@@ -635,6 +697,8 @@ On the other hand:
 	\addConstraint{h(x)}{=0.}
 \end{mini}
 
+
+
 \subsection{Example 9 - Breaking a long objective}
 \begin{lstlisting}
 \begin{mini*}
@@ -653,7 +717,7 @@ outputs:
 \end{mini}
 
 
-\subsection{Example 9 - Extra Alignment in the Constraints}
+\subsection{Example 10 - Extra Alignment in the Constraints}
 \label{ex:extra}
 Adding optional alignment to add constraint names:
 
@@ -668,7 +732,7 @@ Adding optional alignment to add constraint names:
 \end{mini*}
 \end{verbatim}
 
-\subsection{Example 10 - The \textit{argmini} Environment}
+\subsection{Example 11 - The \textit{argmini} Environment}
 Similar to the \verb|mini|, \verb|mini*| and \verb|mini!| environments, the environments \verb|argmini|, \verb|argmini*| and \verb|argmini!| are very similar environments that use the same syntax but the output is slightly different:
 
 \begin{verbatim}
@@ -695,7 +759,7 @@ Similar to the \verb|mini|, \verb|mini*| and \verb|mini!| environments, the envi
 	\addConstraint{h(x)}{=0.}
 \end{argmini}
 
-\subsection{Example 11 - The \textit{maxi} and \textit{argmaxi} Environments}
+\subsection{Example 12 - The \textit{maxi} and \textit{argmaxi} Environments}
 Exactly the same syntax and definition as the previous environments, but now for defining maximization environments. The following code serves for illustration:
 
 \begin{verbatim}
@@ -723,11 +787,40 @@ Exactly the same syntax and definition as the previous environments, but now for
 	\addConstraint{h(x)}{=0.}
 \end{maxi}
 
+\subsection{Example 13 - Breaking optimization problem}
+\begin{lstlisting}
+\begin{mini}<b>
+{w}{f(w)+ R(w+6x)}
+{\label{eq:Example1}}{}
+\addConstraint{g(w)}{=0}
+\addConstraint{n(w)}{= 6}
+\addConstraint{L(w)+r(x)}{=Kw+p}
+\addConstraint{h(x)}{=0.}
+\end{mini}
 
-\subsection{Example 12 - All Possible Parameters}
+\end{lstlisting}
+outputs:
+\begin{mini}<b>
+	{w}{f(w)+ R(w+6x)}
+{\label{eq:Example1}}{}
+\addConstraint{g(w)}{=0}
+%\addConstraint{p(w)}{=0}
+%\addConstraint{q(w)}{=0}
+%\addConstraint{r(w)}{=0}
+%\addConstraint{s(w)}{=0}
+%\addConstraint{t(w)}{=0}
+%\addConstraint{v(w)}{=0}
+%\addConstraint{z(w)}{=0}
+\addConstraint{n(w)}{= 6}
+\addConstraint{L(w)+r(x)}{=Kw+p}
+\addConstraint{h(x)}{=0.}
+\end{mini}
+
+
+\subsection{Example 14 - All Possible Parameters}
 
 \begin{verbatim}
-\begin{mini!}|s|[1]
+\begin{mini!}|s|[1]<b>
 {w}{f(w)+ R(w+6x)}
 {}{w^*=}
 \addConstraint{g(w)}{=0,}{ \quad  \text{(Dynamic constraint)}}
@@ -737,7 +830,7 @@ Exactly the same syntax and definition as the previous environments, but now for
 \end{mini!}
 \end{verbatim}
 
-\begin{mini!}|s|[2]
+\begin{mini!}|s|[2]<b>
 	{w}{f(w)+ R(w+6x)\label{eq:ObjectiveExample3}}
 	{\label{eq:Example3}}
 	{w^*=}
