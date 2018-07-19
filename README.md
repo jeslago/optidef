@@ -11,6 +11,8 @@ The most important features are:
 
 - Implemenation of a short format where "minimize" is substituted by "min" and "subject to" by "s.t."
 
+- Possibility of splitting the optimization problem across multiple pages.
+
 - It references optimization problem using three different policies: 
    * No equation is referenced
    * The problem is referenced with a single label
@@ -35,7 +37,7 @@ Import the package by directly adding \usepackage{optidef} to your LaTeX documen
     
 The syntax to define an optimization problem is given by:
  
-        >\begin{mini#}|sizeFormat|[constraintFormat]
+        >\begin{mini#}|sizeFormat|[constraintFormat]<break>
             {optimizationVariable}
             {objectiveFunction \label{objectiveReference}}
             {\label{problemReference}}  
@@ -66,7 +68,7 @@ E-mail: J.LagoGarcia(at)tudelft.nl
 
 Github: https://github.com/jeslago/optidef
 
-## Latest stable version: Optidef 2.7
+## Latest stable version: Optidef 3.0
 
 CTAN: https://www.ctan.org/pkg/optidef
 
