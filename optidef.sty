@@ -103,9 +103,9 @@
 %% LONG VERSION "minimize" instead of   "min" 
 \newcommand{\bodyobjLong}[4]{%
 	\ifthenelse{\isempty{#4}}{%
-		&\mathmakebox[\widthof{$\underset{\displaystyle #1}{\mathrm{subject~to}}$}]{\underset{\displaystyle #1}{\mathrm{#3}}} \quad #2\span\span\span\span
+		&\mathmakebox[\widthof{$\underset{\displaystyle #1}{\mathrm{subject~to}}$}][l]{\underset{\displaystyle #1}{\mathrm{#3}}} \quad #2\span\span\span\span
 	}{%
-		#4~&\mathmakebox[\widthof{$\underset{\displaystyle #1}{\mathrm{subject~to}}$}]{\underset{\displaystyle #1}{\mathrm{#3}}} \quad #2\span\span\span\span		
+		#4~&\mathmakebox[\widthof{$\underset{\displaystyle #1}{\mathrm{subject~to}}$}][l]{\underset{\displaystyle #1}{\mathrm{#3}}} \quad #2\span\span\span\span		
 	}%
 }
 
@@ -141,7 +141,11 @@
 \ifthenelse{\equal{\localProblemFormat}{s}}{%
 \global\def\bodySubjectTo{\mathmakebox[\widthof{$\underset{\displaystyle\phantom{\localOptimalVariable}}{\mathrm{\localProblemType}}$}][c]{\mathmakebox[\widthof{$\mathrm{\localProblemType}$}][l]{\mathrm{\kern 0.1em s.t.}}}}
 }{%
-\global\def\bodySubjectTo{\mathmakebox[\widthof{$\underset{\displaystyle\phantom{\localOptimalVariable}}{\mathrm{\,subject~to}}$}][c]{\mathmakebox[\widthof{$\mathrm{\localProblemType}$}][l]{\mathrm{subject~to}}}}
+\global\def\bodySubjectTo{\mathmakebox[\widthof{$\underset{\displaystyle\phantom{\localOptimalVariable}}{\mathrm{subject~to}}$}][c]{%
+%		\mathmakebox[\widthof{$\mathrm{\localProblemType}$}][l]
+		{\mathrm{subject~to}}
+	}%
+	}%
 }%
 }
 
