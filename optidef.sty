@@ -537,17 +537,19 @@
 \NewEnviron{BaseMiniStar}[6]{%
 \selectConstraint{#1}
 \renewcommand{\localOptimalVariable}{#2}
-\ifthenelse{\equal{#6}{b}}{
-	\begingroup
-	\allowdisplaybreaks
-}{}
+\def\testa{#6}
+\def\testb{b}%
+\ifx\testa\testb
+\begingroup
+\allowdisplaybreaks
+\fi
 \begin{alignat*}{5}
 \bodyobj{#2}{#3}{#5}{#4}
 \BODY
 \end{alignat*}
-\ifthenelse{\equal{#6}{b}}{
-	\endgroup
-}{}
+\ifx\testa\testb
+\endgroup
+\fi
 \setStandardMini
 }
 
@@ -555,10 +557,12 @@
 \NewEnviron{BaseMiniExclam}[7]{%
 	\selectConstraintMult{#1}
 	\renewcommand{\localOptimalVariable}{#2}
-\ifthenelse{\equal{#7}{b}}{
-	\begingroup
-	\allowdisplaybreaks
-}{}	
+\def\testa{#7}
+\def\testb{b}%
+\ifx\testa\testb
+\begingroup
+\allowdisplaybreaks
+\fi
 	\begin{subequations}
 		#4
 		\begin{alignat}{5}
@@ -566,9 +570,9 @@
 		\BODY
 		\end{alignat}
 	\end{subequations}
-\ifthenelse{\equal{#7}{b}}{
-	\endgroup
-}{}
+\ifx\testa\testb
+\endgroup
+\fi
 	\setStandardMini
 }
 
