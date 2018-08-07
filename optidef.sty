@@ -32,26 +32,26 @@
 \newcommand{\defaultConstraintFormat}{0}
 \newcommand{\labelOP}[1]{\stepcounter{equation}\tag{\theequation}\label{#1}}
 
-\DeclareOption{short}{
-	\renewcommand{\defaultProblemFormat}{s}
+\DeclareOption{short}{%
+	\renewcommand{\defaultProblemFormat}{s}%
 }
 
-\DeclareOption{long}{
-\renewcommand{\defaultProblemFormat}{l}
+\DeclareOption{long}{%
+\renewcommand{\defaultProblemFormat}{l}%
 }
 
-\DeclareOption{nocomma}{
-	\renewcommand{\defaultOCPConstraint}{}
+\DeclareOption{nocomma}{%
+	\renewcommand{\defaultOCPConstraint}{}%
 }
 
-\DeclareOption{c1}{
-	\renewcommand{\defaultConstraintFormat}{1}
+\DeclareOption{c1}{%
+	\renewcommand{\defaultConstraintFormat}{1}%
 }
-\DeclareOption{c2}{
-	\renewcommand{\defaultConstraintFormat}{2}
+\DeclareOption{c2}{%
+	\renewcommand{\defaultConstraintFormat}{2}%
 }
-\DeclareOption{c3}{
-	\renewcommand{\defaultConstraintFormat}{3}
+\DeclareOption{c3}{%
+	\renewcommand{\defaultConstraintFormat}{3}%
 }
 
 \ProcessOptions\relax
@@ -91,41 +91,34 @@
 %%%%%%%%%%%%%%%%%%%%%%%
 % OBJECTIVE COMMAND DEFINITION
 %%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\bodyobj}[4]
-{
-	\ifthenelse{\isempty{#4}}
-	{
+\newcommand{\bodyobj}[4]{%
+	\ifthenelse{\isempty{#4}}{%
 		&\underset{\displaystyle #1}{\mathrlap{\mathrm{#3}}\phantom{\mathrm{subject~to}}} \quad #2\span\span\span\span
-	}
-	{
+	}{%
 		#4~ &\underset{\displaystyle #1}{\mathrlap{\mathrm{#3}}\phantom{\mathrm{subject~to}}} \quad #2\span\span\span\span
-	}
+	}%
 }
 
 
 %% LONG VERSION "minimize" instead of   "min" 
-\newcommand{\bodyobjLong}[4]
-{
-	\ifthenelse{\isempty{#4}}
-	{
+\newcommand{\bodyobjLong}[4]{%
+	\ifthenelse{\isempty{#4}}{%
 		&\mathmakebox[\widthof{$\underset{\displaystyle #1}{\mathrm{subject~to}}$}]{\underset{\displaystyle #1}{\mathrm{#3}}} \quad #2\span\span\span\span
-	}
-	{
-		#4~ &\mathmakebox[\widthof{$\underset{\displaystyle #1}{\mathrm{subject~to}}$}]{\underset{\displaystyle #1}{\mathrm{#3}}} \quad #2\span\span\span\span		
-	}
+	}{%
+		#4~&\mathmakebox[\widthof{$\underset{\displaystyle #1}{\mathrm{subject~to}}$}]{\underset{\displaystyle #1}{\mathrm{#3}}} \quad #2\span\span\span\span		
+	}%
 }
 
 %% SHORT VERSION "min" instead of "minimize"
-\newcommand{\bodyobjShort}[4]
-{
-	\ifthenelse{\isempty{#4}}
-	{
+\newcommand{\bodyobjShort}[4]{%
+	\ifthenelse{\isempty{#4}}{%
 		&\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
-	}
-	{
+	}{%
 		#4 ~ &\underset{\displaystyle #1}{\mathrm{#3}} \quad #2\span\span\span\span
-	}
+	}%
 }
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DEFINITION DIFFERENT TYPE OF BODY CONSTRAINTS
@@ -135,141 +128,133 @@
 
 
 % Main command. Dynamically redefined at every new problem definition.
-\DeclareDocumentCommand{\bodyconst}{m G{}}
-{	\equalsNothing{#2}{
+\DeclareDocumentCommand{\bodyconst}{m G{}}{%
+	\equalsNothing{#2}{%
 	\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}} \quad &&#1 #2 
-	}{
+	}{%
 	\\ &\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{subject~to}}  \quad &#1 & #2
-	}
+	}%
 }
 
-\newcommand{\bodySubjectToDefinition}{
+\newcommand{\bodySubjectToDefinition}{%
 %## If the short version of "subject to", i.e. "s.t.", should be used the command \bodySubjectTo should be modified
-\ifthenelse{\equal{\localProblemFormat}{s}}
-{%%
-\global\def\bodySubjectTo{\mathmakebox[\widthof{$\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{\localProblemType}}$}][c]{\mathmakebox[\widthof{$\mathrm{\localProblemType}$}][l]{\mathrm{\kern 0.1em s.t.}}}}
-}{%%
-\global\def\bodySubjectTo{\mathmakebox[\widthof{$\underset{\displaystyle \phantom{\localOptimalVariable}}{\mathrm{\,subject~to}}$}][c]{\mathmakebox[\widthof{$\mathrm{\localProblemType}$}][l]{\mathrm{subject~to}}}}
-}%%
-%
+\ifthenelse{\equal{\localProblemFormat}{s}}{%
+\global\def\bodySubjectTo{\mathmakebox[\widthof{$\underset{\displaystyle\phantom{\localOptimalVariable}}{\mathrm{\localProblemType}}$}][c]{\mathmakebox[\widthof{$\mathrm{\localProblemType}$}][l]{\mathrm{\kern 0.1em s.t.}}}}
+}{%
+\global\def\bodySubjectTo{\mathmakebox[\widthof{$\underset{\displaystyle\phantom{\localOptimalVariable}}{\mathrm{\,subject~to}}$}][c]{\mathmakebox[\widthof{$\mathrm{\localProblemType}$}][l]{\mathrm{subject~to}}}}
+}%
 }
 
 % Standard version.
-\DeclareDocumentCommand{\bodyconstRight}{m G{} G{}}
-{%%%
+\DeclareDocumentCommand{\bodyconstRight}{m G{} G{}}{%
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"
-\equalsNothing{#3}{%%
-		\equalsNothing{#2}{%
-		\\ & \bodySubjectTo \quad &&#1 #2 	
+\equalsNothing{#3}{%
+	\equalsNothing{#2}{%
+		\\ & \bodySubjectTo \quad &&#1 #2
 	}{%
 	\\ &\bodySubjectTo \quad &#1 & #2
 	}%
 	\togglefalse{previousThird}
-}{%%
+}{%
 	\equalsNothing{#2}{%
 		\\ &\bodySubjectTo \quad &&#1 #2 &&#3
 	}{%
 	\\ &\bodySubjectTo \quad &#1 & #2 &&#3
 	}%
 	\toggletrue{previousThird}
-}%%
-}%%%
+}%
+}
 
 
 % Single alignment point but next to subject to
-\DeclareDocumentCommand{\bodyconstOneAlign}{m G{} G{}}
-{
+\DeclareDocumentCommand{\bodyconstOneAlign}{m G{} G{}}{%
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-	\equalsNothing{#3}{
-		\\ &\bodySubjectTo\quad &&#1 #2 	\togglefalse{previousThird}
-	}{
+	\equalsNothing{#3}{%
+		\\ &\bodySubjectTo\quad &&#1 #2 \togglefalse{previousThird}
+	}{%
 		\\ &\bodySubjectTo\quad &&#1 #2 &&#3
 		\toggletrue{previousThird}
-	}
+	}%
 }
 
 % Contraints below subject to and with a single alignment point
-\DeclareDocumentCommand{\bodyconstOneAlignBelow}{m G{} G{}}
-{
+\DeclareDocumentCommand{\bodyconstOneAlignBelow}{m G{} G{}}{%
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-	\equalsNothing{#3}{
+	\equalsNothing{#3}{%
 		\\ &\bodySubjectTo \span\span\span\span \\
 		&&&#1 #2 \togglefalse{previousThird}
-	}{
+	}{%
 		\\ &\bodySubjectTo \span\span\span\span \\
 		&&&#1 #2 &&#3	
 		\toggletrue{previousThird}
-	}	
+	}%
 }
 
 % Contraints below subject to but with double alignment point
-\DeclareDocumentCommand{\bodyconstBelow}{m G{} G{}}
-{
+\DeclareDocumentCommand{\bodyconstBelow}{m G{} G{}}{%
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-	\equalsNothing{#3}{
-		\equalsNothing{#2}{
+	\equalsNothing{#3}{%
+		\equalsNothing{#2}{%
 			\\ &\bodySubjectTo\span\span\span\span \\
 			&&&#1 #2 
-		}{
+		}{%
 		\\ &\bodySubjectTo \span\span\span\span \\
 		 &&#1 & #2 
-		}
+		}%
 		\togglefalse{previousThird}
-	}{
-		\equalsNothing{#2}{
+	}{%
+		\equalsNothing{#2}{%
 			\\ &\bodySubjectTo \span\span\span\span \\
 			&&&#1 #2 &&#3
-		}{
+		}{%
 		\\ &\bodySubjectTo\span\span\span\span \\
 		&&#1 & #2 &&#3
-		}
+		}%
 		\toggletrue{previousThird}	
-	}
+	}%
 }
 
 % Contraints below subject to for the case of having a reference/label for each individual equation
-\DeclareDocumentCommand{\bodyconstBelowMult}{m G{} G{}}
-{
+\DeclareDocumentCommand{\bodyconstBelowMult}{m G{} G{}}{%
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-	\equalsNothing{#3}{
-		\equalsNothing{#2}{
+	\equalsNothing{#3}{%
+		\equalsNothing{#2}{%
 			\\ &\bodySubjectTo\span\span\span\span \nonumber \\
 			&&&#1 #2	
-		}{
+		}{%
 		\\ &\bodySubjectTo \span\span\span\span \nonumber \\
 		&&#1 & #2 
-		}
+		}%
 		\togglefalse{previousThird}
-	}{
-		\equalsNothing{#2}{
+	}{%
+		\equalsNothing{#2}{%
 			\\ &\bodySubjectTo\span\span\span\span \nonumber \\
 			&&&#1 #2	&&#3
-		}{
+		}{%
 		\\ &\bodySubjectTo \span\span\span\span \nonumber \\
 		&&#1 & #2 &&#3
-		}
+		}%
 		\toggletrue{previousThird}	
-	}
+	}%
 }
 
 % Contraints below subject to and with a single alignment point for the case of having a reference/label for each individual equation
-\DeclareDocumentCommand{\bodyconstOneAlignBelowMult}{m G{} G{}}
-{
+\DeclareDocumentCommand{\bodyconstOneAlignBelowMult}{m G{} G{}}{%
 \bodySubjectToDefinition
 %##  Set the first constraint according to the format used for "subject to"	
-	\equalsNothing{#3}{
+	\equalsNothing{#3}{%
 		\\ &\bodySubjectTo\span\span\span\span \nonumber \\
 		&&&#1 #2		\togglefalse{previousThird}
-	}{
+	}{%
 		\\ &\bodySubjectTo\span\span\span\span \nonumber \\
 		&&&#1 #2 &&	#3
 		\toggletrue{previousThird}
-	}
+	}%
 }
 
 
@@ -279,182 +264,180 @@
 
 
 % Main command. Dynamically redefined at every problem definiton.
-\DeclareDocumentCommand{\addConstraint}{m G{} G{}}{
+\DeclareDocumentCommand{\addConstraint}{m G{} G{}}{%
 % "If clause" selecting whether a third parameter (#3) defining extra constraint information is used
-\equalsNothing{#3}{	
+\equalsNothing{#3}{%
 		% Second "If clause" selecting whether two or 1 elements for the constraints are used
-		\equalsNothing{#2}{
-			\iftoggle{bodyCon}{
+		\equalsNothing{#2}{%
+			\iftoggle{bodyCon}{%
 				\bodyconst{#1}
 				\togglefalse{bodyCon}
-			}{
+			}{%
 			\defaultOCPConstraint\\&\quad &&#1 #2\span\span
 			\togglefalse{bodyCon}
-				}
-		}{
-			\iftoggle{bodyCon}{
+				}%
+		}{%
+			\iftoggle{bodyCon}{%
 				\bodyconst{#1}{#2}
 				\togglefalse{bodyCon}
-			}{
+			}{%
 			\defaultOCPConstraint\\&\quad &#1 & #2\span\span
 			\togglefalse{bodyCon}
-			}
-		}
+			}%
+		}%
 			\togglefalse{previousThird}
-	}{
-			\iftoggle{bodyCon}{
+	}{%
+			\iftoggle{bodyCon}{%
 				\bodyconst{#1}{#2}{#3}
 				\togglefalse{bodyCon}
-			}{
-				\equalsNothing{#2}{
+			}{%
+				\equalsNothing{#2}{%
 					\defaultOCPConstraint\\&\quad &&#1 #2 && #3
-				}{
+				}{%
 					\defaultOCPConstraint\\&\quad &#1 & #2 && #3
-				}
+				}%
 				\togglefalse{bodyCon}
-			}
+			}%
 		\toggletrue{previousThird}
-		}
+		}%
 }
 
 % Standard version of adding constraints
 % The toggle previousThird indicates if the previous constraint had three arguments or two. According to that it adjust the required spans at the end of the previous contraint. It is needed because the line jump after a constraint it is done at the beginning of the next constraint, not after the constraint itself. That avoid the last jump of the last constraint.
 % The toggle bodyCon indicate that it is the first contraint. The first contraint is different that the rest because it contains "subject to"
 % The commands \equalsNothing checks if the optional arguments exists
-\DeclareDocumentCommand{\standardAddConstraint}{m G{} G{}}{
-	\iftoggle{previousThird}
-	{
+\DeclareDocumentCommand{\standardAddConstraint}{m G{} G{}}{%
+	\iftoggle{previousThird}{%
 		\renewcommand{\spanit}{}
-	}{
+	}{%
 		\renewcommand{\spanit}{\span\span}
-	}
-\iftoggle{bodyCon}{
+	}%
+\iftoggle{bodyCon}{%
 	\bodyconstRight{#1}{#2}{#3}
 	\togglefalse{bodyCon}
-}{
-	\equalsNothing{#2}{
-		\equalsNothing{#3}{
+}{%
+	\equalsNothing{#2}{%
+		\equalsNothing{#3}{%
 			\defaultOCPConstraint\spanit\\&\quad &&#1 #2
 			\togglefalse{previousThird}
-		}{
+		}{%
 			\defaultOCPConstraint\spanit\\&\quad &&#1 #2 && #3
 			\toggletrue{previousThird}
-		}
-	}{
-		\equalsNothing{#3}{
+		}%
+	}{%
+		\equalsNothing{#3}{%
 			\defaultOCPConstraint\spanit\\&\quad &#1 & #2
 			\togglefalse{previousThird}
-		}{
+		}{%
 			\defaultOCPConstraint\spanit\\&\quad &#1 & #2 && #3
 			\toggletrue{previousThird}
-		}
-}
-\togglefalse{bodyCon}
-}
+		}%
+}%
+\togglefalse{bodyCon}%
+}%
 }
 
 
 % Adding constraints below subject to
-\DeclareDocumentCommand{\BelowAddConstraint}{m G{} G{}}{
-	\iftoggle{bodyCon}{
+\DeclareDocumentCommand{\BelowAddConstraint}{m G{} G{}}{%
+	\iftoggle{bodyCon}{%
 		\bodyconstBelow{#1}{#2}{#3}
 		\togglefalse{bodyCon}
-	}{
-		\equalsNothing{#2}{
-			\equalsNothing{#3}{
+	}{%
+		\equalsNothing{#2}{%
+			\equalsNothing{#3}{%
 				\defaultOCPConstraint\spanit\\&&&#1  #2 		\togglefalse{previousThird}
-			}{
+			}{%
 				\defaultOCPConstraint\spanit\\&&&#1  #2 && #3
 				\toggletrue{previousThird}		
-			}
-		}{
-			\equalsNothing{#3}{
+			}%
+		}{%
+			\equalsNothing{#3}{%
 				\defaultOCPConstraint\spanit\\ &&#1  &#2 \togglefalse{previousThird}
-			}{
+			}{%
 				\defaultOCPConstraint\spanit\\ &&#1  &#2 && #3
 				\toggletrue{previousThird}
-			}
-		}
-		\togglefalse{bodyCon}
-	}
+			}%
+		}%
+		\togglefalse{bodyCon}%
+	}%
 }
 
 % Adding constraints with a single alignment point but next to subject to
-\DeclareDocumentCommand{\oneAlignAddConstraint}{m G{} G{}}{
-		\iftoggle{bodyCon}{
+\DeclareDocumentCommand{\oneAlignAddConstraint}{m G{} G{}}{%
+		\iftoggle{bodyCon}{%
 			\bodyconstOneAlign{#1}{#2}{#3}
 			\togglefalse{bodyCon}
-		}{
-			\equalsNothing{#3}{
+		}{%
+			\equalsNothing{#3}{%
 				\defaultOCPConstraint\spanit\\&\quad &&#1  #2 \togglefalse{previousThird}
-			}{
+			}{%
 				\defaultOCPConstraint\spanit\\&\quad &&#1  #2 && #3
 				\toggletrue{previousThird}
-			}
-		\togglefalse{bodyCon}
-		}
+			}%
+		\togglefalse{bodyCon}%
+		}%
 }
 
 % Adding constraints for a single alignment point and with the constraints below
-\DeclareDocumentCommand{\oneAlignBelowAddConstraint}{m G{} G{}}{
-	\iftoggle{bodyCon}{
+\DeclareDocumentCommand{\oneAlignBelowAddConstraint}{m G{} G{}}{%
+	\iftoggle{bodyCon}{%
 		\bodyconstOneAlignBelow{#1}{#2}{#3}
 		\togglefalse{bodyCon}
-	}{
-		\equalsNothing{#3}{
+	}{%
+		\equalsNothing{#3}{%
 			\defaultOCPConstraint\spanit\\& &&#1  #2\togglefalse{previousThird}
-		}{
+		}{%
 			\defaultOCPConstraint\spanit\\& &&#1  #2 && #3
 			\toggletrue{previousThird}
-		}
-		\togglefalse{bodyCon}
-	}
+		}%
+		\togglefalse{bodyCon}%
+	}%
 }
 
 % Adding constraints below "subject to" for multiple references
-\DeclareDocumentCommand{\BelowAddConstraintMult}{m G{} G{}}{
-	\iftoggle{bodyCon}{
+\DeclareDocumentCommand{\BelowAddConstraintMult}{m G{} G{}}{%
+	\iftoggle{bodyCon}{%
 		\bodyconstBelowMult{#1}{#2}{#3}
 		\togglefalse{bodyCon}
-	}{
-		\equalsNothing{#3}{
-			\equalsNothing{#2}{
+	}{%
+		\equalsNothing{#3}{%
+			\equalsNothing{#2}{%
 				\defaultOCPConstraint\spanit\\&&&#1  #2
-			}{
+			}{%
 			\defaultOCPConstraint\spanit\\ &&#1  &#2
-			}
+			}%
 			\togglefalse{previousThird}
-		}{
+		}{%
 			\equalsNothing{#2}{
 				\defaultOCPConstraint\spanit\\&&&#1  #2 && #3
-			}{
+			}{%
 			\defaultOCPConstraint\spanit\\ &&#1  &#2&& #3}
 		\toggletrue{previousThird}
-		}
-		\togglefalse{bodyCon}
-	}
+		}%
+		\togglefalse{bodyCon}%
+	}%
 }
 
 % Adding constraints for a single alignment point and with the constraints below for multiple references
 \DeclareDocumentCommand{\oneAlignBelowAddConstraintMult}{m G{} G{}}{
-	\iftoggle{bodyCon}{
+	\iftoggle{bodyCon}{%
 		\bodyconstOneAlignBelowMult{#1}{#2}{#3}
 		\togglefalse{bodyCon}
-	}{
-		\equalsNothing{#3}{
+	}{%
+		\equalsNothing{#3}{%
 			\defaultOCPConstraint\spanit\\& &&#1  #2 \togglefalse{previousThird}
-		}{
+		}{%
 			\defaultOCPConstraint\spanit\\& &&#1  #2 && #3
 			\toggletrue{previousThird}
-		}
+		}%
 	\togglefalse{bodyCon}
-}
+}%
 }
 %%%%%%%%%%%%%%%%%%%%
 % ADDING EXTRA LINE
 %%%%%%%%%%%%%%%%%%%%
-\newcommand{\breakObjective}[1]
-{
+\newcommand{\breakObjective}[1]{%
 \\&\mathmakebox[\widthInit]{\phantom{\underset{}{}}}#1\span\span\span\span
 }
 	
@@ -462,54 +445,54 @@
 %%%%%%%%%%%%%%%%%%%%
 % SELECTING TYPE OF FORMAT
 %%%%%%%%%%%%%%%%%%%%
-\newcommand{\selectConstraint}[1]{
-	\ifthenelse{\equal{#1}{1}}{
+\newcommand{\selectConstraint}[1]{%
+	\ifthenelse{\equal{#1}{1}}{%
 		\let\addConstraint\BelowAddConstraint
-	}{
-	\ifthenelse{\equal{#1}{2}}{
+	}{%
+	\ifthenelse{\equal{#1}{2}}{%
 		\let\addConstraint\oneAlignAddConstraint
-	}{
-	\ifthenelse{\equal{#1}{3}}{
+	}{%
+	\ifthenelse{\equal{#1}{3}}{%
 		\let\addConstraint\oneAlignBelowAddConstraint
-	}{
-		\let\addConstraint\standardAddConstraint}
-}
-}
+	}{%
+		\let\addConstraint\standardAddConstraint
+	}%
+}%
+}%
 }
 
 % Selecting for multiple references
-\newcommand{\selectConstraintMult}[1]{
-	\ifthenelse{\equal{#1}{1}}{
+\newcommand{\selectConstraintMult}[1]{%
+	\ifthenelse{\equal{#1}{1}}{%
 		\let\addConstraint\BelowAddConstraintMult
-	}{
-	\ifthenelse{\equal{#1}{2}}{
+	}{%
+	\ifthenelse{\equal{#1}{2}}{%
 		\let\addConstraint\oneAlignAddConstraint
-	}{
-	\ifthenelse{\equal{#1}{3}}{
+	}{%
+	\ifthenelse{\equal{#1}{3}}{%
 		\let\addConstraint\oneAlignBelowAddConstraintMult
-	}{
-	\let\addConstraint\standardAddConstraint}
-}
-}
+	}{%
+	\let\addConstraint\standardAddConstraint
+}%
+}%
+}%
 }
 
 %%%%%%%%%%%%%%%%%%%
 % SETTING DEFAULT FORMAT
 %%%%%%%%%%%%%%%%%%%
 % Originally, \toggletrue{bodyCon} was inside this function, however, spacing issues after environment made me remove it.
-\newcommand{\setStandardMini}{
-	\let\addConstraint\standardAddConstraint	
-}
+\newcommand{\setStandardMini}{\let\addConstraint\standardAddConstraint}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % COMMANDS TO DEFINE ALL REQUIRED PROPERTIES TO CHOOSE SHORT/LONG FORMAT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\setFormatShort}[2]{\global\def\localProblemFormat{s} \let\bodyobj\bodyobjShort \renewcommand{\localProblemType}{#1} 
-	 \setlength{\widthInit}{\widthof{$\underset{\displaystyle #2}{\mathrm{#1}}$\quad}}
+\newcommand{\setFormatShort}[2]{\global\def\localProblemFormat{s}\let\bodyobj\bodyobjShort \renewcommand{\localProblemType}{#1}%
+	\setlength{\widthInit}{\widthof{$\underset{\displaystyle #2}{\mathrm{#1}}$\quad}}%
 	}
 
-\newcommand{\setFormatLong}[2]{\global\def\localProblemFormat{l} \let\bodyobj\bodyobjLong \renewcommand{\localProblemType}{#1}
-\setlength{\widthInit}{\widthof{$\underset{\displaystyle #2}{\mathrm{subject~to}}$ \quad}}
+\newcommand{\setFormatLong}[2]{\global\def\localProblemFormat{l}\let\bodyobj\bodyobjLong \renewcommand{\localProblemType}{#1}%
+\setlength{\widthInit}{\widthof{$\underset{\displaystyle #2}{\mathrm{subject~to}}$ \quad}}%
 }
 
 %%%%%%%%%%%%%%%%%%%%%
@@ -521,61 +504,45 @@
 % Base environment for the three possible types of referencing: 1 label, no label or multilabel
 % Base environment defined using NewEnviron package because of \BODY command
 \NewEnviron{BaseMini}[6]{%
-	
-\selectConstraint{#1}
-\renewcommand{\localOptimalVariable}{#2}
+\selectConstraint{#1}%
+\renewcommand{\localOptimalVariable}{#2}%
 \begin{equation}
 #4
 \begin{alignedat}{5}
 \bodyobj{#2}{#3}{#6}{#5}
 \BODY
 \end{alignedat}
-\end{equation}
+\end{equation}%
 \setStandardMini
 }
 
 \NewEnviron{BaseMiniStar}[6]{%
-\selectConstraint{#1}
-\renewcommand{\localOptimalVariable}{#2}
-\def\testa{#6}
-\def\testb{b}%
-\ifx\testa\testb
-\begingroup
-\allowdisplaybreaks
-\fi
+\selectConstraint{#1}%
+\renewcommand{\localOptimalVariable}{#2}%
+\ifthenelse{\equal{#6}{b}}{\begingroup\allowdisplaybreaks}{}%
 \begin{alignat*}{5}
 \bodyobj{#2}{#3}{#5}{#4}
 \BODY
-\end{alignat*}
-\ifx\testa\testb
-\endgroup
-\fi
+\end{alignat*}%
+\ifthenelse{\equal{#6}{b}}{\endgroup}{}%
 \setStandardMini
 }
 
 
 \NewEnviron{BaseMiniExclam}[7]{%
-	\selectConstraintMult{#1}
-	\renewcommand{\localOptimalVariable}{#2}
-\def\testa{#7}
-\def\testb{b}%
-\ifx\testa\testb
-\begingroup
-\allowdisplaybreaks
-\fi
+	\selectConstraintMult{#1}%
+	\renewcommand{\localOptimalVariable}{#2}%
+	\ifthenelse{\equal{#7}{b}}{\begingroup\allowdisplaybreaks}{}%
 	\begin{subequations}
 		#4
 		\begin{alignat}{5}
 		\bodyobj{#2}{#3}{#6}{#5}
 		\BODY
 		\end{alignat}
-	\end{subequations}
-\ifx\testa\testb
-\endgroup
-\fi
-	\setStandardMini
+	\end{subequations}%
+\ifthenelse{\equal{#7}{b}}{\endgroup}{}%
+\setStandardMini
 }
-
 
 % INDIVIDUAL AND SPECIFIC ENVIRONMENTS (mini, maxi, argmini*...)
 % Specific environments defined with xparse package due to arguments options
@@ -584,191 +551,183 @@
 % In the below definitions, \toggletrue{bodyCon} has to be added once the definition of the environment is finished. I tried to do inside the environment itself using \setStandardMini, but it produced some ugly text displacemente.
 
 % Single reference probems
-\DeclareDocumentEnvironment{mini}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{
-\ifthenelse{\equal{#3}{b}}
-{
-	\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{mini}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+\ifthenelse{\equal{#3}{b}}{%
+	\ifthenelse{\equal{#1}{s}}%
 	% Short version problem
-	{\setFormatShort{min}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{min}{#3}}
+	{\setFormatShort{min}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{min}{#3}}%
 	% Long version problem	
-	{\setFormatLong{minimize}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{minimize}{#3}}
-}
-{
-	\ifthenelse{\equal{#1}{s}}
+	{\setFormatLong{minimize}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{minimize}{#3}}%
+}{%
+	\ifthenelse{\equal{#1}{s}}%
 	% Short version problem
-	{\setFormatShort{min}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{min}}
+	{\setFormatShort{min}{#2}\BaseMini{#2}{#4}{#5}{#6}{#7}{min}}%
 	% Long version problem	
-	{\setFormatLong{minimize}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{minimize}}
-}
+	{\setFormatLong{minimize}{#2}\BaseMini{#2}{#4}{#5}{#6}{#7}{minimize}}%
+}%
 }%
 {\endBaseMini\toggletrue{bodyCon}}
 
 
-\DeclareDocumentEnvironment{argmini}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{
-	\ifthenelse{\equal{#3}{b}}
-	{
-		\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{argmini}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#3}{b}}{%
+		\ifthenelse{\equal{#1}{s}}%
 		% Short version problem
-		{\setFormatShort{arg~min}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~min}{#3}}
+		{\setFormatShort{arg~min}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{arg~min}{#3}}%
 		% Long version problem	
-		{\setFormatLong{arg~min}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~min}{#3}}
-	}
-	{
-		\ifthenelse{\equal{#1}{s}}
+		{\setFormatLong{arg~min}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{arg~min}{#3}}%
+	}{%
+		\ifthenelse{\equal{#1}{s}}%
 		% Short version problem
-		{\setFormatShort{arg~min}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{arg~min}}
+		{\setFormatShort{arg~min}{#2}\BaseMini{#2}{#4}{#5}{#6}{#7}{arg~min}}%
 		% Long version problem	
-		{\setFormatLong{arg~min}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{arg~min}}
-	}
+		{\setFormatLong{arg~min}{#2}\BaseMini{#2}{#4}{#5}{#6}{#7}{arg~min}}%
+	}%
 }%
 {\endBaseMini\toggletrue{bodyCon}}
 
 
 % No reference
-\DeclareDocumentEnvironment{mini*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
-{\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{mini*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#1}{s}}%
 	% Short version problem
-	{\setFormatShort{min}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{min}{#3}}
+	{\setFormatShort{min}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{min}{#3}}%
 	% Long version problem	
-	{\setFormatLong{minimize}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{minimize}{#3}}
+	{\setFormatLong{minimize}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{minimize}{#3}}%
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 		
-\DeclareDocumentEnvironment{argmini*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
-{\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{argmini*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#1}{s}}%
 % Short version problem
-{\setFormatShort{arg~min}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~min}{#3}}
+{\setFormatShort{arg~min}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{arg~min}{#3}}%
 % Long version problem	
-{\setFormatLong{arg~min}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~min}{#3}}
+{\setFormatLong{arg~min}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{arg~min}{#3}}%
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
 
 % Multiple reference
-\DeclareDocumentEnvironment{mini!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
-{\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{mini!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#1}{s}}%
 	% Short version problem
-	{\setFormatShort{min}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{min}{#3}}
+	{\setFormatShort{min}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{min}{#3}}%
 	% Long version problem	
-	{\setFormatLong{minimize}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{minimize}{#3}}
+	{\setFormatLong{minimize}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{minimize}{#3}}%
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
-\DeclareDocumentEnvironment{argmini!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
-{\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{argmini!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#1}{s}}%
 % Short version problem
-{\setFormatShort{arg~min}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~min}{#3}}
+{\setFormatShort{arg~min}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~min}{#3}}%
 % Long version problem	
-{\setFormatLong{arg~min}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~min}{#3}}	
+{\setFormatLong{arg~min}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~min}{#3}}%	
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
 
 % Multiple reference
-\DeclareDocumentEnvironment{minie}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
-{\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{minie}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#1}{s}}%
 	% Short version problem
-	{\setFormatShort{min}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{min}{#3}}
+	{\setFormatShort{min}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{min}{#3}}%
 	% Long version problem	
-	{\setFormatLong{minimize}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{minimize}{#3}}
+	{\setFormatLong{minimize}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{minimize}{#3}}%
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
 
-\DeclareDocumentEnvironment{argminie}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
-{\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{argminie}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#1}{s}}%
 	% Short version problem
-	{\setFormatShort{arg~min}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~min}{#3}}
+	{\setFormatShort{arg~min}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~min}{#3}}%
 	% Long version problem	
-	{\setFormatLong{arg~min}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~min}{#3}}	
+	{\setFormatLong{arg~min}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~min}{#3}}%
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
 
 %MAXIMIZATION ENVIRONMENTS
 
 % Single reference probems
-\DeclareDocumentEnvironment{maxi}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{
-	\ifthenelse{\equal{#3}{b}}
-	{
-		\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{maxi}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#3}{b}}{%
+		\ifthenelse{\equal{#1}{s}}%
 		% Short version problem
-		{\setFormatShort{max}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{max}{#3}}
+		{\setFormatShort{max}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{max}{#3}}%
 		% Long version problem	
-		{\setFormatLong{maximize}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{maximize}{#3}}
-	}
-	{
-		\ifthenelse{\equal{#1}{s}}
+		{\setFormatLong{maximize}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{maximize}{#3}}%
+	}{%
+		\ifthenelse{\equal{#1}{s}}%
 		% Short version problem
-		{\setFormatShort{max}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{max}}
+		{\setFormatShort{max}{#2}\BaseMini{#2}{#4}{#5}{#6}{#7}{max}}%
 		% Long version problem	
-		{\setFormatLong{maximize}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{maximize}}
-	}
+		{\setFormatLong{maximize}{#2}\BaseMini{#2}{#4}{#5}{#6}{#7}{maximize}}%
+	}%
 }%
 {\endBaseMini\toggletrue{bodyCon}}
 
 
-\DeclareDocumentEnvironment{argmaxi}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{
-	\ifthenelse{\equal{#3}{b}}
-	{
-		\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{argmaxi}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#3}{b}}{%
+		\ifthenelse{\equal{#1}{s}}%
 		% Short version problem
-		{\setFormatShort{arg~max}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~max}{#3}}
+		{\setFormatShort{arg~max}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{arg~max}{#3}}%
 		% Long version problem	
-		{\setFormatLong{arg~max}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~max}{#3}}
-	}
-	{
-		\ifthenelse{\equal{#1}{s}}
+		{\setFormatLong{arg~max}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{arg~max}{#3}}%
+	}{%
+		\ifthenelse{\equal{#1}{s}}%
 		% Short version problem
-		{\setFormatShort{arg~max}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{arg~max}}
+		{\setFormatShort{arg~max}{#2}\BaseMini{#2}{#4}{#5}{#6}{#7}{arg~max}}%
 		% Long version problem	
-		{\setFormatLong{arg~max}{#2} \BaseMini{#2}{#4}{#5}{#6}{#7}{arg~max}}
-	}
+		{\setFormatLong{arg~max}{#2}\BaseMini{#2}{#4}{#5}{#6}{#7}{arg~max}}%
+	}%
 }%
 {\endBaseMini\toggletrue{bodyCon}}
 
 % No reference
-\DeclareDocumentEnvironment{maxi*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
-{\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{maxi*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#1}{s}}%
 % Short version problem
-{\setFormatShort{max}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{max}{#3}}
+{\setFormatShort{max}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{max}{#3}}%
 % Long version problem	
-{\setFormatLong{maximize}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{maximize}{#3}}	
+{\setFormatLong{maximize}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{maximize}{#3}}%
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
-\DeclareDocumentEnvironment{argmaxi*}{D||{l} O{\defaultConstraintFormat} D<>{} m m m m}
-{\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{argmaxi*}{D||{l} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#1}{s}}%
 % Short version problem
-{\setFormatShort{arg~max}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~max}{#3}}
+{\setFormatShort{arg~max}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{arg~max}{#3}}%
 % Long version problem	
-{\setFormatLong{arg~max}{#2} \BaseMiniStar{#2}{#4}{#5}{#7}{arg~max}{#3}}		
+{\setFormatLong{arg~max}{#2}\BaseMiniStar{#2}{#4}{#5}{#7}{arg~max}{#3}}%		
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
 
 % Multiple reference
-\DeclareDocumentEnvironment{maxi!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
-{\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{maxi!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#1}{s}}%
 % Short version problem
-{\setFormatShort{max}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{max}{#3}}
+{\setFormatShort{max}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{max}{#3}}%
 % Long version problem	
-{\setFormatLong{maximize}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{maximize}{#3}}	
+{\setFormatLong{maximize}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{maximize}{#3}}%	
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
-\DeclareDocumentEnvironment{argmaxi!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
-{\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{argmaxi!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#1}{s}}%
 % Short version problem
-{\setFormatShort{arg~max}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~max}{#3}}
+{\setFormatShort{arg~max}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~max}{#3}}%
 % Long version problem	
-{\setFormatLong{arg~max}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~max}{#3}}	
+{\setFormatLong{arg~max}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~max}{#3}}%
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
 % Multiple reference
-\DeclareDocumentEnvironment{maxie}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
-{\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{maxie}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#1}{s}}%
 	% Short version problem
-	{\setFormatShort{max}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{max}{#3}}
+	{\setFormatShort{max}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{max}{#3}}%
 	% Long version problem	
-	{\setFormatLong{maximize}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{maximize}{#3}}	
+	{\setFormatLong{maximize}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{maximize}{#3}}%
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
 
-\DeclareDocumentEnvironment{argmaxie}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}
-{\ifthenelse{\equal{#1}{s}}
+\DeclareDocumentEnvironment{argmaxie}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m}{%
+	\ifthenelse{\equal{#1}{s}}%
 	% Short version problem
-	{\setFormatShort{arg~max}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~max}{#3}}
+	{\setFormatShort{arg~max}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~max}{#3}}%
 	% Long version problem	
-	{\setFormatLong{arg~max}{#2} \BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~max}{#3}}	
+	{\setFormatLong{arg~max}{#2}\BaseMiniExclam{#2}{#4}{#5}{#6}{#7}{arg~max}{#3}}%
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
