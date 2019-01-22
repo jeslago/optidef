@@ -442,9 +442,26 @@
 % ADDING EXTRA LINE
 %%%%%%%%%%%%%%%%%%%%
 \newcommand{\breakObjective}[1]{%
-\\&\mathmakebox[\widthInit]{\phantom{\underset{}{}}}#1\span\span\span\span
+	\bodyBreakObjectiveDefinition
+\\
+\bodyBreakObjective\quad #1\span\span\span\span
 }
 	
+\newcommand{\bodyBreakObjectiveDefinition}{%
+	\ifthenelse{\equal{\localProblemFormat}{s}}{%
+		\global\def\bodyBreakObjective{\mathmakebox[\widthof{$\underset{\displaystyle\phantom{\localOptimalVariable}}{\mathrm{\localProblemType}}$}][c]{%
+				\mathmakebox[\widthof{$\mathrm{\localProblemType}$}][l]{}%
+			}%
+		}%
+	}%
+{%
+		\global\def\bodyBreakObjective{\mathmakebox[\widthof{$\underset{\displaystyle\phantom{\localOptimalVariable}}{\mathrm{subject~to}}$}][c]{%
+				{}%
+			}%
+		}%
+	}%
+}
+
 	
 %%%%%%%%%%%%%%%%%%%%
 % SELECTING TYPE OF FORMAT
