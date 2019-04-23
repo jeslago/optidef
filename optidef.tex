@@ -7,7 +7,7 @@
 
 \lstset{basicstyle=\ttfamily,breaklines=true}
 % Title Page
-\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 3.0}}
+\title{\textit{\textbf{Optidef}} \\ A Latex library for optimization problems\\ \textnormal{Version - 3.1}}
 
 \author{Jesus Lago}
 
@@ -306,18 +306,17 @@ In several cases, people encounter the problem of having an optimization problem
 \begin{lstlisting}
 \begin{mini*}<b>
 {w,u}{f(w)+ R(w+6x)+ H(100w-x*w/500)}{}{}
-\breakObjective{-g(w^3-x^2*200+10000*w^5)}
 \addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1}
 \addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
 \end{mini*}
 \end{lstlisting}
 
-For the \verb|mini|, \verb|maxi|, \verb|argmini|, and \verb|argmaxi| environments, when the option \verb|<b>| is provided, the environment does not automatically set the numbering nor the label of the environment. To create the number/label, the command \verb|\labelOP{label}| should be used. In particular, in the equation/constraint of the optimization problem where the label/number should be located, simply add \verb|\labelOP{label}|. For example, the following code:
+
+However, when using this option \verb|<b>|, it is important to note that labeling of equations is no longer automatic. To create the number/label, the command \verb|\labelOP{label}| should be used. In particular, in the equation/constraint of the optimization problem where the label/number should be located, simply add \verb|\labelOP{label}|. For example, the following code:
 
 \begin{lstlisting}
 \begin{mini}<b>
 {w,u}{f(w)+ R(w+6x)+ H(100w-x*w/500)}{}{}
-\breakObjective{-g(w^3-x^2*200+10000*w^5)}
 \addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1 \labelOP{eq:label}}
 \addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
 \end{mini}
@@ -327,12 +326,11 @@ For the \verb|mini|, \verb|maxi|, \verb|argmini|, and \verb|argmaxi| environment
 
 \begin{mini}<b>
 	{w,u}{f(w)+ R(w+6x)+ H(100w-x*w/500)}{}{}
-	\breakObjective{-g(w^3-x^2*200+10000*w^5)}
 	\addConstraint{g(w_k)+h(w_k)}{=0,}{k=0,\ldots,N-1 \labelOP{eq:label}}
 	\addConstraint{l(w_k)}{=5u,\quad}{k=0,\ldots,N-1}
 \end{mini}
 
-In addition to automatic breaking equations, manual breaks at selected locations can also be done using the \verb|\displaybreak| command. Just add \verb|\displaybreak| between the two constraints that need to be broken, e.g.:
+The option \verb|<b>| automatically breaks the optimization problem when the problem is too large to fit in one page (e.g.\ see an example in \ref{ex:break}). However, manual breaks at selected locations are also possible using the \verb|\displaybreak| command. Just add \verb|\displaybreak| between the two constraints that need to be broken, e.g.:
 
 \begin{lstlisting}
 \begin{mini}<b>
@@ -789,6 +787,7 @@ Exactly the same syntax and definition as the previous environments, but now for
 \end{maxi}
 
 \subsection{Example 13 - Breaking optimization problem}
+\label{ex:break}
 \begin{lstlisting}
 \begin{mini}<b>
 {w}{f(w)+ R(w+6x)}
@@ -796,7 +795,7 @@ Exactly the same syntax and definition as the previous environments, but now for
 \addConstraint{g(w)}{=0}
 \addConstraint{p(w)}{=0}
 \addConstraint{q(w)}{=0}
-\addConstraint{r(w)}{=0}
+\addConstraint{r(w)}{=0\labelOP{testLabel}}
 \addConstraint{n(w)}{= 6}
 \addConstraint{L(w)+r(x)}{=Kw+p}
 \addConstraint{h(x)}{=0.}
@@ -810,7 +809,7 @@ outputs:
 \addConstraint{g(w)}{=0}
 \addConstraint{p(w)}{=0}
 \addConstraint{q(w)}{=0}
-\addConstraint{r(w)}{=0}
+\addConstraint{r(w)}{=0\labelOP{testLabel}}
 %\addConstraint{s(w)}{=0}
 %\addConstraint{t(w)}{=0}
 %\addConstraint{v(w)}{=0}
@@ -824,13 +823,14 @@ outputs:
 \subsection{Example 14 - All Possible Parameters}
 
 \begin{verbatim}
-\begin{mini!}|s|[1]<b>
-{w}{f(w)+ R(w+6x)}
-{}{w^*=}
-\addConstraint{g(w)}{=0,}{ \quad  \text{(Dynamic constraint)}}
-\addConstraint{n(w)}{= 6,}{ \quad  \text{(Boundary constraint)}}
-\addConstraint{L(w)+r(x)}{=Kw+p,}{ \quad  \text{(Random constraint)}}
-\addConstraint{h(x)}{=0,}{ \quad  \text{(Path constraint).}}
+\begin{mini!}|s|[2]<b>
+{w}{f(w)+ R(w+6x)\label{eq:ObjectiveExample3}}
+{\label{eq:Example3}}
+{w^*=}
+\addConstraint{g(w)}{=0 \label{eq:C1Example3}}
+\addConstraint{n(w)}{= 6 \label{eq:C2Example3}}
+\addConstraint{L(w)+r(x)}{=Kw+p \label{eq:C3Example3}}
+\addConstraint{h(x)}{=0.\label{eq:C4Example3}}
 \end{mini!}
 \end{verbatim}
 
