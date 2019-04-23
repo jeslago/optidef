@@ -445,7 +445,7 @@
 	\bodyBreakObjectiveDefinition
 \\
 \bodyBreakObjective\quad #1\span\span\span\span
-}
+}%
 	
 \newcommand{\bodyBreakObjectiveDefinition}{%
 	\ifthenelse{\equal{\localProblemFormat}{s}}{%
@@ -460,7 +460,7 @@
 			}%
 		}%
 	}%
-}
+}%
 
 	
 %%%%%%%%%%%%%%%%%%%%
@@ -480,7 +480,7 @@
 	}%
 }%
 }%
-}
+}%
 
 % Selecting for multiple references
 \newcommand{\selectConstraintMult}[1]{%
@@ -497,7 +497,7 @@
 }%
 }%
 }%
-}
+}%
 
 %%%%%%%%%%%%%%%%%%%
 % SETTING DEFAULT FORMAT
@@ -514,7 +514,7 @@
 
 \newcommand{\setFormatLong}[2]{\global\def\localProblemFormat{l}\let\bodyobj\bodyobjLong \renewcommand{\localProblemType}{#1}%
 \setlength{\widthInit}{\widthof{$\underset{\displaystyle #2}{\mathrm{subject~to}}$ \quad}}%
-}
+}%
 
 %%%%%%%%%%%%%%%%%%%%%
 %MINIMIZATION ENVIRONMENTS
