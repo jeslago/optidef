@@ -796,15 +796,15 @@
 	\ifthenelse{\equal{#3}{b}}{%
 		\ifthenelse{\equal{#1}{s}}%
 		% Short version problem
-		{\setFormatShort{#4}{#4}\BaseMiniStar{#2}{#5}{#6}{#8}{#4}{#3}}%
+		{\setFormatShort{#4}{#5}\BaseMiniStar{#2}{#5}{#6}{#8}{#4}{#3}}%
 		% Long version problem	
-		{\setFormatLong{#4}{#4}\BaseMiniStar{#2}{#5}{#6}{#8}{#4}{#3}}%
+		{\setFormatLong{#4}{#5}\BaseMiniStar{#2}{#5}{#6}{#8}{#4}{#3}}%
 	}{%
 		\ifthenelse{\equal{#1}{s}}%
 		% Short version problem
-		{\setFormatShort{#4}{#4}\BaseMini{#2}{#5}{#6}{#7}{#8}{#4}}%
+		{\setFormatShort{#4}{#5}\BaseMini{#2}{#5}{#6}{#7}{#8}{#4}}%
 		% Long version problem	
-		{\setFormatLong{#4}{#4}\BaseMini{#2}{#5}{#6}{#7}{#8}{#4}}%
+		{\setFormatLong{#4}{#5}\BaseMini{#2}{#5}{#6}{#7}{#8}{#4}}%
 	}%
 }%
 {\endBaseMini\toggletrue{bodyCon}}
@@ -813,16 +813,16 @@
 \DeclareDocumentEnvironment{customopti*}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m m}{%
 	\ifthenelse{\equal{#1}{s}}%
 	% Short version problem
-	{\setFormatShort{#4}{#4}\BaseMiniStar{#2}{#5}{#6}{#8}{#4}{#3}}%
+	{\setFormatShort{#4}{#5}\BaseMiniStar{#2}{#5}{#6}{#8}{#4}{#3}}%
 	% Long version problem	
-	{\setFormatLong{#4}{#4}\BaseMiniStar{#2}{#5}{#6}{#8}{#4}{#3}}%
+	{\setFormatLong{#4}{#5}\BaseMiniStar{#2}{#5}{#6}{#8}{#4}{#3}}%
 }{\endBaseMiniStar\toggletrue{bodyCon}}
 
 
 \DeclareDocumentEnvironment{customopti!}{D||{\defaultProblemFormat} O{\defaultConstraintFormat} D<>{} m m m m m}{%
 	\ifthenelse{\equal{#1}{s}}%
 	% Short version problem
-	{\setFormatShort{#4}{#4}\BaseMiniExclam{#2}{#5}{#6}{#7}{#8}{#4}{#3}}%
+	{\setFormatShort{#4}{#5}\BaseMiniExclam{#2}{#5}{#6}{#7}{#8}{#4}{#3}}%
 	% Long version problem	
-	{\setFormatLong{#4}{#4}\BaseMiniExclam{#2}{#5}{#6}{#7}{#8}{#4}{#3}}%
+	{\setFormatLong{#4}{#5}\BaseMiniExclam{#2}{#5}{#6}{#7}{#8}{#4}{#3}}%
 }{\endBaseMiniExclam\toggletrue{bodyCon}}
